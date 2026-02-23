@@ -1,3 +1,22 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-image",
+      "description": "A calming abstract background for a hero section.",
+      "imageUrl": "https://images.unsplash.com/photo-1764386240887-a97595e90987?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxhYnN0cmFjdCUyMGNhbG18ZW58MHx8fHwxNzcxODQwNTU2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract calm"
+    },
+    {
+      "id": "feature-image-1",
+      "description": "A feature image.",
+      "imageUrl": "https://images.unsplash.com/photo-1510906594845-bc082582c8cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx0ZWNobm9sb2d5JTIwYWJzdHJhY3R8ZW58MHx8fHwxNzcxNzk5ODQ0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "technology abstract"
+    },
+    {
+      "id": "feature-image-2",
+      "description": "Another feature image.",
+      "imageUrl": "https://images.unsplash.com/photo-1662117940162-b666fea153cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjcmVhdGl2ZSUyMHdvcmtzcGFjZXxlbnwwfHx8fDE3NzE3NzU3NTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "creative workspace"
+    }
+  ]
 }
