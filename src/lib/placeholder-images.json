@@ -17,6 +17,12 @@
       "description": "Another feature image.",
       "imageUrl": "https://images.unsplash.com/photo-1662117940162-b666fea153cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjcmVhdGl2ZSUyMHdvcmtzcGFjZXxlbnwwfHx8fDE3NzE3NzU3NTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "creative workspace"
+    },
+    {
+      "id": "background-image",
+      "description": "A general background image.",
+      "imageUrl": "https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxiYWNrZ3JvdW5kJTIwYWJzdHJhY3R8ZW58MHx8fHwxNzcxODQwODQ3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "background abstract"
     }
   ]
 }
