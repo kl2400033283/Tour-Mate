@@ -1,22 +1,15 @@
-import { BuilderProvider } from '@/components/builder/builder-provider';
-import { BuilderSidebar } from '@/components/builder/sidebar';
-import { BuilderCanvas } from '@/components/builder/canvas';
-import { BuilderToolbar } from '@/components/builder/toolbar';
-import { PageHeader } from '@/components/builder/page-header';
 
-export default function GenesisCanvasPage() {
+export default function Page() {
   return (
-    <BuilderProvider>
-      <div className="flex h-screen w-full flex-col bg-background font-body text-foreground">
-        <PageHeader />
-        <div className="flex flex-1 overflow-hidden">
-          <BuilderSidebar />
-          <main className="flex flex-1 flex-col overflow-hidden">
-            <BuilderToolbar />
-            <BuilderCanvas />
-          </main>
-        </div>
+    <main className="flex min-h-screen flex-col items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+          Your Blank Canvas
+        </h1>
+        <p className="mt-4 text-muted-foreground md:text-xl">
+          Start creating your masterpiece.
+        </p>
       </div>
-    </BuilderProvider>
+    </main>
   );
 }
