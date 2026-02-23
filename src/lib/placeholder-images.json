@@ -20,9 +20,9 @@
     },
     {
       "id": "background-image",
-      "description": "A general background image.",
-      "imageUrl": "https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxiYWNrZ3JvdW5kJTIwYWJzdHJhY3R8ZW58MHx8fHwxNzcxODQwODQ3fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "background abstract"
+      "description": "A collage of famous landmarks in India.",
+      "imageUrl": "https://storage.googleapis.com/project-spark-b1c94.appspot.com/static/1f29c669-e700-4b36-9b59-71511a84f378",
+      "imageHint": "India travel"
     }
   ]
 }
