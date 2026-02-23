@@ -1,23 +1,19 @@
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function Page() {
-  const backgroundImage = PlaceHolderImages.find(
-    p => p.id === 'background-image'
-  );
+  const imageUrl =
+    'https://storage.googleapis.com/project-spark-b1c94.appspot.com/static/1f29c669-e700-4b36-9b59-71511a84f378';
 
   return (
     <main className="relative h-screen w-screen">
-      {backgroundImage && (
-        <Image
-          src={backgroundImage.imageUrl}
-          alt={backgroundImage.description}
-          fill
-          className="object-cover"
-          data-ai-hint={backgroundImage.imageHint}
-          priority
-        />
-      )}
+      <Image
+        src={imageUrl}
+        alt="A collage of famous landmarks in India."
+        fill
+        className="object-cover"
+        data-ai-hint="India travel"
+        priority
+      />
     </main>
   );
 }
