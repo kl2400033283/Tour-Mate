@@ -67,11 +67,11 @@ export default function CityPage({ params }) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
         
-        <header className="absolute top-0 left-0 right-0 z-20 p-4 sm:p-6">
+        <header className="absolute top-0 left-0 right-0 z-20 p-4">
           <div className="container mx-auto flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <MapPin className="h-7 w-7" />
-              <span className="text-2xl font-bold tracking-tight">TourMate</span>
+              <MapPin className="h-6 w-6" />
+              <span className="text-xl font-bold tracking-tight">TourMate</span>
             </Link>
             <nav className="flex items-center gap-2">
               <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">

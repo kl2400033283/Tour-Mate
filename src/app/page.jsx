@@ -27,11 +27,11 @@ export default function Page() {
       />
       <div className="absolute inset-0 bg-black/50" />
       <div className="relative z-10 flex h-full flex-col">
-        <header className="p-4 sm:p-6">
+        <header className="p-4">
           <div className="container mx-auto flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3">
-              <MapPin className="h-8 w-8 text-white" />
-              <span className="text-2xl font-bold tracking-tight">
+            <Link href="/" className="flex items-center gap-2">
+              <MapPin className="h-6 w-6 text-white" />
+              <span className="text-xl font-bold tracking-tight">
                 TourMate
               </span>
             </Link>
@@ -59,9 +59,9 @@ export default function Page() {
                 </SheetTrigger>
                 <SheetContent side="right">
                   <nav className="flex flex-col gap-4 pt-8">
-                     <Link href="/" className="flex items-center gap-3 mb-4">
-                      <MapPin className="h-8 w-8 text-primary" />
-                      <span className="text-2xl font-bold tracking-tight">
+                     <Link href="/" className="flex items-center gap-2 mb-4">
+                      <MapPin className="h-6 w-6 text-primary" />
+                      <span className="text-xl font-bold tracking-tight">
                         TourMate
                       </span>
                     </Link>

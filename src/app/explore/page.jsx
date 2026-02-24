@@ -39,11 +39,11 @@ export default function ExplorePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-        <header className="absolute top-0 z-50 w-full p-4 sm:p-6">
-            <div className="container mx-auto flex h-16 items-center justify-between">
-              <Link href="/" className="flex items-center gap-3">
-                <MapPin className="h-8 w-8 text-white" />
-                <span className="text-2xl font-bold tracking-tight text-white">TourMate</span>
+        <header className="absolute top-0 z-50 w-full p-4">
+            <div className="container mx-auto flex items-center justify-between">
+              <Link href="/" className="flex items-center gap-2">
+                <MapPin className="h-6 w-6 text-white" />
+                <span className="text-xl font-bold tracking-tight text-white">TourMate</span>
               </Link>
     
               <nav className="hidden items-center gap-2 sm:flex">
@@ -65,9 +65,9 @@ export default function ExplorePage() {
                     </SheetTrigger>
                     <SheetContent side="right">
                       <nav className="flex flex-col gap-4 pt-8">
-                         <Link href="/" className="flex items-center gap-3 mb-4">
-                          <MapPin className="h-8 w-8 text-primary" />
-                          <span className="text-2xl font-bold tracking-tight">
+                         <Link href="/" className="flex items-center gap-2 mb-4">
+                          <MapPin className="h-6 w-6 text-primary" />
+                          <span className="text-xl font-bold tracking-tight">
                             TourMate
                           </span>
                         </Link>
