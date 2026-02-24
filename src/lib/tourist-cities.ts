@@ -17,6 +17,13 @@ export const citiesByState: Record<string, City[]> = {
   'arunachal-pradesh': [
     { name: 'Tawang', slug: 'tawang', image: 'https://picsum.photos/seed/tawang/400/300', hint: 'tawang monastery' },
     { name: 'Ziro', slug: 'ziro', image: 'https://picsum.photos/seed/ziro/400/300', hint: 'ziro valley' },
+    { name: 'Itanagar', slug: 'itanagar', image: 'https://picsum.photos/seed/itanagar/400/300', hint: 'itanagar city' },
+    { name: 'Bomdila', slug: 'bomdila', image: 'https://picsum.photos/seed/bomdila/400/300', hint: 'bomdila monastery' },
+    { name: 'Mechuka', slug: 'mechuka', image: 'https://picsum.photos/seed/mechuka/400/300', hint: 'mechuka valley' },
+    { name: 'Roing', slug: 'roing', image: 'https://picsum.photos/seed/roing/400/300', hint: 'roing valley' },
+    { name: 'Dirang', slug: 'dirang', image: 'https://picsum.photos/seed/dirang/400/300', hint: 'dirang valley' },
+    { name: 'Pasighat', slug: 'pasighat', image: 'https://picsum.photos/seed/pasighat/400/300', hint: 'pasighat town' },
+    { name: 'Along (Aalo)', slug: 'along-aalo', image: 'https://picsum.photos/seed/along-aalo/400/300', hint: 'along aalo town' },
   ],
   'assam': [
     { name: 'Guwahati', slug: 'guwahati', image: 'https://picsum.photos/seed/guwahati/400/300', hint: 'guwahati temple' },
