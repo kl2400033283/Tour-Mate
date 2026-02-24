@@ -138,6 +138,10 @@
           "format": "email",
           "description": "The user's email address."
         },
+        "phoneNumber": {
+          "type": "string",
+          "description": "The user's phone number."
+        },
         "role": {
           "type": "string",
           "description": "The user's role, which determines their permissions and access level.",
@@ -154,7 +158,8 @@
         "email",
         "role",
         "firstName",
-        "lastName"
+        "lastName",
+        "phoneNumber"
       ]
     }
   },

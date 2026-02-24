@@ -23,6 +23,7 @@ const signupSchema = z.object({
   lastName: z.string().min(2, { message: 'Last name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Invalid email address.' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  phoneNumber: z.string().min(10, { message: 'Phone number must be at least 10 digits.' }),
 });
 
 
@@ -41,6 +42,7 @@ export default function SignupPage() {
         lastName: '',
         email: '',
         password: '',
+        phoneNumber: '',
     },
   });
 
@@ -128,6 +130,19 @@ export default function SignupPage() {
                         <Label htmlFor="email" className="text-white/90">Email</Label>
                         <FormControl>
                             <Input id="email" type="email" placeholder="m@example.com" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="phoneNumber"
+                    render={({ field }) => (
+                    <FormItem>
+                        <Label htmlFor="phone-number" className="text-white/90">Phone Number</Label>
+                        <FormControl>
+                            <Input id="phone-number" type="tel" placeholder="123-456-7890" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
                         </FormControl>
                         <FormMessage />
                     </FormItem>

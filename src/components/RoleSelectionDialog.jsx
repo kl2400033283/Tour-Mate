@@ -50,6 +50,7 @@ export function RoleSelectionDialog({ open, onOpenChange, signupData }) {
       email: user.email,
       firstName: signupData.firstName,
       lastName: signupData.lastName,
+      phoneNumber: signupData.phoneNumber,
       role: selectedRole,
     };
 
