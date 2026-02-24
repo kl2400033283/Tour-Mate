@@ -11,6 +11,8 @@ import {
 import {
   Card,
   CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -84,23 +86,34 @@ export default function ExplorePage() {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {allCities.map((city) => (
-            <Link href={`/explore/${city.slug}`} key={`${city.stateSlug}-${city.slug}`}>
-              <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
-                <CardContent className="p-0">
-                   <Image
-                    src={city.image}
-                    alt={`A scenic view of ${city.name}`}
-                    width={400}
-                    height={300}
-                    className="h-48 w-full object-cover"
-                    data-ai-hint={city.hint}
-                  />
-                </CardContent>
-                <CardHeader>
-                  <CardTitle className="text-center font-semibold text-lg">{city.name}</CardTitle>
-                </CardHeader>
-              </Card>
-            </Link>
+            <Card key={`${city.stateSlug}-${city.slug}`} className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl flex flex-col">
+              <CardContent className="p-0">
+                  <Image
+                  src={city.image}
+                  alt={`A scenic view of ${city.name}`}
+                  width={400}
+                  height={300}
+                  className="h-48 w-full object-cover"
+                  data-ai-hint={city.hint}
+                />
+              </CardContent>
+              <CardHeader>
+                <CardTitle className="font-bold text-xl">{city.name}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-grow space-y-2">
+                <div className="text-sm text-muted-foreground flex items-center">
+                    <span>{city.attractions} Attractions</span>
+                    <span className="mx-2 font-bold">·</span>
+                    <span>{city.homestays} Homestays</span>
+                </div>
+                <CardDescription>{city.knownFor}</CardDescription>
+              </CardContent>
+              <CardFooter>
+                <Button asChild variant="outline" className="w-full">
+                    <Link href={`/explore/${city.slug}`}>View City</Link>
+                </Button>
+              </CardFooter>
+            </Card>
           ))}
         </div>
       </main>
