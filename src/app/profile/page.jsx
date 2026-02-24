@@ -4,7 +4,7 @@ import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
-import { Loader2, ShieldAlert, MapPin, LogOut, LayoutGrid, Bed, UserCheck, User, Menu } from 'lucide-react';
+import { Loader2, ShieldAlert, MapPin, LogOut, LayoutGrid, Bed, UserCheck, Menu, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -24,7 +24,6 @@ function SidebarNav({ isMobile = false }) {
         { href: '/profile', icon: LayoutGrid, label: 'Dashboard' },
         { href: '#', icon: Bed, label: 'My Stays' },
         { href: '#', icon: UserCheck, label: 'My Guide Bookings' },
-        { href: '/profile', icon: User, label: 'Profile' },
     ];
 
     // For now, we'll consider '/profile' as the dashboard path
@@ -33,13 +32,24 @@ function SidebarNav({ isMobile = false }) {
     return (
         <>
             <nav className={cn("flex flex-col gap-2", isMobile ? "text-lg" : "text-sm font-medium")}>
+                <Button
+                    variant="ghost"
+                    onClick={() => router.back()}
+                    className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary justify-start",
+                        isMobile ? "text-lg" : "text-sm font-medium"
+                    )}
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back
+                </Button>
                 {navLinks.map((link) => (
                     <Link
                         key={link.label}
                         href={link.href}
                         className={cn(
                             "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                            pathname === link.href && link.label === 'Dashboard' && "text-primary bg-muted"
+                            pathname === link.href && "text-primary bg-muted"
                         )}
                     >
                         <link.icon className="h-4 w-4" />
