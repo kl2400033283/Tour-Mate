@@ -45,11 +45,16 @@ export function RoleSelectionDialog({ open, onOpenChange, signupData }) {
 
     setIsLoading(true);
     const userDocRef = doc(firestore, 'users', user.uid);
+    
+    const nameParts = signupData.fullName.split(' ').filter(Boolean);
+    const firstName = nameParts.shift() || '';
+    const lastName = nameParts.join(' ') || '';
+
     const profileData = {
       uid: user.uid,
       email: user.email,
-      firstName: signupData.firstName,
-      lastName: signupData.lastName,
+      firstName: firstName,
+      lastName: lastName,
       phoneNumber: `${signupData.countryCode}${signupData.phoneNumber}`,
       role: selectedRole,
     };

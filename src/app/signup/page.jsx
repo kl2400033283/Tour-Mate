@@ -21,8 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { countryCodes } from '@/lib/country-codes';
 
 const signupSchema = z.object({
-  firstName: z.string().min(2, { message: 'First name must be at least 2 characters.' }),
-  lastName: z.string().min(2, { message: 'Last name must be at least 2 characters.' }),
+  fullName: z.string().min(3, { message: 'Full name must be at least 3 characters.' }).refine(name => name.trim().includes(' '), { message: 'Please enter your full name (first and last name).' }),
   email: z.string().email({ message: 'Invalid email address.' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
   confirmPassword: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
@@ -47,8 +46,7 @@ export default function SignupPage() {
   const form = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-        firstName: '',
-        lastName: '',
+        fullName: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -105,34 +103,19 @@ export default function SignupPage() {
             <CardContent>
             <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-                <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                        control={form.control}
-                        name="firstName"
-                        render={({ field }) => (
-                        <FormItem>
-                            <Label htmlFor="first-name" className="text-white/90">First name</Label>
-                            <FormControl>
-                                <Input id="first-name" type="text" placeholder="Max" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary"/>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="lastName"
-                        render={({ field }) => (
-                        <FormItem>
-                            <Label htmlFor="last-name" className="text-white/90">Last name</Label>
-                            <FormControl>
-                                <Input id="last-name" type="text" placeholder="Robinson" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                </div>
+                <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                    <FormItem>
+                        <Label htmlFor="full-name" className="text-white/90">Full name</Label>
+                        <FormControl>
+                            <Input id="full-name" type="text" placeholder="Max Robinson" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary"/>
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="email"
