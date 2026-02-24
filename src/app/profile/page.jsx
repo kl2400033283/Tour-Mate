@@ -32,17 +32,6 @@ function SidebarNav({ isMobile = false }) {
     return (
         <>
             <nav className={cn("flex flex-col gap-2", isMobile ? "text-lg" : "text-sm font-medium")}>
-                <Button
-                    variant="ghost"
-                    onClick={() => router.back()}
-                    className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary justify-start",
-                        isMobile ? "text-lg" : "text-sm font-medium"
-                    )}
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back
-                </Button>
                 {navLinks.map((link) => (
                     <Link
                         key={link.label}
@@ -136,7 +125,6 @@ export default function ProfilePage() {
                     </div>
                     <div className="flex-1 overflow-auto py-4">
                         <div className="relative px-4">
-                             <div className="absolute left-0 top-[9px] h-8 w-1 bg-primary rounded-r-md" />
                             <SidebarNav />
                         </div>
                     </div>
@@ -164,17 +152,23 @@ export default function ProfilePage() {
                             </div>
                             <div className="flex-1 overflow-auto py-4">
                                 <div className="relative px-4">
-                                    <div className="absolute left-0 top-[9px] h-8 w-1 bg-primary rounded-r-md" />
                                      <SidebarNav isMobile={true}/>
                                 </div>
                             </div>
                         </SheetContent>
                     </Sheet>
+                    <Button
+                        variant="outline"
+                        onClick={() => router.back()}
+                        className="flex items-center gap-2"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back
+                    </Button>
                     <div className="w-full flex-1" />
                     <Button onClick={handleSignOut} variant="secondary">
                         Logout
                     </Button>
-                    <Button variant="secondary" className="md:hidden">Menu</Button>
                 </header>
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                     <div className="flex flex-col">
