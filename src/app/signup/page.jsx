@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Globe, ArrowLeft } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { initiateEmailSignUp } from '@/firebase/non-blocking-login';
 import { useForm } from 'react-hook-form';
@@ -42,92 +42,106 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-muted/40 p-4">
-        <Button asChild variant="ghost" size="icon" className="absolute top-4 left-4">
-            <Link href="/">
-              <ArrowLeft className="h-5 w-5" />
-              <span className="sr-only">Back to Home</span>
-            </Link>
-        </Button>
-      <Card className="mx-auto max-w-sm">
-        <CardHeader className="text-center">
-            <Globe className="mx-auto h-12 w-12 text-primary" />
-            <CardTitle className="mt-4 text-2xl font-bold">Join TourMate</CardTitle>
-            <CardDescription>Create an account to start your journey.</CardDescription>
-        </CardHeader>
-        <CardContent>
-            <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-            <div className="grid grid-cols-2 gap-4">
-                <FormField
-                    control={form.control}
-                    name="firstName"
-                    render={({ field }) => (
-                    <FormItem>
-                        <Label htmlFor="first-name">First name</Label>
-                        <FormControl>
-                            <Input id="first-name" placeholder="Max" {...field}/>
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="lastName"
-                    render={({ field }) => (
-                    <FormItem>
-                        <Label htmlFor="last-name">Last name</Label>
-                        <FormControl>
-                            <Input id="last-name" placeholder="Robinson" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
+     <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
+        <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto w-full max-w-sm space-y-6">
+                <div className="text-center">
+                    <Link href="/" className="inline-block mb-4">
+                        <Globe className="h-12 w-12 mx-auto text-primary" />
+                    </Link>
+                    <h1 className="text-3xl font-bold">Create an account</h1>
+                    <p className="text-balance text-muted-foreground">
+                        Enter your information to get started
+                    </p>
+                </div>
+                <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="firstName"
+                            render={({ field }) => (
+                            <FormItem>
+                                <Label htmlFor="first-name">First name</Label>
+                                <FormControl>
+                                    <Input id="first-name" placeholder="Max" {...field}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="lastName"
+                            render={({ field }) => (
+                            <FormItem>
+                                <Label htmlFor="last-name">Last name</Label>
+                                <FormControl>
+                                    <Input id="last-name" placeholder="Robinson" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                    </div>
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                        <FormItem>
+                            <Label htmlFor="email">Email</Label>
+                            <FormControl>
+                                <Input id="email" type="email" placeholder="m@example.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                        <FormItem>
+                            <Label htmlFor="password">Password</Label>
+                            <FormControl>
+                                <Input id="password" type="password" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <Button type="submit" className="w-full">
+                    Create an account
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                    Sign up with Google
+                    </Button>
+                </form>
+                </Form>
+                <div className="mt-4 text-center text-sm">
+                    Already have an account?{' '}
+                    <Link href="/login" className="underline">
+                    Login
+                    </Link>
+                </div>
             </div>
-            <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                <FormItem>
-                    <Label htmlFor="email">Email</Label>
-                    <FormControl>
-                        <Input id="email" type="email" placeholder="m@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-                )}
+        </div>
+        <div className="hidden bg-muted lg:block relative">
+            <Image
+                src="https://images.unsplash.com/photo-1605206754383-024a2f8d5e97?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="Beautiful Indian temple"
+                fill
+                className="object-cover"
+                data-ai-hint="India temple"
             />
-            <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                <FormItem>
-                    <Label htmlFor="password">Password</Label>
-                    <FormControl>
-                        <Input id="password" type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-                )}
-            />
-            <Button type="submit" className="w-full">
-              Create an account
-            </Button>
-            <Button variant="outline" className="w-full">
-              Sign up with Google
-            </Button>
-          </form>
-          </Form>
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{' '}
-            <Link href="/login" className="underline">
-              Login
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="absolute bottom-10 left-10 text-white p-8">
+                <blockquote className="space-y-2">
+                    <p className="text-2xl font-semibold">&ldquo;To travel is to discover that everyone is wrong about other countries.&rdquo;</p>
+                    <footer className="text-lg">- Aldous Huxley</footer>
+                </blockquote>
+            </div>
+      </div>
     </div>
   );
 }

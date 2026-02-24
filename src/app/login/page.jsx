@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Globe, ArrowLeft } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
 import { useForm } from 'react-hook-form';
@@ -32,25 +32,22 @@ export default function LoginPage() {
   const onSubmit = (data) => {
     if (auth) {
       initiateEmailSignIn(auth, data.email, data.password);
-      // It will redirect on successful login via onAuthStateChanged in a protected route or provider logic
     }
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-muted/40 p-4">
-       <Button asChild variant="ghost" size="icon" className="absolute top-4 left-4">
-            <Link href="/">
-              <ArrowLeft className="h-5 w-5" />
-              <span className="sr-only">Back to Home</span>
-            </Link>
-        </Button>
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <Globe className="mx-auto h-12 w-12 text-primary" />
-          <CardTitle className="mt-4 text-2xl font-bold">Login to TourMate</CardTitle>
-          <CardDescription>Enter your credentials to access your account.</CardDescription>
-        </CardHeader>
-        <CardContent>
+    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
+      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-sm space-y-6">
+           <div className="text-center">
+             <Link href="/" className="inline-block mb-4">
+                <Globe className="h-12 w-12 mx-auto text-primary" />
+             </Link>
+            <h1 className="text-3xl font-bold">Login</h1>
+            <p className="text-balance text-muted-foreground">
+              Enter your email below to login to your account
+            </p>
+          </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -98,8 +95,24 @@ export default function LoginPage() {
               Sign up
             </Link>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+       <div className="hidden bg-muted lg:block relative">
+        <Image
+          src="https://images.unsplash.com/photo-1532372576292-a4c20459df24?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Beautiful Indian landmark"
+          fill
+          className="object-cover"
+          data-ai-hint="India travel"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+         <div className="absolute bottom-10 left-10 text-white p-8">
+            <blockquote className="space-y-2">
+                <p className="text-2xl font-semibold">&ldquo;The world is a book and those who do not travel read only one page.&rdquo;</p>
+                <footer className="text-lg">- Saint Augustine</footer>
+            </blockquote>
+         </div>
+      </div>
     </div>
   );
 }
