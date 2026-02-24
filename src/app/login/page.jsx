@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,18 +36,18 @@ export default function LoginPage() {
     }
   };
 
+  const imageUrl = "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
   return (
     <div className="relative min-h-screen w-full">
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
+       <Image
+        src={imageUrl}
+        alt="Indian Tourism Background"
+        fill
         className="absolute top-0 left-0 w-full h-full object-cover -z-10"
-      >
-        <source src="https://videos.pexels.com/video-files/3209828/3209828-hd_1920_1080_25fps.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+        data-ai-hint="India travel"
+        priority
+      />
       <div className="absolute inset-0 bg-black/60 -z-10" />
 
       <div className="min-h-screen w-full flex items-center justify-center p-4">
