@@ -2,141 +2,146 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Globe, ArrowLeft, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { citiesByState } from '@/lib/tourist-cities.js';
+import { notFound } from 'next/navigation';
+import { MapPin } from 'lucide-react';
+
+const getCityData = (slug) => {
+  for (const state in citiesByState) {
+    const city = citiesByState[state].find(c => c.slug === slug);
+    if (city) {
+      return {
+        ...city,
+        stateName: state.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+      };
+    }
+  }
+  return null;
+};
 
 function AttractionCard({ attraction }) {
   return (
-    <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl flex flex-col">
-      <Image
-        src={attraction.image || 'https://picsum.photos/seed/attraction/400/250'}
-        alt={attraction.name}
-        width={400}
-        height={250}
-        className="h-48 w-full object-cover"
-        data-ai-hint={attraction.hint}
-      />
-      <CardHeader>
-        <CardTitle className="font-bold text-xl">{attraction.name}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-muted-foreground">{attraction.description}</p>
-      </CardContent>
-    </Card>
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+      <div className="relative h-48 w-full">
+        <Image
+          src={attraction.image || 'https://picsum.photos/seed/attraction/400/250'}
+          alt={attraction.name}
+          fill
+          className="object-cover"
+          data-ai-hint={attraction.hint}
+        />
+      </div>
+      <div className="p-6 text-center">
+        <h3 className="text-xl font-bold mb-2">{attraction.name}</h3>
+        <p className="text-muted-foreground text-sm">{attraction.description}</p>
+      </div>
+    </div>
   );
 }
 
-
 export default function CityPage({ params }) {
-  const citySlug = params.city;
+  const city = getCityData(params.city);
 
-  let stateName = '';
-  let attractionsForState = [];
-  let currentCityName = '';
-  let stateForCity;
-
-  // Find which state the city belongs to
-  for (const [slug, cities] of Object.entries(citiesByState)) {
-    if (cities.some(c => c.slug === citySlug)) {
-      stateForCity = slug;
-      break;
-    }
+  if (!city) {
+    notFound();
   }
 
-  if (stateForCity) {
-    const citiesInState = citiesByState[stateForCity];
-    stateName = stateForCity.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    
-    const currentCity = citiesInState.find(c => c.slug === citySlug);
-    currentCityName = currentCity ? currentCity.name : citySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    
-    // Aggregate all attractions from all cities in that state.
-    attractionsForState = citiesInState.flatMap(city => city.attractionDetails || []);
-  } else {
-    // Fallback if city or state not found
-    currentCityName = citySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    stateName = 'this region';
-  }
+  const { name, stateName, description, image, hint, attractionDetails = [] } = city;
+  
+  const generalAttractionDescription = attractionDetails.length > 0 
+    ? "A peaceful riverside ghat known for sunrise views, spiritual gatherings, and cultural performances."
+    : "";
+
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-16 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button asChild variant="ghost" size="icon">
-              <Link href="/explore">
-                <ArrowLeft className="h-5 w-5" />
-                <span className="sr-only">Back to Explore</span>
-              </Link>
-            </Button>
-            <Link href="/" className="flex items-center gap-3">
-              <Globe className="h-8 w-8 text-primary" />
+    <div className="bg-white text-gray-800">
+      <div className="relative h-[70vh] min-h-[500px] text-white">
+        <Image
+          src={image || 'https://picsum.photos/seed/city-hero/1920/1080'}
+          alt={`Hero image for ${name}`}
+          fill
+          className="object-cover"
+          data-ai-hint={hint}
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+        
+        <header className="absolute top-0 left-0 right-0 z-20 p-4 sm:p-6">
+          <div className="container mx-auto flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2">
+              <MapPin className="h-7 w-7" />
               <span className="text-2xl font-bold tracking-tight">TourMate</span>
             </Link>
+            <nav className="flex items-center gap-2">
+              <Button asChild variant="outline" className="text-white border-white/50 hover:bg-white/10 hover:text-white rounded-full px-5">
+                <Link href="/">Home</Link>
+              </Button>
+              <Button asChild variant="outline" className="text-white border-white/50 hover:bg-white/10 hover:text-white rounded-full px-5">
+                <Link href="/login">Login</Link>
+              </Button>
+            </nav>
           </div>
-          <nav className="hidden items-center gap-2 sm:flex">
-            <Button asChild variant="ghost">
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/signup">Sign Up</Link>
-            </Button>
-          </nav>
-           <div className="sm:hidden">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right">
-                  <nav className="flex flex-col gap-4 pt-8">
-                     <Link href="/" className="flex items-center gap-3 mb-4">
-                      <Globe className="h-8 w-8 text-primary" />
-                      <span className="text-2xl font-bold tracking-tight">
-                        TourMate
-                      </span>
-                    </Link>
-                    <Link href="/login" className="text-lg">Login</Link>
-                    <Link href="/signup" className="text-lg">Sign Up</Link>
-                    <Link href="/explore" className="text-lg">Destinations</Link>
-                  </nav>
-                </SheetContent>
-              </Sheet>
+        </header>
+
+        <div className="relative z-10 flex h-full flex-col items-center justify-center text-center px-4">
+          <div className="space-y-3">
+            <h1 className="font-headline text-6xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl">
+              {name}
+            </h1>
+            <p className="text-lg text-white/90">{stateName}</p>
+            <p className="mx-auto max-w-2xl text-base text-white/80 sm:text-lg">
+              {description || `Explore spiritual landmarks, book comfortable homestays, and experience local traditions in ${name}`}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <main className="container mx-auto py-12 md:py-20 px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 items-center mb-12">
+            <div className="md:col-span-1">
+                <h2 className="text-3xl font-headline font-bold mb-1">
+                    Attractions in {name}
+                </h2>
+                <p className="text-muted-foreground">
+                    Explore sacred and historic landmarks
+                </p>
+            </div>
+            <div className="md:col-span-2 text-left md:text-right mt-4 md:mt-0">
+                <p className="text-muted-foreground">{generalAttractionDescription}</p>
             </div>
         </div>
-      </header>
-
-      <main className="container mx-auto py-8">
-        <h1 className="text-4xl font-headline font-bold mb-2">
-          Attractions in {stateName}
-        </h1>
-        <p className="text-muted-foreground mb-8">
-          Showing all attractions for the state, based on your selection of {currentCityName}.
-        </p>
         
-        {attractionsForState.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {attractionsForState.map((attraction, index) => (
+        {attractionDetails.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {attractionDetails.map((attraction, index) => (
               <AttractionCard key={index} attraction={attraction} />
             ))}
           </div>
         ) : (
-          <div className="text-center bg-card border rounded-lg p-12 mt-8">
+          <div className="text-center bg-gray-50 border rounded-lg p-12 mt-8">
             <h2 className="text-2xl font-semibold mb-2">Attractions Coming Soon!</h2>
             <p className="text-muted-foreground">
-              We are currently curating the best attractions for {stateName}. Please check back later.
+              We are currently curating the best attractions for {name}. Please check back later.
             </p>
-            <Button asChild className="mt-6">
-              <Link href="/explore">Explore Other Cities</Link>
-            </Button>
           </div>
         )}
+
+        <div className="mt-20 text-center space-y-4 sm:space-y-0 sm:space-x-4">
+           <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-10 py-6 rounded-lg font-semibold">
+              <Link href="#">Book Homestay</Link>
+           </Button>
+           <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-10 py-6 rounded-lg font-semibold">
+             <Link href="#">Hire Local Guide</Link>
+           </Button>
+        </div>
       </main>
+      
+      <footer className="border-t mt-16">
+        <div className="container mx-auto text-center py-6 text-muted-foreground text-sm">
+            <p>&copy; {new Date().getFullYear()} TourMate. All Rights Reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

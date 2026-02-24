@@ -129,7 +129,21 @@ export const citiesByState = {
   ],
   'uttar-pradesh': [
     { name: 'Agra', slug: 'agra', image: 'https://picsum.photos/seed/agra/400/300', hint: 'agra taj mahal', attractions: 15, homestays: 100, knownFor: 'Home to the iconic Taj Mahal, a symbol of eternal love.' },
-    { name: 'Varanasi', slug: 'varanasi', image: 'https://picsum.photos/seed/varanasi/400/300', hint: 'varanasi ganges', attractions: 30, homestays: 120, knownFor: 'A spiritual city on the banks of the Ganges, known for its ghats and temples.' },
+    { 
+      name: 'Varanasi', 
+      slug: 'varanasi', 
+      image: 'https://images.unsplash.com/photo-1561361522-069491ea11a4?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 
+      hint: 'varanasi ganges', 
+      attractions: 30, 
+      homestays: 120, 
+      knownFor: 'A spiritual city on the banks of the Ganges, known for its ghats and temples.',
+      description: 'Explore spiritual landmarks, book comfortable homestays, and experience local traditions in Varanasi.',
+      attractionDetails: [
+        { name: 'Shri Kashi Vishwanath Temple', description: 'One of the most sacred Hindu temples dedicated to Lord Shiva, attracting millions of devotees every year.', image: 'https://picsum.photos/seed/kashi-vishwanath/400/250', hint: 'kashi vishwanath temple' },
+        { name: 'Dashashwamedh Ghat', description: 'The main and most vibrant ghat of Varanasi, famous for the grand evening Ganga Aarti ceremony.', image: 'https://picsum.photos/seed/dashashwamedh-ghat/400/250', hint: 'varanasi ghat' },
+        { name: 'Assi Ghat', description: 'A peaceful riverside ghat known for sunrise views, spiritual gatherings, and cultural performances.', image: 'https://picsum.photos/seed/assi-ghat/400/250', hint: 'varanasi sunrise' },
+      ]
+    },
   ],
   'uttarakhand': [
     { name: 'Rishikesh', slug: 'rishikesh', image: 'https://picsum.photos/seed/rishikesh/400/300', hint: 'rishikesh ganges', attractions: 25, homestays: 90, knownFor: 'The "Yoga Capital of the World", situated on the banks of the Ganges.' },
