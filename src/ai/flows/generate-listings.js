@@ -14,7 +14,6 @@ const GenerateListingsInputSchema = z.object({
   city: z.string().describe('The city for which to generate listings.'),
   listingType: z.enum(['homestays', 'guides']).describe('The type of listings to generate.'),
 });
-export type GenerateListingsInput = z.infer<typeof GenerateListingsInputSchema>;
 
 const HomestaySchema = z.object({
     name: z.string().describe('The name of the homestay.'),
@@ -48,9 +47,6 @@ const GuideWithIdSchema = GuideSchema.extend({
 const GenerateListingsFlowOutputSchema = z.object({
   listings: z.array(z.union([HomestayWithIdSchema, GuideWithIdSchema]))
 });
-
-export type GenerateListingsOutput = z.infer<typeof GenerateListingsFlowOutputSchema>;
-
 
 export async function generateListings(input) {
   return generateListingsFlow(input);
