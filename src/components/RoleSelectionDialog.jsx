@@ -95,7 +95,7 @@ export function RoleSelectionDialog({ open, onOpenChange, signupData }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={open ? () => {} : onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Choose Your Role</DialogTitle>
