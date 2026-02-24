@@ -111,7 +111,7 @@ export default function ExplorePage() {
                 <CardDescription>{city.knownFor}</CardDescription>
               </CardContent>
               <CardFooter>
-                <Button asChild variant="outline" className="w-full">
+                <Button asChild className="w-full">
                     <Link href={`/explore/${city.slug}`}>View City</Link>
                 </Button>
               </CardFooter>
