@@ -54,7 +54,7 @@ function GuideCard({ guide, user }) {
           description: 'Your homestay and local guide are booked successfully.',
           duration: 10000,
         });
-        router.push('/tourist-dashboard');
+        router.push('/profile');
       } else {
         setIsDialogOpen(true);
       }
@@ -75,7 +75,7 @@ function GuideCard({ guide, user }) {
       description: "Your local guide is booked successfully.",
       duration: 10000,
     });
-    router.push('/tourist-dashboard');
+    router.push('/profile');
   };
 
   return (

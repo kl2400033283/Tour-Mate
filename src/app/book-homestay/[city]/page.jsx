@@ -53,7 +53,7 @@ function HomestayCard({ homestay, user }) {
           description: 'Your homestay and local guide are booked successfully.',
           duration: 10000,
         });
-        router.push('/tourist-dashboard');
+        router.push('/profile');
       } else {
         setIsDialogOpen(true);
       }
@@ -74,7 +74,7 @@ function HomestayCard({ homestay, user }) {
       description: "Your homestay is booked successfully.",
       duration: 10000,
     });
-    router.push('/tourist-dashboard');
+    router.push('/profile');
   };
 
   return (
