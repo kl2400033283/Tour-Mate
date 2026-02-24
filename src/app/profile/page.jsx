@@ -2,22 +2,16 @@
 
 import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 export default function ProfilePage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.push('/login');
-    }
-  }, [user, isUserLoading, router]);
 
   const handleSignOut = () => {
     const auth = getAuth();
@@ -26,11 +20,47 @@ export default function ProfilePage() {
     });
   };
 
-  if (isUserLoading || !user) {
+  if (isUserLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
+    );
+  }
+
+  if (!user) {
+    return (
+        <div className="flex flex-col min-h-screen bg-muted/20">
+            <header className="p-4 border-b bg-background">
+                <div className="container mx-auto flex items-center justify-between">
+                <Link href="/" className="flex items-center gap-2">
+                    <MapPin className="h-6 w-6 text-primary" />
+                    <span className="text-xl font-bold tracking-tight">
+                    TourMate
+                    </span>
+                </Link>
+                <Button asChild variant="outline">
+                    <Link href="/">Back to Home</Link>
+                </Button>
+                </div>
+            </header>
+            <main className="flex-grow container mx-auto p-4 md:p-8 flex items-center justify-center">
+                <Card className="max-w-md w-full text-center shadow-lg">
+                    <CardHeader>
+                        <div className="mx-auto bg-destructive/10 rounded-full p-3 w-fit">
+                            <ShieldAlert className="h-10 w-10 text-destructive"/>
+                        </div>
+                        <CardTitle className="text-2xl pt-4">Access Denied</CardTitle>
+                        <CardDescription>You must be logged in to view your profile.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Button asChild size="lg">
+                            <Link href="/login">Login Now</Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+            </main>
+        </div>
     );
   }
 
