@@ -80,7 +80,7 @@ export default function CityPage() {
         <header className="absolute top-0 left-0 right-0 z-20 p-4">
           <div className="container mx-auto flex items-center justify-between">
             <div className='flex items-center'>
-              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white mr-2" onClick={() => router.back()}>
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white mr-2" onClick={() => router.push('/explore')}>
                   <ArrowLeft className="h-6 w-6" />
                   <span className="sr-only">Back</span>
               </Button>
@@ -95,7 +95,11 @@ export default function CityPage() {
                 <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
                   <Link href="/profile">Profile</Link>
                 </Button>
-              ) : null}
+              ) : (
+                <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                  <Link href="/login">Login</Link>
+                </Button>
+              )}
               <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
                 <Link href="#">About Us</Link>
               </Button>
@@ -125,7 +129,9 @@ export default function CityPage() {
                     </Link>
                     {user ? (
                         <Link href="/profile" className="text-lg">Profile</Link>
-                    ) : null}
+                    ) : (
+                      <Link href="/login" className="text-lg">Login</Link>
+                    )}
                     <Link href="#" className="text-lg">About Us</Link>
                     <Link href="/explore" className="text-lg">Destinations</Link>
                     <Link href="#" className="text-lg">Contact</Link>
