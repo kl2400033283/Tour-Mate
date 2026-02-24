@@ -7,8 +7,8 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 
-export default function CityPage({ params }: { params: { city: string } }) {
-  const cityName = params.city.charAt(0).toUpperCase() + params.city.slice(1);
+export default function StatePage({ params }: { params: { city: string } }) {
+  const stateName = params.city.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -65,7 +65,7 @@ export default function CityPage({ params }: { params: { city: string } }) {
       </header>
       <main className="container mx-auto py-8 text-center">
         <h1 className="text-4xl font-headline font-bold mb-4">
-          Welcome to {cityName}
+          Welcome to {stateName}
         </h1>
         <p className="text-muted-foreground">
           Homestay listings and details are coming soon!
