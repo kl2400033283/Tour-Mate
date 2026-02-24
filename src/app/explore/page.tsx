@@ -25,6 +25,14 @@ export default function ExplorePage() {
     { name: 'Varanasi', slug: 'varanasi', image: 'https://picsum.photos/seed/varanasi/400/300', hint: 'varanasi ganges' },
     { name: 'Kolkata', slug: 'kolkata', image: 'https://picsum.photos/seed/kolkata/400/300', hint: 'kolkata bridge' },
     { name: 'Shimla', slug: 'shimla', image: 'https://picsum.photos/seed/shimla/400/300', hint: 'shimla himalayas' },
+    { name: 'Chennai', slug: 'chennai', image: 'https://picsum.photos/seed/chennai/400/300', hint: 'chennai temple' },
+    { name: 'Kochi', slug: 'kochi', image: 'https://picsum.photos/seed/kochi/400/300', hint: 'kochi backwaters' },
+    { name: 'Bengaluru', slug: 'bengaluru', image: 'https://picsum.photos/seed/bengaluru/400/300', hint: 'bengaluru tech' },
+    { name: 'Hyderabad', slug: 'hyderabad', image: 'https://picsum.photos/seed/hyderabad/400/300', hint: 'hyderabad charminar' },
+    { name: 'Udaipur', slug: 'udaipur', image: 'https://picsum.photos/seed/udaipur/400/300', hint: 'udaipur lake' },
+    { name: 'Jodhpur', slug: 'jodhpur', image: 'https://picsum.photos/seed/jodhpur/400/300', hint: 'jodhpur fort' },
+    { name: 'Rishikesh', slug: 'rishikesh', image: 'https://picsum.photos/seed/rishikesh/400/300', hint: 'rishikesh ganges' },
+    { name: 'Amritsar', slug: 'amritsar', image: 'https://picsum.photos/seed/amritsar/400/300', hint: 'amritsar temple' },
   ];
 
   return (
