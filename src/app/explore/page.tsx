@@ -84,7 +84,7 @@ export default function ExplorePage() {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {allCities.map((city) => (
-            <Link href={`/explore/${city.stateSlug}/${city.slug}`} key={`${city.stateSlug}-${city.slug}`}>
+            <Link href={`/explore/${city.slug}`} key={`${city.stateSlug}-${city.slug}`}>
               <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                 <CardContent className="p-0">
                    <Image
