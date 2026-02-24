@@ -2,6 +2,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Inter, Lora } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 const fontBody = Inter({
   subsets: ['latin'],
@@ -30,7 +31,9 @@ export default function RootLayout({
           fontHeadline.variable
         )}
       >
-        {children}
+        <FirebaseClientProvider>
+          {children}
+        </FirebaseClientProvider>
         <Toaster />
       </body>
     </html>
