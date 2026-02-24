@@ -15,7 +15,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images.js';
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -26,6 +26,8 @@ export default function LoginPage() {
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -37,9 +39,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!isUserLoading && user) {
-      router.push('/');
+      router.push(redirect || '/');
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isUserLoading, router, redirect]);
 
   const onSubmit = (data) => {
     if (auth) {
