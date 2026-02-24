@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -36,18 +36,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
-      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-sm space-y-6">
-           <div className="text-center">
-             <Link href="/" className="inline-block mb-4">
-                <Globe className="h-12 w-12 mx-auto text-primary" />
-             </Link>
-            <h1 className="text-3xl font-bold">Login</h1>
-            <p className="text-balance text-muted-foreground">
-              Enter your email below to login to your account
-            </p>
+    <div className="min-h-screen w-full flex items-center justify-center bg-muted/30 p-4">
+      <Card className="mx-auto max-w-sm w-full">
+        <CardHeader className="text-center space-y-4">
+          <Link href="/" className="inline-block">
+              <Globe className="h-12 w-12 mx-auto text-primary" />
+          </Link>
+          <div>
+            <CardTitle className="text-2xl font-bold">Login to TourMate</CardTitle>
+            <CardDescription>
+              Enter your credentials to access your account
+            </CardDescription>
           </div>
+        </CardHeader>
+        <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -89,30 +91,16 @@ export default function LoginPage() {
               </Button>
             </form>
           </Form>
-          <div className="mt-4 text-center text-sm">
+        </CardContent>
+        <CardFooter className="justify-center">
+          <div className="text-center text-sm">
             Don&apos;t have an account?{' '}
             <Link href="/signup" className="underline">
               Sign up
             </Link>
           </div>
-        </div>
-      </div>
-       <div className="hidden bg-muted lg:block relative">
-        <Image
-          src="https://images.unsplash.com/photo-1532372576292-a4c20459df24?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          alt="Beautiful Indian landmark"
-          fill
-          className="object-cover"
-          data-ai-hint="India travel"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-         <div className="absolute bottom-10 left-10 text-white p-8">
-            <blockquote className="space-y-2">
-                <p className="text-2xl font-semibold">&ldquo;The world is a book and those who do not travel read only one page.&rdquo;</p>
-                <footer className="text-lg">- Saint Augustine</footer>
-            </blockquote>
-         </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

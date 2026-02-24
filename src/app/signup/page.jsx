@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 
 const signupSchema = z.object({
   firstName: z.string().min(2, { message: 'First name must be at least 2 characters.' }),
@@ -42,56 +42,31 @@ export default function SignupPage() {
   };
 
   return (
-     <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
-        <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto w-full max-w-sm space-y-6">
-                <div className="text-center">
-                    <Link href="/" className="inline-block mb-4">
-                        <Globe className="h-12 w-12 mx-auto text-primary" />
-                    </Link>
-                    <h1 className="text-3xl font-bold">Create an account</h1>
-                    <p className="text-balance text-muted-foreground">
+     <div className="min-h-screen w-full flex items-center justify-center bg-muted/30 p-4">
+        <Card className="mx-auto max-w-sm w-full">
+            <CardHeader className="text-center space-y-4">
+                <Link href="/" className="inline-block">
+                    <Globe className="h-12 w-12 mx-auto text-primary" />
+                </Link>
+                <div>
+                    <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
+                    <CardDescription>
                         Enter your information to get started
-                    </p>
+                    </CardDescription>
                 </div>
-                <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <FormField
-                            control={form.control}
-                            name="firstName"
-                            render={({ field }) => (
-                            <FormItem>
-                                <Label htmlFor="first-name">First name</Label>
-                                <FormControl>
-                                    <Input id="first-name" placeholder="Max" {...field}/>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="lastName"
-                            render={({ field }) => (
-                            <FormItem>
-                                <Label htmlFor="last-name">Last name</Label>
-                                <FormControl>
-                                    <Input id="last-name" placeholder="Robinson" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                    </div>
+            </CardHeader>
+            <CardContent>
+            <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+                <div className="grid grid-cols-2 gap-4">
                     <FormField
                         control={form.control}
-                        name="email"
+                        name="firstName"
                         render={({ field }) => (
                         <FormItem>
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="first-name">First name</Label>
                             <FormControl>
-                                <Input id="email" type="email" placeholder="m@example.com" {...field} />
+                                <Input id="first-name" placeholder="Max" {...field}/>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -99,49 +74,62 @@ export default function SignupPage() {
                     />
                     <FormField
                         control={form.control}
-                        name="password"
+                        name="lastName"
                         render={({ field }) => (
                         <FormItem>
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="last-name">Last name</Label>
                             <FormControl>
-                                <Input id="password" type="password" {...field} />
+                                <Input id="last-name" placeholder="Robinson" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                         )}
                     />
-                    <Button type="submit" className="w-full">
-                    Create an account
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                    Sign up with Google
-                    </Button>
-                </form>
-                </Form>
-                <div className="mt-4 text-center text-sm">
-                    Already have an account?{' '}
-                    <Link href="/login" className="underline">
-                    Login
-                    </Link>
                 </div>
-            </div>
-        </div>
-        <div className="hidden bg-muted lg:block relative">
-            <Image
-                src="https://images.unsplash.com/photo-1605206754383-024a2f8d5e97?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Beautiful Indian temple"
-                fill
-                className="object-cover"
-                data-ai-hint="India temple"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-10 left-10 text-white p-8">
-                <blockquote className="space-y-2">
-                    <p className="text-2xl font-semibold">&ldquo;To travel is to discover that everyone is wrong about other countries.&rdquo;</p>
-                    <footer className="text-lg">- Aldous Huxley</footer>
-                </blockquote>
-            </div>
-      </div>
+                <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                    <FormItem>
+                        <Label htmlFor="email">Email</Label>
+                        <FormControl>
+                            <Input id="email" type="email" placeholder="m@example.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                    <FormItem>
+                        <Label htmlFor="password">Password</Label>
+                        <FormControl>
+                            <Input id="password" type="password" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <Button type="submit" className="w-full">
+                Create an account
+                </Button>
+                <Button variant="outline" className="w-full">
+                Sign up with Google
+                </Button>
+            </form>
+            </Form>
+            </CardContent>
+            <CardFooter className="justify-center">
+              <div className="text-center text-sm">
+                Already have an account?{' '}
+                <Link href="/login" className="underline">
+                Login
+                </Link>
+              </div>
+            </CardFooter>
+        </Card>
     </div>
   );
 }
