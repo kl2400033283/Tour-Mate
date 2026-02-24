@@ -178,9 +178,6 @@ export default function CityPage() {
       </main>
 
       <div className="container mx-auto text-center py-12 md:py-16">
-        <h2 className="font-headline text-3xl font-bold mb-8">
-            Plan Your Stay
-        </h2>
         <div className="flex justify-center gap-6">
           <Button asChild size="lg">
             <Link href={`/book-homestay/${city.slug}`}>Book a Home Stay</Link>
