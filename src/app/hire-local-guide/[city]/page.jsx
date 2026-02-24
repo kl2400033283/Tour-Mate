@@ -80,35 +80,35 @@ function GuideCard({ guide, user }) {
 
   return (
     <>
-      <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-transform duration-300 flex flex-col text-center">
-        <CardContent className="p-6">
-          <div className="relative h-24 w-24 mx-auto rounded-full overflow-hidden mb-4 border-4 border-primary/20">
-            <Image
-              src={`https://picsum.photos/seed/${guide.imageHint?.replace(/\s/g, '-') || guide.id}/200/200`}
+      <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-transform duration-300 flex flex-col">
+        <div className="relative w-full h-48">
+           <Image
+              src={`https://picsum.photos/seed/${guide.imageHint?.replace(/\s/g, '-') || guide.id}/300/400`}
               alt={guide.name}
               fill
               className="object-cover"
               data-ai-hint={guide.imageHint}
             />
-          </div>
-          <CardTitle className="text-xl font-bold">{guide.name}</CardTitle>
-          <p className="text-sm text-primary font-semibold">{guide.specialty}</p>
-        </CardContent>
-        <CardContent className="p-6 pt-0 flex-grow space-y-3 text-sm text-muted-foreground">
-          <div className="flex justify-center items-center gap-4">
-              <div className="text-center">
-                  <p className="font-bold text-lg text-foreground">{guide.rating.toFixed(1)}</p>
-                  <p>Rating</p>
-              </div>
-              <div className="text-center">
-                  <p className="font-bold text-lg text-foreground">{guide.experience}</p>
-                  <p>Years Exp.</p>
-              </div>
-          </div>
-          <div>
-            <p className="font-semibold text-foreground">Languages</p>
-            <p>{guide.languages.join(', ')}</p>
-          </div>
+        </div>
+        <CardHeader className="p-4 text-center">
+            <CardTitle className="text-xl font-bold">{guide.name}</CardTitle>
+            <p className="text-sm text-primary font-semibold">{guide.specialty}</p>
+        </CardHeader>
+        <CardContent className="p-4 pt-0 flex-grow text-center space-y-3 text-sm text-muted-foreground">
+            <div className="flex justify-center items-center gap-4">
+                <div className="text-center">
+                    <p className="font-bold text-lg text-foreground">{guide.rating.toFixed(1)}</p>
+                    <p>Rating</p>
+                </div>
+                <div className="text-center">
+                    <p className="font-bold text-lg text-foreground">{guide.experience}</p>
+                    <p>Years Exp.</p>
+                </div>
+            </div>
+            <div>
+                <p className="font-semibold text-foreground">Languages</p>
+                <p>{guide.languages.join(', ')}</p>
+            </div>
         </CardContent>
         <CardFooter className="p-4 pt-0 flex-col gap-2">
             <p className="text-xl font-bold">₹{guide.rate.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
