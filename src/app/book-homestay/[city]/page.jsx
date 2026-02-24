@@ -33,8 +33,10 @@ function HomestayCard({ homestay, user }) {
   const handleConfirm = () => {
     if (user) {
       toast({
+        variant: "success",
         title: "Booking Confirmed!",
-        description: "Your homestay has been booked."
+        description: "Your homestay is booked successfully.",
+        duration: 10000,
       });
     } else {
       router.push(`/login?redirect=${pathname}`);
