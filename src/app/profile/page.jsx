@@ -1,6 +1,7 @@
 'use client';
 
-import { useUser } from '@/firebase';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
@@ -60,6 +61,15 @@ function SidebarNav({ isMobile = false }) {
 export default function ProfilePage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
+    const firestore = useFirestore();
+
+    const userProfileRef = useMemoFirebase(() => {
+        if (!user || !firestore) return null;
+        return doc(firestore, 'users', user.uid);
+    }, [user, firestore]);
+
+    const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
+
 
     const handleSignOut = () => {
         const auth = getAuth();
@@ -68,7 +78,7 @@ export default function ProfilePage() {
         });
     };
 
-    if (isUserLoading) {
+    if (isUserLoading || isProfileLoading) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -110,7 +120,7 @@ export default function ProfilePage() {
         );
     }
 
-    const displayName = user?.email?.split('@')[0] || 'User';
+    const displayName = userProfile ? `${userProfile.firstName} ${userProfile.lastName}`.trim() : (user?.email?.split('@')[0] || 'User');
 
 
     return (
