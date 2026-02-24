@@ -17,12 +17,15 @@ import { PlaceHolderImages } from '@/lib/placeholder-images.js';
 import { useState, useEffect } from 'react';
 import { useUser } from '@/firebase';
 import { RoleSelectionDialog } from '@/components/RoleSelectionDialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { countryCodes } from '@/lib/country-codes';
 
 const signupSchema = z.object({
   firstName: z.string().min(2, { message: 'First name must be at least 2 characters.' }),
   lastName: z.string().min(2, { message: 'Last name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Invalid email address.' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  countryCode: z.string({required_error: "Please select a country code."}),
   phoneNumber: z.string().min(10, { message: 'Phone number must be at least 10 digits.' }),
 });
 
@@ -42,6 +45,7 @@ export default function SignupPage() {
         lastName: '',
         email: '',
         password: '',
+        countryCode: '+91',
         phoneNumber: '',
     },
   });
@@ -135,19 +139,46 @@ export default function SignupPage() {
                     </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name="phoneNumber"
-                    render={({ field }) => (
-                    <FormItem>
-                        <Label htmlFor="phone-number" className="text-white/90">Phone Number</Label>
-                        <FormControl>
-                            <Input id="phone-number" type="tel" placeholder="123-456-7890" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
+                
+                <div>
+                    <Label className="text-white/90">Phone Number</Label>
+                    <div className="flex items-start gap-2 mt-2">
+                        <FormField
+                            control={form.control}
+                            name="countryCode"
+                            render={({ field }) => (
+                                <FormItem className="w-[130px]">
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary">
+                                                <SelectValue placeholder="Code" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {countryCodes.map(code => (
+                                                <SelectItem key={code.value} value={code.value}>{code.label}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="phoneNumber"
+                            render={({ field }) => (
+                                <FormItem className="flex-1">
+                                    <FormControl>
+                                        <Input type="tel" placeholder="Your phone number" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
+
                 <FormField
                     control={form.control}
                     name="password"
