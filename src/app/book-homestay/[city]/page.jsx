@@ -59,6 +59,10 @@ function HomestayCard({ homestay, user }) {
     router.push(`/hire-local-guide/${params.city}`);
   };
 
+  const handleDialogNo = () => {
+    router.push('/profile');
+  };
+
   return (
     <>
       <Card className="overflow-hidden bg-card shadow-md rounded-xl flex flex-col">
@@ -93,7 +97,7 @@ function HomestayCard({ homestay, user }) {
             <AlertDialogTitle>Would you like to hire a tour guide?</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>No</AlertDialogCancel>
+            <AlertDialogCancel onClick={handleDialogNo}>No</AlertDialogCancel>
             <AlertDialogAction onClick={handleDialogYes}>Yes</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

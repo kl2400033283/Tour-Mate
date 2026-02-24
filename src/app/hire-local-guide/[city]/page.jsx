@@ -60,6 +60,10 @@ function GuideCard({ guide, user }) {
     router.push(`/book-homestay/${params.city}`);
   };
 
+  const handleDialogNo = () => {
+    router.push('/profile');
+  };
+
   return (
     <>
       <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-transform duration-300 flex flex-col">
@@ -95,7 +99,7 @@ function GuideCard({ guide, user }) {
             <AlertDialogTitle>Would you like to book a homestay?</AlertDialogTitle>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>No</AlertDialogCancel>
+            <AlertDialogCancel onClick={handleDialogNo}>No</AlertDialogCancel>
             <AlertDialogAction onClick={handleDialogYes}>Yes</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
