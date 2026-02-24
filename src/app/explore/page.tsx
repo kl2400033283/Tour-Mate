@@ -23,6 +23,7 @@ export default function ExplorePage() {
     cities.map(city => ({
         ...city,
         stateSlug,
+        stateName: stateSlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
     }))
   );
 
@@ -99,6 +100,7 @@ export default function ExplorePage() {
               </CardContent>
               <CardHeader>
                 <CardTitle className="font-bold text-xl">{city.name}</CardTitle>
+                <CardDescription>{city.stateName}</CardDescription>
               </CardHeader>
               <CardContent className="flex-grow space-y-2">
                 <div className="text-sm text-muted-foreground flex items-center">
