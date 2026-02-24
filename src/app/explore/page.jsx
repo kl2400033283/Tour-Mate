@@ -39,64 +39,77 @@ export default function ExplorePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <MapPin className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold tracking-tight">TourMate</span>
-          </Link>
+        <header className="absolute top-0 z-50 w-full p-4 sm:p-6">
+            <div className="container mx-auto flex h-16 items-center justify-between">
+              <Link href="/" className="flex items-center gap-3">
+                <MapPin className="h-8 w-8 text-white" />
+                <span className="text-2xl font-bold tracking-tight text-white">TourMate</span>
+              </Link>
+    
+              <nav className="hidden items-center gap-2 sm:flex">
+                <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                  <Link href="/signup">Sign Up</Link>
+                </Button>
+              </nav>
+    
+               <div className="sm:hidden">
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white">
+                        <Menu className="h-6 w-6" />
+                        <span className="sr-only">Open menu</span>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right">
+                      <nav className="flex flex-col gap-4 pt-8">
+                         <Link href="/" className="flex items-center gap-3 mb-4">
+                          <MapPin className="h-8 w-8 text-primary" />
+                          <span className="text-2xl font-bold tracking-tight">
+                            TourMate
+                          </span>
+                        </Link>
+                        <Link href="/login" className="text-lg">Login</Link>
+                        <Link href="/signup" className="text-lg">Sign Up</Link>
+                        <Link href="#" className="text-lg">About Us</Link>
+                        <Link href="/explore" className="text-lg">Destinations</Link>
+                        <Link href="#" className="text-lg">Contact</Link>
+                      </nav>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+            </div>
+        </header>
 
-          <div className="relative flex-1 max-w-xl mx-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+        <div className="relative h-[50vh] min-h-[300px] flex items-center justify-center text-white">
+            <Image
+                src="https://picsum.photos/seed/explore-hero/1920/500"
+                alt="Explore tourist destinations"
+                fill
+                className="object-cover"
+                data-ai-hint="India landscape"
+            />
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="relative z-10 text-center space-y-4">
+                <h1 className="text-5xl font-bold font-headline">Explore Destinations</h1>
+                <p className="text-xl text-white/90">Find your next adventure in India.</p>
+            </div>
+        </div>
+
+      <main className="container mx-auto py-8 -mt-20 relative z-20">
+        <div className="relative max-w-2xl mx-auto mb-12">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search for cities, states..."
-              className="w-full rounded-full pl-10"
+              className="w-full rounded-full pl-12 p-6 text-lg shadow-lg"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-          </div>
-
-          <nav className="hidden items-center gap-2 sm:flex">
-            <Button asChild variant="ghost">
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link href="/signup">Sign Up</Link>
-            </Button>
-          </nav>
-
-           <div className="sm:hidden">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right">
-                  <nav className="flex flex-col gap-4 pt-8">
-                     <Link href="/" className="flex items-center gap-3 mb-4">
-                      <MapPin className="h-8 w-8 text-primary" />
-                      <span className="text-2xl font-bold tracking-tight">
-                        TourMate
-                      </span>
-                    </Link>
-                    <Link href="/login" className="text-lg">Login</Link>
-                    <Link href="/signup" className="text-lg">Sign Up</Link>
-                    <Link href="#" className="text-lg">About Us</Link>
-                    <Link href="/explore" className="text-lg">Destinations</Link>
-                    <Link href="#" className="text-lg">Contact</Link>
-                  </nav>
-                </SheetContent>
-              </Sheet>
-            </div>
         </div>
-      </header>
-      <main className="container mx-auto py-8">
-        <h1 className="text-3xl font-bold text-center mb-8 font-headline">
-          Explore Cities in India
-        </h1>
+
         {filteredCities.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredCities.map((city) => (
@@ -132,7 +145,7 @@ export default function ExplorePage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16">
+          <div className="text-center py-16 bg-card rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold">No Cities Found</h2>
             <p className="text-muted-foreground mt-2">
               Your search for "{searchQuery}" did not match any cities. Try a different search.

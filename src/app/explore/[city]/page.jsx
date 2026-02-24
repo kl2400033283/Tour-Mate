@@ -74,10 +74,10 @@ export default function CityPage({ params }) {
               <span className="text-2xl font-bold tracking-tight">TourMate</span>
             </Link>
             <nav className="flex items-center gap-2">
-              <Button asChild variant="outline" className="text-white border-white/50 hover:bg-white/10 hover:text-white rounded-full px-5">
+              <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
                 <Link href="/">Home</Link>
               </Button>
-              <Button asChild variant="outline" className="text-white border-white/50 hover:bg-white/10 hover:text-white rounded-full px-5">
+              <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
                 <Link href="/login">Login</Link>
               </Button>
             </nav>
