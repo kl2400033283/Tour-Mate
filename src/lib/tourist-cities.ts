@@ -28,6 +28,12 @@ export const citiesByState: Record<string, City[]> = {
   'assam': [
     { name: 'Guwahati', slug: 'guwahati', image: 'https://picsum.photos/seed/guwahati/400/300', hint: 'guwahati temple' },
     { name: 'Kaziranga', slug: 'kaziranga', image: 'https://picsum.photos/seed/kaziranga/400/300', hint: 'kaziranga national park' },
+    { name: 'Jorhat', slug: 'jorhat', image: 'https://picsum.photos/seed/jorhat/400/300', hint: 'jorhat tea' },
+    { name: 'Dibrugarh', slug: 'dibrugarh', image: 'https://picsum.photos/seed/dibrugarh/400/300', hint: 'dibrugarh city' },
+    { name: 'Sibsagar', slug: 'sibsagar', image: 'https://picsum.photos/seed/sibsagar/400/300', hint: 'sibsagar monuments' },
+    { name: 'Silchar', slug: 'silchar', image: 'https://picsum.photos/seed/silchar/400/300', hint: 'silchar town' },
+    { name: 'Tezpur', slug: 'tezpur', image: 'https://picsum.photos/seed/tezpur/400/300', hint: 'tezpur ruins' },
+    { name: 'Digboi', slug: 'digboi', image: 'https://picsum.photos/seed/digboi/400/300', hint: 'digboi oil refinery' },
   ],
   'bihar': [
     { name: 'Bodh Gaya', slug: 'bodh-gaya', image: 'https://picsum.photos/seed/bodh-gaya/400/300', hint: 'bodh gaya temple' },
