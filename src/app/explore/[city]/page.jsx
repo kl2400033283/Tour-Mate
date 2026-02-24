@@ -33,14 +33,33 @@ function AttractionCard({ attraction }) {
 export default function CityPage({ params }) {
   const citySlug = params.city;
 
-  const allCities = Object.values(citiesByState).flat();
-  const cityDetails = allCities.find(c => c.slug === citySlug) || {
-    name: citySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-    slug: citySlug,
-    attractionDetails: [],
-  };
-  
-  const attractions = cityDetails.attractionDetails || [];
+  let stateName = '';
+  let attractionsForState = [];
+  let currentCityName = '';
+  let stateForCity;
+
+  // Find which state the city belongs to
+  for (const [slug, cities] of Object.entries(citiesByState)) {
+    if (cities.some(c => c.slug === citySlug)) {
+      stateForCity = slug;
+      break;
+    }
+  }
+
+  if (stateForCity) {
+    const citiesInState = citiesByState[stateForCity];
+    stateName = stateForCity.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    
+    const currentCity = citiesInState.find(c => c.slug === citySlug);
+    currentCityName = currentCity ? currentCity.name : citySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    
+    // Aggregate all attractions from all cities in that state.
+    attractionsForState = citiesInState.flatMap(city => city.attractionDetails || []);
+  } else {
+    // Fallback if city or state not found
+    currentCityName = citySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    stateName = 'this region';
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -94,15 +113,15 @@ export default function CityPage({ params }) {
 
       <main className="container mx-auto py-8">
         <h1 className="text-4xl font-headline font-bold mb-2">
-          Attractions in {cityDetails.name}
+          Attractions in {stateName}
         </h1>
         <p className="text-muted-foreground mb-8">
-          Explore the top sights and experiences this city has to offer.
+          Showing all attractions for the state, based on your selection of {currentCityName}.
         </p>
         
-        {attractions.length > 0 ? (
+        {attractionsForState.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {attractions.map((attraction, index) => (
+            {attractionsForState.map((attraction, index) => (
               <AttractionCard key={index} attraction={attraction} />
             ))}
           </div>
@@ -110,7 +129,7 @@ export default function CityPage({ params }) {
           <div className="text-center bg-card border rounded-lg p-12 mt-8">
             <h2 className="text-2xl font-semibold mb-2">Attractions Coming Soon!</h2>
             <p className="text-muted-foreground">
-              We are currently curating the best attractions for {cityDetails.name}. Please check back later.
+              We are currently curating the best attractions for {stateName}. Please check back later.
             </p>
             <Button asChild className="mt-6">
               <Link href="/explore">Explore Other Cities</Link>
