@@ -51,7 +51,7 @@ export default function ExplorePage() {
               <nav className="hidden items-center gap-2 sm:flex">
                 {user ? (
                   <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                    <Link href="/profile">Profile</Link>
+                    <Link href="/profile">Dashboard</Link>
                   </Button>
                 ) : null}
                 <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
@@ -82,7 +82,7 @@ export default function ExplorePage() {
                           </span>
                         </Link>
                         {user ? (
-                          <Link href="/profile" className="text-lg">Profile</Link>
+                          <Link href="/profile" className="text-lg">Dashboard</Link>
                         ) : null}
                         <Link href="#" className="text-lg">About Us</Link>
                         <Link href="/explore" className="text-lg">Destinations</Link>

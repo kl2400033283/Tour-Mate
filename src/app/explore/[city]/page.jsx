@@ -89,7 +89,7 @@ export default function CityPage() {
             <nav className="hidden items-center gap-2 sm:flex">
               {user ? (
                 <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                  <Link href="/profile">Profile</Link>
+                  <Link href="/profile">Dashboard</Link>
                 </Button>
               ) : (
                 <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
@@ -124,7 +124,7 @@ export default function CityPage() {
                       </span>
                     </Link>
                     {user ? (
-                        <Link href="/profile" className="text-lg">Profile</Link>
+                        <Link href="/profile" className="text-lg">Dashboard</Link>
                     ) : (
                       <Link href="/login" className="text-lg">Login</Link>
                     )}

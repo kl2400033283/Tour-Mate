@@ -54,7 +54,7 @@ function GuideCard({ guide, user }) {
           description: 'Your homestay and local guide are booked successfully.',
           duration: 10000,
         });
-        router.push('/profile');
+        router.push('/tourist-dashboard');
       } else {
         setIsDialogOpen(true);
       }
@@ -75,7 +75,7 @@ function GuideCard({ guide, user }) {
       description: "Your local guide is booked successfully.",
       duration: 10000,
     });
-    router.push('/profile');
+    router.push('/tourist-dashboard');
   };
 
   return (
@@ -239,7 +239,7 @@ export default function HireLocalGuidePage() {
             </Button>
             {user && (
                 <Button asChild>
-                  <Link href="/profile">Profile</Link>
+                  <Link href="/profile">Dashboard</Link>
                 </Button>
             )}
           </nav>
@@ -258,7 +258,7 @@ export default function HireLocalGuidePage() {
                       <span className="text-xl font-bold tracking-tight">TourMate</span>
                     </Link>
                     <Link href={`/explore/${citySlug}`} className="text-lg">Back to City</Link>
-                    {user && <Link href="/profile" className="text-lg">Profile</Link>}
+                    {user && <Link href="/profile" className="text-lg">Dashboard</Link>}
                   </nav>
                 </SheetContent>
               </Sheet>

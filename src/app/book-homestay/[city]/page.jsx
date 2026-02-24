@@ -53,7 +53,7 @@ function HomestayCard({ homestay, user }) {
           description: 'Your homestay and local guide are booked successfully.',
           duration: 10000,
         });
-        router.push('/profile');
+        router.push('/tourist-dashboard');
       } else {
         setIsDialogOpen(true);
       }
@@ -74,7 +74,7 @@ function HomestayCard({ homestay, user }) {
       description: "Your homestay is booked successfully.",
       duration: 10000,
     });
-    router.push('/profile');
+    router.push('/tourist-dashboard');
   };
 
   return (
@@ -218,7 +218,7 @@ export default function BookHomestayPage() {
             </Button>
             {user ? (
                  <Button asChild variant="secondary" className="rounded-lg px-6 hidden sm:flex">
-                    <Link href="/profile">Profile</Link>
+                    <Link href="/profile">Dashboard</Link>
                  </Button>
             ) : (
                 <Button asChild variant="secondary" className="rounded-lg px-6 hidden sm:flex">

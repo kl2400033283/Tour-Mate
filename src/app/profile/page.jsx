@@ -51,7 +51,7 @@ export default function ProfilePage() {
                             <ShieldAlert className="h-10 w-10 text-destructive"/>
                         </div>
                         <CardTitle className="text-2xl pt-4">Access Denied</CardTitle>
-                        <CardDescription>You must be logged in to view your profile.</CardDescription>
+                        <CardDescription>You must be logged in to view your dashboard.</CardDescription>
                     </CardHeader>
                     <CardContent>
                        <p className="text-sm text-muted-foreground">Please return to the homepage to log in.</p>
@@ -79,7 +79,7 @@ export default function ProfilePage() {
       </header>
       <main className="flex-grow container mx-auto p-4 md:p-8">
         <div className="max-w-md mx-auto bg-card p-8 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold mb-4">Your Profile</h1>
+            <h1 className="text-3xl font-bold mb-4">Tourist Dashboard</h1>
             <div className="space-y-4">
                 <div>
                     <p className="text-sm text-muted-foreground">Email</p>
