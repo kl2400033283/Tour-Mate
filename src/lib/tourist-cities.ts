@@ -9,6 +9,10 @@ export const citiesByState: Record<string, City[]> = {
   'andhra-pradesh': [
     { name: 'Visakhapatnam', slug: 'visakhapatnam', image: 'https://picsum.photos/seed/visakhapatnam/400/300', hint: 'visakhapatnam beach' },
     { name: 'Tirupati', slug: 'tirupati', image: 'https://picsum.photos/seed/tirupati/400/300', hint: 'tirupati temple' },
+    { name: 'Vijayawada', slug: 'vijayawada', image: 'https://picsum.photos/seed/vijayawada/400/300', hint: 'vijayawada city' },
+    { name: 'Kakinada', slug: 'kakinada', image: 'https://picsum.photos/seed/kakinada/400/300', hint: 'kakinada beach' },
+    { name: 'Kurnool', slug: 'kurnool', image: 'https://picsum.photos/seed/kurnool/400/300', hint: 'kurnool fort' },
+    { name: 'Anantapur', slug: 'anantapur', image: 'https://picsum.photos/seed/anantapur/400/300', hint: 'anantapur temple' },
   ],
   'arunachal-pradesh': [
     { name: 'Tawang', slug: 'tawang', image: 'https://picsum.photos/seed/tawang/400/300', hint: 'tawang monastery' },
