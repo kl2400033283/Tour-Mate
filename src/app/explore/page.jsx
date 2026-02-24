@@ -125,7 +125,7 @@ export default function ExplorePage() {
                 </CardContent>
                 <CardFooter>
                   <Button asChild className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                      <Link href={`/explore/${city.slug}`}>View City</Link>
+                      <Link href={`/explore/${city.slug}`} target="_blank" rel="noopener noreferrer">View City</Link>
                   </Button>
                 </CardFooter>
               </Card>
