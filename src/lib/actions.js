@@ -106,7 +106,7 @@ function generateMockListings({ city, listingType }) {
             experience: Math.floor(Math.random() * 10) + 3, // 3-12 years
             languages: knownLanguages,
             rating: parseFloat((4.2 + Math.random() * 0.8).toFixed(1)), // 4.2 to 5.0
-            rate: 2000 + Math.floor(Math.random() * 3000), // 2000-5000 per day
+            rate: 1500 + Math.floor(Math.random() * 1501), // 1500-3000 per day
             specialty: specialties[Math.floor(Math.random() * specialties.length)],
             imageHint: guideImageHints[i] || 'guide avatar',
         });
