@@ -54,9 +54,6 @@ export default function Page() {
                 <Link href="#">About Us</Link>
               </Button>
               <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                <Link href="/explore">Destinations</Link>
-              </Button>
-              <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
                 <Link href="#">Contact</Link>
               </Button>
             </nav>
@@ -82,7 +79,6 @@ export default function Page() {
                       <Link href="/login" className="text-lg">Login</Link>
                     )}
                     <Link href="#" className="text-lg">About Us</Link>
-                    <Link href="/explore" className="text-lg">Destinations</Link>
                     <Link href="#" className="text-lg">Contact</Link>
                   </nav>
                 </SheetContent>
