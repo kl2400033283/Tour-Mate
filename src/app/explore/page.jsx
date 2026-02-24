@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Globe, Search, Menu } from 'lucide-react';
@@ -16,15 +19,22 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { citiesByState } from '@/lib/tourist-cities';
+import { citiesByState } from '@/lib/tourist-cities.js';
 
 export default function ExplorePage() {
+  const [searchQuery, setSearchQuery] = useState('');
+
   const allCities = Object.entries(citiesByState).flatMap(([stateSlug, cities]) => 
     cities.map(city => ({
         ...city,
         stateSlug,
         stateName: stateSlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
     }))
+  );
+
+  const filteredCities = allCities.filter(city =>
+    city.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    city.stateName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -40,8 +50,10 @@ export default function ExplorePage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search for cities, destinations..."
+              placeholder="Search for cities, states..."
               className="w-full rounded-full pl-10"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
@@ -49,7 +61,7 @@ export default function ExplorePage() {
             <Button asChild variant="ghost">
               <Link href="#">Login</Link>
             </Button>
-            <Button asChild>
+            <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
               <Link href="#">Sign Up</Link>
             </Button>
           </nav>
@@ -85,39 +97,48 @@ export default function ExplorePage() {
         <h1 className="text-3xl font-bold text-center mb-8 font-headline">
           Explore Cities in India
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {allCities.map((city) => (
-            <Card key={`${city.stateSlug}-${city.slug}`} className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl flex flex-col">
-              <CardContent className="p-0">
-                  <Image
-                  src={city.image}
-                  alt={`A scenic view of ${city.name}`}
-                  width={400}
-                  height={300}
-                  className="h-48 w-full object-cover"
-                  data-ai-hint={city.hint}
-                />
-              </CardContent>
-              <CardHeader>
-                <CardTitle className="font-bold text-xl">{city.name}</CardTitle>
-                <CardDescription>{city.stateName}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow space-y-2">
-                <div className="text-sm text-muted-foreground flex items-center">
-                    <span>{city.attractions} Attractions</span>
-                    <span className="mx-2 font-bold">·</span>
-                    <span>{city.homestays} Homestays</span>
-                </div>
-                <CardDescription>{city.knownFor}</CardDescription>
-              </CardContent>
-              <CardFooter>
-                <Button asChild className="w-full">
-                    <Link href={`/explore/${city.slug}`}>View City</Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+        {filteredCities.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filteredCities.map((city) => (
+              <Card key={`${city.stateSlug}-${city.slug}`} className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl flex flex-col">
+                <CardContent className="p-0">
+                    <Image
+                    src={city.image}
+                    alt={`A scenic view of ${city.name}`}
+                    width={400}
+                    height={300}
+                    className="h-48 w-full object-cover"
+                    data-ai-hint={city.hint}
+                  />
+                </CardContent>
+                <CardHeader>
+                  <CardTitle className="font-bold text-xl">{city.name}</CardTitle>
+                  <CardDescription>{city.stateName}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow space-y-2">
+                  <div className="text-sm text-muted-foreground flex items-center">
+                      <span>{city.attractions} Attractions</span>
+                      <span className="mx-2 font-bold">·</span>
+                      <span>{city.homestays} Homestays</span>
+                  </div>
+                  <CardDescription>{city.knownFor}</CardDescription>
+                </CardContent>
+                <CardFooter>
+                  <Button asChild className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                      <Link href={`/explore/${city.slug}`}>View City</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <h2 className="text-2xl font-semibold">No Cities Found</h2>
+            <p className="text-muted-foreground mt-2">
+              Your search for "{searchQuery}" did not match any cities. Try a different search.
+            </p>
+          </div>
+        )}
       </main>
     </div>
   );
