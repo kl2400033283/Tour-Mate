@@ -39,7 +39,7 @@ function HomestayCard({ homestay }) {
   return (
     <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-transform duration-300 flex flex-col">
       <CardContent className="p-0">
-        <div className="relative h-56 w-full">
+        <div className="relative h-48 w-full">
           <Image
             src={homestay.image}
             alt={homestay.name}
@@ -49,19 +49,19 @@ function HomestayCard({ homestay }) {
           />
         </div>
       </CardContent>
-      <CardHeader>
-        <CardTitle>{homestay.name}</CardTitle>
+      <CardHeader className="p-4">
+        <CardTitle className="text-lg font-bold">{homestay.name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow space-y-3">
+      <CardContent className="p-4 pt-0 flex-grow space-y-2">
         <p className="text-sm text-muted-foreground">{homestay.location}</p>
-        <p className="text-lg font-semibold">₹{homestay.price.toLocaleString()}/Night</p>
+        <p className="text-base font-semibold">₹{homestay.price.toLocaleString()}/Night</p>
         <div className="flex items-center gap-1">
           <Star className="w-4 h-4 text-primary fill-primary" />
           <span className="font-bold">{homestay.rating}</span>
         </div>
-        <p className="text-sm text-muted-foreground h-10">{homestay.description}</p>
+        <p className="text-sm text-muted-foreground line-clamp-2">{homestay.description}</p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="p-4 pt-0">
         <Button className="w-full" onClick={handleConfirm}>Confirm</Button>
       </CardFooter>
     </Card>
@@ -217,7 +217,7 @@ export default function BookHomestayPage() {
         </div>
         
         {filteredHomestays.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredHomestays.map(homestay => (
               <HomestayCard key={homestay.id} homestay={homestay} />
             ))}
