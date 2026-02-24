@@ -101,12 +101,6 @@ export default function BookHomestayPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [priceRange, setPriceRange] = useState('all');
   const [rating, setRating] = useState('all');
-  
-  const [filters, setFilters] = useState({
-      searchQuery: '',
-      priceRange: 'all',
-      rating: 'all'
-  });
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -135,21 +129,17 @@ export default function BookHomestayPage() {
     fetchHomestays();
   }, [citySlug, city?.name]);
 
-  const handleApplyFilters = () => {
-      setFilters({ searchQuery, priceRange, rating });
-  }
-
   const filteredHomestays = useMemo(() => {
     return homestays
-      .filter(homestay => homestay.name.toLowerCase().includes(filters.searchQuery.toLowerCase()))
+      .filter(homestay => homestay.name.toLowerCase().includes(searchQuery.toLowerCase()))
       .filter(homestay => {
-          if (filters.priceRange === 'all') return true;
-          const [min, max] = filters.priceRange.split('-').map(Number);
+          if (priceRange === 'all') return true;
+          const [min, max] = priceRange.split('-').map(Number);
           if(max) return homestay.price >= min && homestay.price <= max;
           return homestay.price >= min;
       })
-      .filter(homestay => filters.rating === 'all' || homestay.rating >= parseFloat(filters.rating));
-  }, [homestays, filters]);
+      .filter(homestay => rating === 'all' || homestay.rating >= parseFloat(rating));
+  }, [homestays, searchQuery, priceRange, rating]);
 
   if (isUserLoading || !user) {
     return (
@@ -197,7 +187,7 @@ export default function BookHomestayPage() {
         </div>
 
         <div className="mb-8 p-3 bg-card rounded-xl shadow-sm">
-          <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr_1fr_auto] gap-3 items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr_1fr] gap-3 items-center">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input 
@@ -229,7 +219,6 @@ export default function BookHomestayPage() {
                     <SelectItem value="4.5">4.5 Stars & above</SelectItem>
                 </SelectContent>
             </Select>
-            <Button className="h-11" onClick={handleApplyFilters}>Apply</Button>
           </div>
         </div>
         
