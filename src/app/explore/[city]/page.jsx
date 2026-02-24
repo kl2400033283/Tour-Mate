@@ -4,8 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { citiesByState } from '@/lib/tourist-cities.js';
-import { notFound } from 'next/navigation';
-import { useRouter } from 'next/navigation';
+import { notFound, useRouter, useParams } from 'next/navigation';
 import { MapPin, ArrowLeft, Menu } from 'lucide-react';
 import { useUser } from '@/firebase';
 import {
@@ -48,8 +47,9 @@ function AttractionCard({ attraction }) {
   );
 }
 
-export default function CityPage({ params }) {
+export default function CityPage() {
   const router = useRouter();
+  const params = useParams();
   const { user } = useUser();
   const city = getCityData(params.city);
 
