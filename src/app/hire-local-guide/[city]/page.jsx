@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useUser } from '@/firebase';
-import { useRouter, usePathname, useParams } from 'next/navigation';
+import { useRouter, usePathname, useParams, useSearchParams } from 'next/navigation';
 import { Loader2, MapPin, Search, Star, Menu } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -40,27 +40,41 @@ function GuideCard({ guide, user }) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
+  const searchParams = useSearchParams();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const cameFromHomestayPage = searchParams.get('from') === 'homestay';
 
   const handleHire = () => {
     if (user) {
-      toast({
-        variant: 'success',
-        title: "Guide Hired!",
-        description: "Your tour guide is booked successfully.",
-        duration: 10000,
-      });
-      setIsDialogOpen(true);
+      if (cameFromHomestayPage) {
+        toast({
+          variant: 'success',
+          title: 'Booking Complete!',
+          description: 'Your homestay and local guide are booked successfully.',
+          duration: 10000,
+        });
+        router.push('/profile');
+      } else {
+        setIsDialogOpen(true);
+      }
     } else {
-      router.push(`/login?redirect=${pathname}`);
+      const redirectPath = cameFromHomestayPage ? `${pathname}?from=homestay` : pathname;
+      router.push(`/login?redirect=${redirectPath}`);
     }
   };
 
   const handleDialogYes = () => {
-    router.push(`/book-homestay/${params.city}`);
+    router.push(`/book-homestay/${params.city}?from=guide`);
   };
 
   const handleDialogNo = () => {
+    toast({
+      variant: 'success',
+      title: "Guide Hired!",
+      description: "Your local guide is booked successfully.",
+      duration: 10000,
+    });
     router.push('/profile');
   };
 
