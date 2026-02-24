@@ -1,112 +1,46 @@
 'use client';
 
-import { useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Globe, ArrowLeft, Menu, BedDouble, Star, MapPin } from 'lucide-react';
+import { Globe, ArrowLeft, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { citiesByState } from '@/lib/tourist-cities.js';
-import { Skeleton } from '@/components/ui/skeleton';
 
-function HomestayCardSkeleton() {
-  return (
-    <Card className="overflow-hidden">
-      <Skeleton className="h-48 w-full" />
-      <CardHeader>
-        <Skeleton className="h-6 w-3/4" />
-        <Skeleton className="h-4 w-1/2 mt-2" />
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex justify-between">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-4 w-20" />
-        </div>
-        <div className="flex justify-end">
-          <Skeleton className="h-6 w-28" />
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function HomestayCard({ homestay }) {
+function AttractionCard({ attraction }) {
   return (
     <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl flex flex-col">
       <Image
-        src={homestay.imageUrl || 'https://picsum.photos/seed/homestay/400/300'}
-        alt={homestay.name}
+        src={attraction.image || 'https://picsum.photos/seed/attraction/400/250'}
+        alt={attraction.name}
         width={400}
         height={250}
         className="h-48 w-full object-cover"
-        data-ai-hint="homestay interior"
+        data-ai-hint={attraction.hint}
       />
       <CardHeader>
-        <CardTitle className="font-bold text-xl">{homestay.name}</CardTitle>
-        <CardDescription className="flex items-center pt-1">
-          <MapPin className="h-4 w-4 mr-1.5" />
-          {homestay.address}
-        </CardDescription>
+        <CardTitle className="font-bold text-xl">{attraction.name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow space-y-3">
-        <div className="flex justify-between text-muted-foreground text-sm">
-          <div className="flex items-center">
-            <BedDouble className="h-4 w-4 mr-1.5" />
-            <span>{homestay.numberOfBedrooms} Bedrooms</span>
-          </div>
-          <div className="flex items-center">
-            <Star className="h-4 w-4 mr-1.5 text-yellow-500 fill-current" />
-            <span>4.5 (120 reviews)</span>
-          </div>
-        </div>
+      <CardContent className="flex-grow">
+        <p className="text-muted-foreground">{attraction.description}</p>
       </CardContent>
-      <CardFooter className="flex-col items-end">
-        <div className="text-lg font-bold">
-          ₹{homestay.pricePerNight}{' '}
-          <span className="text-sm font-normal text-muted-foreground">
-            / night
-          </span>
-        </div>
-      </CardFooter>
     </Card>
   );
 }
 
+
 export default function CityPage({ params }) {
   const citySlug = params.city;
-  const firestore = useFirestore();
 
   const allCities = Object.values(citiesByState).flat();
   const cityDetails = allCities.find(c => c.slug === citySlug) || {
     name: citySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
     slug: citySlug,
+    attractionDetails: [],
   };
-
-
-  const citiesQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'cities'), where('name', '==', cityDetails.name));
-  }, [firestore, cityDetails.name]);
   
-  const { data: cities, isLoading: isCitiesLoading } = useCollection(citiesQuery);
-
-  const cityId = cities?.[0]?.id;
-
-  const homestaysQuery = useMemoFirebase(() => {
-    if (!firestore || !cityId) return null;
-    return query(
-      collection(firestore, 'homestays'),
-      where('cityId', '==', cityId),
-      where('isAvailable', '==', true)
-    );
-  }, [firestore, cityId]);
-
-  const { data: homestays, isLoading: isHomestaysLoading } = useCollection(homestaysQuery);
-  
-  const isLoading = isCitiesLoading || (cityId && isHomestaysLoading);
+  const attractions = cityDetails.attractionDetails || [];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -160,31 +94,23 @@ export default function CityPage({ params }) {
 
       <main className="container mx-auto py-8">
         <h1 className="text-4xl font-headline font-bold mb-2">
-          Homestays in {cityDetails.name}
+          Attractions in {cityDetails.name}
         </h1>
         <p className="text-muted-foreground mb-8">
-          Discover unique places to stay and make your trip unforgettable.
+          Explore the top sights and experiences this city has to offer.
         </p>
         
-        {isLoading && (
-           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => <HomestayCardSkeleton key={i} />)}
-          </div>
-        )}
-
-        {!isLoading && homestays && homestays.length > 0 && (
+        {attractions.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {homestays.map(homestay => (
-              <HomestayCard key={homestay.id} homestay={homestay} />
+            {attractions.map((attraction, index) => (
+              <AttractionCard key={index} attraction={attraction} />
             ))}
           </div>
-        )}
-
-        {!isLoading && (!homestays || homestays.length === 0) && (
+        ) : (
           <div className="text-center bg-card border rounded-lg p-12 mt-8">
-            <h2 className="text-2xl font-semibold mb-2">No Homestays Found</h2>
+            <h2 className="text-2xl font-semibold mb-2">Attractions Coming Soon!</h2>
             <p className="text-muted-foreground">
-              There are currently no available homestays listed for {cityDetails.name}.
+              We are currently curating the best attractions for {cityDetails.name}. Please check back later.
             </p>
             <Button asChild className="mt-6">
               <Link href="/explore">Explore Other Cities</Link>

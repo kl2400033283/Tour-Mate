@@ -2,7 +2,22 @@ export const citiesByState = {
   'andhra-pradesh': [
     { name: 'Visakhapatnam', slug: 'visakhapatnam', image: 'https://picsum.photos/seed/visakhapatnam/400/300', hint: 'visakhapatnam beach', attractions: 22, homestays: 45, knownFor: 'Pristine beaches and a bustling port city.' },
     { name: 'Tirupati', slug: 'tirupati', image: 'https://picsum.photos/seed/tirupati/400/300', hint: 'tirupati temple', attractions: 12, homestays: 80, knownFor: 'A major pilgrimage site, home to the Tirumala Venkateswara Temple.' },
-    { name: 'Vijayawada', slug: 'vijayawada', image: 'https://picsum.photos/seed/vijayawada/400/300', hint: 'vijayawada city', attractions: 18, homestays: 35, knownFor: 'Known for the Kanaka Durga Temple and Prakasam Barrage.' },
+    { 
+      name: 'Vijayawada', 
+      slug: 'vijayawada', 
+      image: 'https://picsum.photos/seed/vijayawada/400/300', 
+      hint: 'vijayawada city', 
+      attractions: 18, 
+      homestays: 35, 
+      knownFor: 'Known for the Kanaka Durga Temple and Prakasam Barrage.',
+      attractionDetails: [
+        { name: 'Kanaka Durga Temple', description: 'A famous Hindu temple located on Indrakeeladri hill.', image: 'https://picsum.photos/seed/kanaka-durga/400/250', hint: 'vijayawada temple' },
+        { name: 'Prakasam Barrage', description: 'A modern barrage that stretches across the Krishna River.', image: 'https://picsum.photos/seed/prakasam-barrage/400/250', hint: 'vijayawada barrage' },
+        { name: 'Undavalli Caves', description: 'Monolithic rock-cut caves from the 4th to 5th centuries.', image: 'https://picsum.photos/seed/undavalli-caves/400/250', hint: 'ancient caves' },
+        { name: 'Bhavani Island', description: 'One of the largest islands on the Krishna River, a popular resort.', image: 'https://picsum.photos/seed/bhavani-island/400/250', hint: 'river island' },
+        { name: 'Kondapalli Fort', description: 'A 14th-century fort with impressive gateways and ramparts.', image: 'https://picsum.photos/seed/kondapalli-fort/400/250', hint: 'historical fort' },
+      ]
+    },
     { name: 'Kakinada', slug: 'kakinada', image: 'https://picsum.photos/seed/kakinada/400/300', hint: 'kakinada beach', attractions: 10, homestays: 25, knownFor: 'A port city with beautiful beaches and mangrove forests.' },
     { name: 'Kurnool', slug: 'kurnool', image: 'https://picsum.photos/seed/kurnool/400/300', hint: 'kurnool fort', attractions: 14, homestays: 20, knownFor: 'Famous for the Konda Reddy Fort and Belum Caves.' },
     { name: 'Anantapur', slug: 'anantapur', image: 'https://picsum.photos/seed/anantapur/400/300', hint: 'anantapur temple', attractions: 9, homestays: 15, knownFor: 'Home to the Lepakshi temple and historical sites.' },
