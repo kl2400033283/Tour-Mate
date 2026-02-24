@@ -42,15 +42,27 @@ export default function SignupPage() {
   };
 
   return (
-     <div className="min-h-screen w-full flex items-center justify-center bg-muted/30 p-4">
-        <Card className="mx-auto max-w-sm w-full">
+    <div className="relative min-h-screen w-full">
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+      >
+        <source src="https://videos.pexels.com/video-files/3209828/3209828-hd_1920_1080_25fps.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div className="absolute inset-0 bg-black/60 -z-10" />
+      <div className="min-h-screen w-full flex items-center justify-center p-4">
+        <Card className="mx-auto max-w-sm w-full bg-white/10 backdrop-blur-md text-primary-foreground border-white/20 shadow-2xl">
             <CardHeader className="text-center space-y-4">
                 <Link href="/" className="inline-block">
-                    <Globe className="h-12 w-12 mx-auto text-primary" />
+                    <Globe className="h-12 w-12 mx-auto text-white" />
                 </Link>
                 <div>
                     <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-white/80">
                         Enter your information to get started
                     </CardDescription>
                 </div>
@@ -64,9 +76,9 @@ export default function SignupPage() {
                         name="firstName"
                         render={({ field }) => (
                         <FormItem>
-                            <Label htmlFor="first-name">First name</Label>
+                            <Label htmlFor="first-name" className="text-white/90">First name</Label>
                             <FormControl>
-                                <Input id="first-name" placeholder="Max" {...field}/>
+                                <Input id="first-name" placeholder="Max" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary"/>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -77,9 +89,9 @@ export default function SignupPage() {
                         name="lastName"
                         render={({ field }) => (
                         <FormItem>
-                            <Label htmlFor="last-name">Last name</Label>
+                            <Label htmlFor="last-name" className="text-white/90">Last name</Label>
                             <FormControl>
-                                <Input id="last-name" placeholder="Robinson" {...field} />
+                                <Input id="last-name" placeholder="Robinson" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -91,9 +103,9 @@ export default function SignupPage() {
                     name="email"
                     render={({ field }) => (
                     <FormItem>
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email" className="text-white/90">Email</Label>
                         <FormControl>
-                            <Input id="email" type="email" placeholder="m@example.com" {...field} />
+                            <Input id="email" type="email" placeholder="m@example.com" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -104,32 +116,33 @@ export default function SignupPage() {
                     name="password"
                     render={({ field }) => (
                     <FormItem>
-                        <Label htmlFor="password">Password</Label>
+                        <Label htmlFor="password" className="text-white/90">Password</Label>
                         <FormControl>
-                            <Input id="password" type="password" {...field} />
+                            <Input id="password" type="password" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                 Create an account
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full bg-transparent hover:bg-white/20 text-white border-white/50 hover:border-white">
                 Sign up with Google
                 </Button>
             </form>
             </Form>
             </CardContent>
             <CardFooter className="justify-center">
-              <div className="text-center text-sm">
+              <div className="text-center text-sm text-white/80">
                 Already have an account?{' '}
-                <Link href="/login" className="underline">
+                <Link href="/login" className="underline text-white hover:font-bold">
                 Login
                 </Link>
               </div>
             </CardFooter>
         </Card>
+      </div>
     </div>
   );
 }
