@@ -9,6 +9,14 @@ function generateMockListings({ city, listingType }) {
   const listings = [];
   const count = Math.floor(Math.random() * 3) + 30; // Generate 30 to 32 listings
 
+  const homestayImageHints = [
+    'modern room', 'cozy cottage', 'guest suite', 'nature cabin', 'luxury villa', 'beach house',
+    'mountain lodge', 'rustic farmhouse', 'urban apartment', 'riverside retreat', 'garden view', 'poolside cabana',
+    'historic home', 'minimalist studio', 'bohemian loft', 'penthouse suite', 'lakefront bungalow', 'forest hideaway',
+    'desert oasis', 'tropical paradise', 'eco friendly home', 'ski chalet', 'country manor', 'island hut',
+    'treehouse escape', 'yurt experience', 'glass house', 'A-frame cabin', 'stone cottage', 'log cabin', 'houseboat stay', 'art deco flat'
+  ];
+
   if (listingType === 'homestays') {
     for (let i = 1; i <= count; i++) {
       listings.push({
@@ -18,7 +26,7 @@ function generateMockListings({ city, listingType }) {
         price: 1500 + Math.floor(Math.random() * 5000),
         rating: parseFloat((3.5 + Math.random() * 1.5).toFixed(1)),
         description: `This is a sample description for a wonderful homestay in ${city}. Enjoy your stay!`,
-        imageHint: 'modern room',
+        imageHint: homestayImageHints[i - 1] || 'homestay interior',
       });
     }
   } else if (listingType === 'guides') {
