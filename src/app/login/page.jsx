@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MapPin } from 'lucide-react';
-import { useAuth, useUser } from '@/firebase';
+import { useAuth, useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,9 +26,16 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect');
+
+  const userProfileRef = useMemoFirebase(() => {
+    if (!user || !firestore) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [user, firestore]);
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -38,10 +46,30 @@ export default function LoginPage() {
   });
 
   useEffect(() => {
-    if (!isUserLoading && user) {
-      router.push(redirect || '/');
+    if (!isUserLoading && user && !isProfileLoading) {
+      if (userProfile) {
+        const { role } = userProfile;
+        switch (role) {
+          case 'home stay host':
+            router.push('/host-dashboard');
+            return;
+          case 'tour guide':
+            router.push('/tour-guide-dashboard');
+            return;
+          case 'admin':
+            router.push('/admin-dashboard');
+            return;
+          case 'Tourist':
+          default:
+            router.push(redirect || '/profile');
+            return;
+        }
+      } else if (redirect) {
+        router.push(redirect);
+      }
     }
-  }, [user, isUserLoading, router, redirect]);
+  }, [user, isUserLoading, userProfile, isProfileLoading, router, redirect]);
+
 
   const onSubmit = (data) => {
     if (auth) {

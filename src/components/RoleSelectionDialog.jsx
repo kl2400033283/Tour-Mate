@@ -66,7 +66,20 @@ export function RoleSelectionDialog({ open, onOpenChange, signupData }) {
           description: `Your role has been set to ${selectedRole}.`,
         });
         onOpenChange(false);
-        router.push('/');
+        switch (selectedRole) {
+          case 'home stay host':
+            router.push('/host-dashboard');
+            break;
+          case 'tour guide':
+            router.push('/tour-guide-dashboard');
+            break;
+          case 'admin':
+            router.push('/admin-dashboard');
+            break;
+          default: // Tourist
+            router.push('/profile');
+            break;
+        }
       })
       .catch(() => {
         const permissionError = new FirestorePermissionError({
