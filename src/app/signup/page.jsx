@@ -99,7 +99,7 @@ export default function SignupPage() {
                         <FormItem>
                             <Label htmlFor="first-name" className="text-white/90">First name</Label>
                             <FormControl>
-                                <Input id="first-name" placeholder="Max" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary"/>
+                                <Input id="first-name" type="text" placeholder="Max" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary"/>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -112,7 +112,7 @@ export default function SignupPage() {
                         <FormItem>
                             <Label htmlFor="last-name" className="text-white/90">Last name</Label>
                             <FormControl>
-                                <Input id="last-name" placeholder="Robinson" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
+                                <Input id="last-name" type="text" placeholder="Robinson" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
