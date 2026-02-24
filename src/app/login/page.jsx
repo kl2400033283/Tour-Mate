@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Globe } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
 import { useForm } from 'react-hook-form';
@@ -58,7 +58,7 @@ export default function LoginPage() {
         <Card className="mx-auto max-w-sm w-full bg-white/10 backdrop-blur-md text-primary-foreground border-white/20 shadow-2xl">
           <CardHeader className="text-center space-y-4">
             <Link href="/" className="inline-block">
-                <Globe className="h-12 w-12 mx-auto text-white" />
+                <MapPin className="h-12 w-12 mx-auto text-white" />
             </Link>
             <div>
               <CardTitle className="text-2xl font-bold">Login to TourMate</CardTitle>

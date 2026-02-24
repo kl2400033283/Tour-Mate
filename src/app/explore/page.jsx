@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Globe, Search, Menu } from 'lucide-react';
+import { MapPin, Search, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -42,7 +42,7 @@ export default function ExplorePage() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <Globe className="h-8 w-8 text-primary" />
+            <MapPin className="h-8 w-8 text-primary" />
             <span className="text-2xl font-bold tracking-tight">TourMate</span>
           </Link>
 
@@ -77,7 +77,7 @@ export default function ExplorePage() {
                 <SheetContent side="right">
                   <nav className="flex flex-col gap-4 pt-8">
                      <Link href="/" className="flex items-center gap-3 mb-4">
-                      <Globe className="h-8 w-8 text-primary" />
+                      <MapPin className="h-8 w-8 text-primary" />
                       <span className="text-2xl font-bold tracking-tight">
                         TourMate
                       </span>

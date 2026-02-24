@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Globe, Menu } from 'lucide-react';
+import { MapPin, Menu } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -30,7 +30,7 @@ export default function Page() {
         <header className="p-4 sm:p-6">
           <div className="container mx-auto flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <Globe className="h-8 w-8 text-white" />
+              <MapPin className="h-8 w-8 text-white" />
               <span className="text-2xl font-bold tracking-tight">
                 TourMate
               </span>
@@ -60,7 +60,7 @@ export default function Page() {
                 <SheetContent side="right">
                   <nav className="flex flex-col gap-4 pt-8">
                      <Link href="/" className="flex items-center gap-3 mb-4">
-                      <Globe className="h-8 w-8" />
+                      <MapPin className="h-8 w-8 text-primary" />
                       <span className="text-2xl font-bold tracking-tight">
                         TourMate
                       </span>
