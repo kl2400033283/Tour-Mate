@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
-import { citiesByState } from '@/lib/tourist-cities';
+import { citiesByState } from '@/lib/tourist-cities.js';
 import { Skeleton } from '@/components/ui/skeleton';
 
 function HomestayCardSkeleton() {
@@ -79,17 +79,12 @@ export default function CityPage({ params }) {
   const citySlug = params.city;
   const firestore = useFirestore();
 
-  const cityDetails = useMemo(() => {
-    for (const stateSlug in citiesByState) {
-      const foundCity = citiesByState[stateSlug].find(c => c.slug === citySlug);
-      if (foundCity) return foundCity;
-    }
-    return { 
-        name: citySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '), 
-        slug: citySlug, 
-        stateName: 'India' 
-    };
-  }, [citySlug]);
+  const allCities = Object.values(citiesByState).flat();
+  const cityDetails = allCities.find(c => c.slug === citySlug) || {
+    name: citySlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+    slug: citySlug,
+  };
+
 
   const citiesQuery = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -131,10 +126,10 @@ export default function CityPage({ params }) {
           </div>
           <nav className="hidden items-center gap-2 sm:flex">
             <Button asChild variant="ghost">
-              <Link href="#">Login</Link>
+              <Link href="/login">Login</Link>
             </Button>
             <Button asChild>
-              <Link href="#">Sign Up</Link>
+              <Link href="/signup">Sign Up</Link>
             </Button>
           </nav>
            <div className="sm:hidden">
@@ -153,8 +148,8 @@ export default function CityPage({ params }) {
                         TourMate
                       </span>
                     </Link>
-                    <Link href="#" className="text-lg">Login</Link>
-                    <Link href="#" className="text-lg">Sign Up</Link>
+                    <Link href="/login" className="text-lg">Login</Link>
+                    <Link href="/signup" className="text-lg">Sign Up</Link>
                     <Link href="/explore" className="text-lg">Destinations</Link>
                   </nav>
                 </SheetContent>
@@ -168,7 +163,7 @@ export default function CityPage({ params }) {
           Homestays in {cityDetails.name}
         </h1>
         <p className="text-muted-foreground mb-8">
-          Discover unique places to stay in {cityDetails.stateName} and make your trip unforgettable.
+          Discover unique places to stay and make your trip unforgettable.
         </p>
         
         {isLoading && (

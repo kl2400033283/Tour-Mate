@@ -34,7 +34,7 @@ export default function Page() {
             </Link>
             <nav className="hidden items-center gap-2 sm:flex">
               <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                <Link href="#">Login</Link>
+                <Link href="/login">Login</Link>
               </Button>
               <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
                 <Link href="#">About Us</Link>
@@ -62,7 +62,7 @@ export default function Page() {
                         TourMate
                       </span>
                     </Link>
-                    <Link href="#" className="text-lg">Login</Link>
+                    <Link href="/login" className="text-lg">Login</Link>
                     <Link href="#" className="text-lg">About Us</Link>
                     <Link href="/explore" className="text-lg">Destinations</Link>
                     <Link href="#" className="text-lg">Contact</Link>

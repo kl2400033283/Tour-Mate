@@ -59,10 +59,10 @@ export default function ExplorePage() {
 
           <nav className="hidden items-center gap-2 sm:flex">
             <Button asChild variant="ghost">
-              <Link href="#">Login</Link>
+              <Link href="/login">Login</Link>
             </Button>
             <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Link href="#">Sign Up</Link>
+              <Link href="/signup">Sign Up</Link>
             </Button>
           </nav>
 
@@ -82,8 +82,8 @@ export default function ExplorePage() {
                         TourMate
                       </span>
                     </Link>
-                    <Link href="#" className="text-lg">Login</Link>
-                    <Link href="#" className="text-lg">Sign Up</Link>
+                    <Link href="/login" className="text-lg">Login</Link>
+                    <Link href="/signup" className="text-lg">Sign Up</Link>
                     <Link href="#" className="text-lg">About Us</Link>
                     <Link href="/explore" className="text-lg">Destinations</Link>
                     <Link href="#" className="text-lg">Contact</Link>
