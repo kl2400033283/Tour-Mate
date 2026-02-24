@@ -73,6 +73,7 @@ export default function SignupPage() {
         className="absolute top-0 left-0 w-full h-full object-cover -z-10"
         data-ai-hint={imageHint}
         priority
+        suppressHydrationWarning
       />
       <div className="absolute inset-0 bg-black/60 -z-10" />
       <div className="min-h-screen w-full flex items-center justify-center p-4">
@@ -145,11 +146,11 @@ export default function SignupPage() {
                     </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isSubmitting}>
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isSubmitting} suppressHydrationWarning>
                   {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {isSubmitting ? "Creating Account..." : "Create an account"}
                 </Button>
-                <Button variant="outline" className="w-full bg-transparent hover:bg-white/20 text-white border-white/50 hover:border-white">
+                <Button variant="outline" className="w-full bg-transparent hover:bg-white/20 text-white border-white/50 hover:border-white" suppressHydrationWarning>
                 Sign up with Google
                 </Button>
             </form>
@@ -157,10 +158,7 @@ export default function SignupPage() {
             </CardContent>
             <CardFooter className="justify-center">
               <div className="text-center text-sm text-white/80">
-                Already have an account?{' '}
-                <Link href="/login" className="underline text-white hover:font-bold">
-                Login
-                </Link>
+                Already have an account? Please return to the homepage to log in.
               </div>
             </CardFooter>
         </Card>

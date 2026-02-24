@@ -54,9 +54,7 @@ export default function ProfilePage() {
                         <CardDescription>You must be logged in to view your profile.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button asChild size="lg">
-                            <Link href="/login">Login Now</Link>
-                        </Button>
+                       <p className="text-sm text-muted-foreground">Please return to the homepage to log in.</p>
                     </CardContent>
                 </Card>
             </main>

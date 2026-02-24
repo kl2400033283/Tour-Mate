@@ -95,11 +95,7 @@ export default function CityPage({ params }) {
                 <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
                   <Link href="/profile">Profile</Link>
                 </Button>
-              ) : (
-                <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                  <Link href="/login">Login</Link>
-                </Button>
-              )}
+              ) : null}
             </nav>
 
             <div className="sm:hidden">
@@ -120,9 +116,7 @@ export default function CityPage({ params }) {
                     </Link>
                     {user ? (
                         <Link href="/profile" className="text-lg">Profile</Link>
-                    ) : (
-                        <Link href="/login" className="text-lg">Login</Link>
-                    )}
+                    ) : null}
                     <Link href="/explore" className="text-lg">Destinations</Link>
                   </nav>
                 </SheetContent>
