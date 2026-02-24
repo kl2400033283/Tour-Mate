@@ -59,10 +59,6 @@ export default function CityPage() {
 
   const { name, stateName, description, image, hint, attractionDetails = [] } = city;
   
-  const generalAttractionDescription = attractionDetails.length > 0 
-    ? "A peaceful riverside ghat known for sunrise views, spiritual gatherings, and cultural performances."
-    : "";
-
 
   return (
     <div className="bg-white text-gray-800">
@@ -156,18 +152,13 @@ export default function CityPage() {
       </div>
 
       <main className="container mx-auto py-12 md:py-20 px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 items-center mb-12">
-            <div className="md:col-span-1">
-                <h2 className="font-headline text-3xl font-bold mb-1">
-                    Attractions in {name}
-                </h2>
-                <p className="text-muted-foreground">
-                    Explore sacred and historic landmarks
-                </p>
-            </div>
-            <div className="md:col-span-2 text-left md:text-right mt-4 md:mt-0">
-                <p className="text-muted-foreground">{generalAttractionDescription}</p>
-            </div>
+        <div className="text-center mb-12">
+            <h2 className="font-headline text-3xl font-bold mb-1">
+                Attractions in {name}
+            </h2>
+            <p className="text-muted-foreground">
+                Explore sacred and historic landmarks
+            </p>
         </div>
         
         {attractionDetails.length > 0 ? (
