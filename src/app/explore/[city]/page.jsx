@@ -178,9 +178,6 @@ export default function CityPage() {
 
         <div className="mt-20 text-center space-y-4 sm:space-y-0 sm:space-x-4">
            <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-10 py-6 rounded-lg font-semibold">
-              <Link href={`/book-homestay/${params.city}`}>Book Homestay</Link>
-           </Button>
-           <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-10 py-6 rounded-lg font-semibold">
              <Link href={`/hire-local-guide/${params.city}`}>Hire Local Guide</Link>
            </Button>
         </div>
