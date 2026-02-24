@@ -16,6 +16,15 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
 import { generateListingsAction } from '@/lib/actions';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogFooter,
+} from '@/components/ui/alert-dialog';
 
 const getCityData = (slug) => {
   if (!slug) return null;
@@ -30,46 +39,68 @@ function GuideCard({ guide, user }) {
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
+  const params = useParams();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleHire = () => {
     if (user) {
       toast({
-        title: "Coming Soon!",
-        description: "Hiring functionality is under development."
+        variant: 'success',
+        title: "Guide Hired!",
+        description: "Your tour guide is booked successfully.",
+        duration: 10000,
       });
+      setIsDialogOpen(true);
     } else {
       router.push(`/login?redirect=${pathname}`);
     }
   };
 
+  const handleDialogYes = () => {
+    router.push(`/book-homestay/${params.city}`);
+  };
+
   return (
-    <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-transform duration-300 flex flex-col">
-      <CardContent className="p-0">
-        <div className="relative h-48 w-full">
-          <Image
-            src={`https://picsum.photos/seed/${guide.imageHint?.replace(/\s/g, '-') || guide.id}/400/300`}
-            alt={guide.name}
-            fill
-            className="object-cover"
-            data-ai-hint={guide.imageHint}
-          />
-        </div>
-      </CardContent>
-      <CardHeader className="p-4">
-        <CardTitle className="text-lg font-bold">{guide.name}</CardTitle>
-      </CardHeader>
-      <CardContent className="p-4 pt-0 flex-grow space-y-2">
-        <p className="text-sm text-muted-foreground">{guide.specialty}</p>
-        <p className="text-base font-semibold">₹{guide.rate.toLocaleString()}/hour</p>
-        <div className="flex items-center gap-1">
-          <Star className="w-4 h-4 text-primary fill-primary" />
-          <span className="font-bold">{guide.rating.toFixed(1)}</span>
-        </div>
-      </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <Button className="w-full" onClick={handleHire}>Hire</Button>
-      </CardFooter>
-    </Card>
+    <>
+      <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-transform duration-300 flex flex-col">
+        <CardContent className="p-0">
+          <div className="relative h-48 w-full">
+            <Image
+              src={`https://picsum.photos/seed/${guide.imageHint?.replace(/\s/g, '-') || guide.id}/400/300`}
+              alt={guide.name}
+              fill
+              className="object-cover"
+              data-ai-hint={guide.imageHint}
+            />
+          </div>
+        </CardContent>
+        <CardHeader className="p-4">
+          <CardTitle className="text-lg font-bold">{guide.name}</CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 pt-0 flex-grow space-y-2">
+          <p className="text-sm text-muted-foreground">{guide.specialty}</p>
+          <p className="text-base font-semibold">₹{guide.rate.toLocaleString()}/hour</p>
+          <div className="flex items-center gap-1">
+            <Star className="w-4 h-4 text-primary fill-primary" />
+            <span className="font-bold">{guide.rating.toFixed(1)}</span>
+          </div>
+        </CardContent>
+        <CardFooter className="p-4 pt-0">
+          <Button className="w-full" onClick={handleHire}>Hire</Button>
+        </CardFooter>
+      </Card>
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Would you like to book a homestay?</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>No</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDialogYes}>Yes</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 

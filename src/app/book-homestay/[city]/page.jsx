@@ -15,6 +15,15 @@ import { notFound } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { generateListingsAction } from '@/lib/actions';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogFooter,
+} from '@/components/ui/alert-dialog';
 
 const getCityData = (slug) => {
   if (!slug) return null;
@@ -29,6 +38,8 @@ function HomestayCard({ homestay, user }) {
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
+  const params = useParams();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleConfirm = () => {
     if (user) {
@@ -38,38 +49,56 @@ function HomestayCard({ homestay, user }) {
         description: "Your homestay is booked successfully.",
         duration: 10000,
       });
+      setIsDialogOpen(true);
     } else {
       router.push(`/login?redirect=${pathname}`);
     }
   };
 
+  const handleDialogYes = () => {
+    router.push(`/hire-local-guide/${params.city}`);
+  };
+
   return (
-    <Card className="overflow-hidden bg-card shadow-md rounded-xl flex flex-col">
-      <div className="relative h-48 w-full">
-        <Image
-          src={`https://picsum.photos/seed/${homestay.imageHint?.replace(/\s/g, '-') || homestay.id}/400/300`}
-          alt={homestay.name}
-          fill
-          className="object-cover"
-          data-ai-hint={homestay.imageHint}
-        />
-      </div>
-      <div className="p-4 space-y-3 flex flex-col flex-grow">
-        <div className="flex-grow">
-          <h3 className="text-xl font-bold">{homestay.name}</h3>
-          <p className="text-sm text-muted-foreground">{homestay.location}</p>
+    <>
+      <Card className="overflow-hidden bg-card shadow-md rounded-xl flex flex-col">
+        <div className="relative h-48 w-full">
+          <Image
+            src={`https://picsum.photos/seed/${homestay.imageHint?.replace(/\s/g, '-') || homestay.id}/400/300`}
+            alt={homestay.name}
+            fill
+            className="object-cover"
+            data-ai-hint={homestay.imageHint}
+          />
         </div>
-        <div className="space-y-2">
-            <p className="text-base font-semibold">{homestay.price.toLocaleString()}/Night</p>
-            <div className="flex items-center gap-1 text-sm">
-                <Star className="w-4 h-4 text-primary fill-primary" />
-                <span className="font-bold text-foreground">{homestay.rating.toFixed(1)}</span>
-            </div>
-            <p className="text-sm text-muted-foreground h-10">{homestay.description}</p>
+        <div className="p-4 space-y-3 flex flex-col flex-grow">
+          <div className="flex-grow">
+            <h3 className="text-xl font-bold">{homestay.name}</h3>
+            <p className="text-sm text-muted-foreground">{homestay.location}</p>
+          </div>
+          <div className="space-y-2">
+              <p className="text-base font-semibold">{homestay.price.toLocaleString()}/Night</p>
+              <div className="flex items-center gap-1 text-sm">
+                  <Star className="w-4 h-4 text-primary fill-primary" />
+                  <span className="font-bold text-foreground">{homestay.rating.toFixed(1)}</span>
+              </div>
+              <p className="text-sm text-muted-foreground h-10">{homestay.description}</p>
+          </div>
+          <Button className="w-full mt-2" onClick={handleConfirm}>Confirm</Button>
         </div>
-        <Button className="w-full mt-2" onClick={handleConfirm}>Confirm</Button>
-      </div>
-    </Card>
+      </Card>
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Would you like to hire a tour guide?</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>No</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDialogYes}>Yes</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 
