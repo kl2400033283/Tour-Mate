@@ -25,14 +25,20 @@ const getCityData = (slug) => {
   return null;
 };
 
-function HomestayCard({ homestay }) {
+function HomestayCard({ homestay, user }) {
   const { toast } = useToast();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleConfirm = () => {
-    toast({
-      title: "Booking Confirmed!",
-      description: "Your homestay has been booked."
-    });
+    if (user) {
+      toast({
+        title: "Booking Confirmed!",
+        description: "Your homestay has been booked."
+      });
+    } else {
+      router.push(`/login?redirect=${pathname}`);
+    }
   };
 
   return (
@@ -103,12 +109,6 @@ export default function BookHomestayPage() {
   const [rating, setRating] = useState('all');
 
   useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.replace(`/login?redirect=${pathname}`);
-    }
-  }, [user, isUserLoading, router, pathname]);
-
-  useEffect(() => {
     if (!citySlug) return;
     
     const fetchHomestays = async () => {
@@ -141,7 +141,7 @@ export default function BookHomestayPage() {
       .filter(homestay => rating === 'all' || homestay.rating >= parseFloat(rating));
   }, [homestays, searchQuery, priceRange, rating]);
 
-  if (isUserLoading || !user) {
+  if (isUserLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -237,7 +237,7 @@ export default function BookHomestayPage() {
         ) : filteredHomestays.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredHomestays.map(homestay => (
-              <HomestayCard key={homestay.id} homestay={homestay} />
+              <HomestayCard key={homestay.id} homestay={homestay} user={user} />
             ))}
           </div>
         ) : (

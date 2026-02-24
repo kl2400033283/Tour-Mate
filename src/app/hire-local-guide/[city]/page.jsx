@@ -26,14 +26,20 @@ const getCityData = (slug) => {
   return null;
 };
 
-function GuideCard({ guide }) {
+function GuideCard({ guide, user }) {
   const { toast } = useToast();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleHire = () => {
-    toast({
-      title: "Coming Soon!",
-      description: "Hiring functionality is under development."
-    });
+    if (user) {
+      toast({
+        title: "Coming Soon!",
+        description: "Hiring functionality is under development."
+      });
+    } else {
+      router.push(`/login?redirect=${pathname}`);
+    }
   };
 
   return (
@@ -100,12 +106,6 @@ export default function HireLocalGuidePage() {
   const [rating, setRating] = useState('all');
 
   useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.replace(`/login?redirect=${pathname}`);
-    }
-  }, [user, isUserLoading, router, pathname]);
-
-  useEffect(() => {
     if (!citySlug) return;
     
     const fetchGuides = async () => {
@@ -138,7 +138,7 @@ export default function HireLocalGuidePage() {
       .filter(guide => rating === 'all' || guide.rating >= parseFloat(rating));
   }, [guides, searchQuery, specialty, rating]);
 
-  if (isUserLoading || !user) {
+  if (isUserLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -248,7 +248,7 @@ export default function HireLocalGuidePage() {
         ) : filteredGuides.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredGuides.map(guide => (
-              <GuideCard key={guide.id} guide={guide} />
+              <GuideCard key={guide.id} guide={guide} user={user} />
             ))}
           </div>
         ) : (
