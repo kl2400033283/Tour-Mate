@@ -1,7 +1,7 @@
 'use client';
 
-import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
+import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { doc, collection, query, orderBy } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
@@ -9,6 +9,7 @@ import { Loader2, ShieldAlert, MapPin, LogOut, LayoutGrid, Bed, UserCheck, Menu,
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 
@@ -27,7 +28,6 @@ function SidebarNav({ isMobile = false }) {
         { href: '#', icon: UserCheck, label: 'My Guide Bookings' },
     ];
 
-    // For now, we'll consider '/profile' as the dashboard path
     const pathname = '/profile';
 
     return (
@@ -70,6 +70,22 @@ export default function ProfilePage() {
 
     const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
 
+    const homestayBookingsQuery = useMemoFirebase(() => {
+        if (!user || !firestore) return null;
+        return query(collection(firestore, 'users', user.uid, 'homestayBookings'), orderBy('bookingDate', 'desc'));
+    }, [user, firestore]);
+    const { data: homestayBookings, isLoading: homestayLoading } = useCollection(homestayBookingsQuery);
+    const latestHomestayBooking = homestayBookings?.[0];
+
+    const guideBookingsQuery = useMemoFirebase(() => {
+        if (!user || !firestore) return null;
+        return query(collection(firestore, 'users', user.uid, 'guideBookings'), orderBy('bookingDate', 'desc'));
+    }, [user, firestore]);
+    const { data: guideBookings, isLoading: guideLoading } = useCollection(guideBookingsQuery);
+    const latestGuideBooking = guideBookings?.[0];
+
+    const totalTrips = (homestayBookings?.length || 0) + (guideBookings?.length || 0);
+    const isCardsLoading = homestayLoading || guideLoading;
 
     const handleSignOut = () => {
         const auth = getAuth();
@@ -121,7 +137,6 @@ export default function ProfilePage() {
     }
 
     const displayName = userProfile ? `${userProfile.firstName} ${userProfile.lastName}`.trim() : (user?.email?.split('@')[0] || 'User');
-
 
     return (
         <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -195,10 +210,21 @@ export default function ProfilePage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-lg font-bold">Ganga View Homestay</div>
-                                <p className="text-xs text-muted-foreground">
-                                    12 June – 15 June
-                                </p>
+                                {isCardsLoading ? (
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-6 w-3/4" />
+                                        <Skeleton className="h-4 w-1/2" />
+                                    </div>
+                                ) : latestHomestayBooking ? (
+                                    <>
+                                        <div className="text-lg font-bold">{latestHomestayBooking.homestayName}</div>
+                                        <p className="text-xs text-muted-foreground">
+                                            {latestHomestayBooking.checkInDate} – {latestHomestayBooking.checkOutDate}
+                                        </p>
+                                    </>
+                                ) : (
+                                    <div className="text-lg font-bold">No bookings yet.</div>
+                                )}
                             </CardContent>
                         </Card>
                         <Card>
@@ -208,10 +234,21 @@ export default function ProfilePage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-lg font-bold">Ravi Sharma</div>
-                                <p className="text-xs text-muted-foreground">
-                                    13 June 2026
-                                </p>
+                               {isCardsLoading ? (
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-6 w-3/4" />
+                                        <Skeleton className="h-4 w-1/2" />
+                                    </div>
+                                ) : latestGuideBooking ? (
+                                    <>
+                                        <div className="text-lg font-bold">{latestGuideBooking.guideName}</div>
+                                        <p className="text-xs text-muted-foreground">
+                                            {latestGuideBooking.tourDate}
+                                        </p>
+                                    </>
+                                ) : (
+                                    <div className="text-lg font-bold">No bookings yet.</div>
+                                )}
                             </CardContent>
                         </Card>
                         <Card>
@@ -219,7 +256,11 @@ export default function ProfilePage() {
                                 <CardTitle className="text-sm font-medium">Total Trips</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-lg font-bold">3 Bookings</div>
+                                {isCardsLoading ? (
+                                    <Skeleton className="h-6 w-1/2" />
+                                ) : (
+                                    <div className="text-lg font-bold">{totalTrips} Booking{totalTrips !== 1 ? 's' : ''}</div>
+                                )}
                                 <p className='text-xs text-muted-foreground invisible'>-</p>
                             </CardContent>
                         </Card>

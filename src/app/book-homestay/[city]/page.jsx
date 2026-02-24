@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { useUser } from '@/firebase';
+import { useUser, useFirestore } from '@/firebase';
 import { useRouter, usePathname, useParams, useSearchParams } from 'next/navigation';
 import { Calendar as CalendarIcon, Loader2, MapPin, Search, Star, Menu } from 'lucide-react';
 import Link from 'next/link';
@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogFooter,
 } from '@/components/ui/alert-dialog';
+import { saveHomestayBooking } from '@/lib/bookings';
 import { cn } from '@/lib/utils';
 
 const getCityData = (slug) => {
@@ -35,19 +36,41 @@ const getCityData = (slug) => {
   return null;
 };
 
-function HomestayCard({ homestay, user }) {
+function HomestayCard({ homestay, user, city, date }) {
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
   const searchParams = useSearchParams();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const firestore = useFirestore();
 
   const cameFromGuidePage = searchParams.get('from') === 'guide';
 
+  const saveBooking = () => {
+    if (!firestore || !user) return;
+    const bookingDetails = {
+      homestayId: homestay.id,
+      homestayName: homestay.name,
+      city: city.name,
+      checkInDate: date.from,
+      checkOutDate: date.to,
+    };
+    saveHomestayBooking(firestore, user.uid, bookingDetails);
+  };
+
   const handleConfirm = () => {
     if (user) {
+      if (!date.from || !date.to) {
+        toast({
+          variant: 'destructive',
+          title: 'Missing Dates',
+          description: 'Please enter check-in and check-out dates.',
+        });
+        return;
+      }
       if (cameFromGuidePage) {
+        saveBooking();
         toast({
           variant: 'success',
           title: 'Booking Complete!',
@@ -69,6 +92,7 @@ function HomestayCard({ homestay, user }) {
   };
 
   const handleDialogNo = () => {
+    saveBooking();
     toast({
       variant: "success",
       title: "Booking Confirmed!",
@@ -307,7 +331,7 @@ export default function BookHomestayPage() {
         ) : filteredHomestays.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredHomestays.map(homestay => (
-              <HomestayCard key={homestay.id} homestay={homestay} user={user} />
+              <HomestayCard key={homestay.id} homestay={homestay} user={user} city={city} date={date} />
             ))}
           </div>
         ) : (

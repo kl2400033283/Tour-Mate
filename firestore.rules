@@ -4,11 +4,11 @@
  * Data Structure: The data is organized into three independent, top-level collections:
  *   - /cities/{cityId}: Publicly readable city information.
  *   - /homestays/{homestayId}: Publicly readable homestay listings.
- *   - /users/{userId}: Private user profile data, accessible only by the owner.
+ *   - /users/{userId}: Private user profile data, accessible only by the owner, with subcollections for bookings.
  *
  * Key Security Decisions:
  * - Public Read Access: `/cities` and `/homestays` are public for read operations (`get`, `list`).
- * - User-Owned Profiles: In the `/users` collection, users can only create, read, and update their own document, identified by their UID. This is enforced using the `isOwner` function.
+ * - User-Owned Profiles & Data: In the `/users` collection, users can only create, read, and update their own document, identified by their UID. This is enforced using the `isOwner` function. This ownership extends to subcollections like `homestayBookings` and `guideBookings`.
  * - All Other Writes Disabled: Public collections are read-only. Users cannot delete their profiles or list other users.
  */
 rules_version = '2';
@@ -44,7 +44,7 @@ service cloud.firestore {
     }
 
     /**
-     * @description Secures user profile data.
+     * @description Secures user profile data and their subcollections.
      * @path        /users/{userId}
      * @allow       create, get, update: If the user is signed in and is the owner of the document.
      * @deny        list, delete: For all users to protect privacy and prevent data loss.
@@ -52,6 +52,24 @@ service cloud.firestore {
     match /users/{userId} {
       allow create, get, update: if isSignedIn() && isOwner(userId);
       allow list, delete: if false;
+
+      /**
+       * @description Secures a user's homestay bookings.
+       * @path        /users/{userId}/homestayBookings/{bookingId}
+       * @allow       read, write: If the user is signed in and is the owner of the user document.
+       */
+      match /homestayBookings/{bookingId} {
+        allow read, write: if isSignedIn() && isOwner(userId);
+      }
+
+      /**
+       * @description Secures a user's guide bookings.
+       * @path        /users/{userId}/guideBookings/{bookingId}
+       * @allow       read, write: If the user is signed in and is the owner of the user document.
+       */
+      match /guideBookings/{bookingId} {
+        allow read, write: if isSignedIn() && isOwner(userId);
+      }
     }
   }
 }

@@ -161,6 +161,83 @@
         "lastName",
         "phoneNumber"
       ]
+    },
+    "HomestayBooking": {
+      "title": "Homestay Booking",
+      "type": "object",
+      "description": "Represents a booking made by a user for a homestay.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who made the booking."
+        },
+        "homestayId": {
+          "type": "string"
+        },
+        "homestayName": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "checkInDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "checkOutDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "bookingDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "userId",
+        "homestayId",
+        "homestayName",
+        "city",
+        "checkInDate",
+        "checkOutDate",
+        "bookingDate"
+      ]
+    },
+    "GuideBooking": {
+      "title": "Guide Booking",
+      "type": "object",
+      "description": "Represents a booking made by a user for a tour guide.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who made the booking."
+        },
+        "guideId": {
+          "type": "string"
+        },
+        "guideName": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "tourDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "bookingDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "userId",
+        "guideId",
+        "guideName",
+        "city",
+        "tourDate",
+        "bookingDate"
+      ]
     }
   },
   "auth": {
@@ -205,6 +282,26 @@
             "$ref": "#/backend/entities/UserProfile"
           },
           "description": "Stores user profile information. Each user's document is identified by their Firebase Auth UID. Security rules ensure that users can only create and modify their own profile document, preventing unauthorized access to other users' data. The 'role' field is critical for role-based access control throughout the app."
+        }
+      },
+      {
+        "path": "/users/{userId}/homestayBookings/{bookingId}",
+        "definition": {
+          "entityName": "HomestayBooking",
+          "schema": {
+            "$ref": "#/backend/entities/HomestayBooking"
+          },
+          "description": "Stores a user's homestay bookings. Only accessible by the user themselves."
+        }
+      },
+      {
+        "path": "/users/{userId}/guideBookings/{bookingId}",
+        "definition": {
+          "entityName": "GuideBooking",
+          "schema": {
+            "$ref": "#/backend/entities/GuideBooking"
+          },
+          "description": "Stores a user's tour guide bookings. Only accessible by the user themselves."
         }
       }
     ],

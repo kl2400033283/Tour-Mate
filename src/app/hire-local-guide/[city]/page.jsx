@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { useUser } from '@/firebase';
+import { useUser, useFirestore } from '@/firebase';
 import { useRouter, usePathname, useParams, useSearchParams } from 'next/navigation';
 import { Loader2, MapPin, Search, Star, Menu, Calendar as CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogFooter,
 } from '@/components/ui/alert-dialog';
+import { saveGuideBooking } from '@/lib/bookings';
 import { cn } from '@/lib/utils';
 
 const getCityData = (slug) => {
@@ -36,19 +37,40 @@ const getCityData = (slug) => {
   return null;
 };
 
-function GuideCard({ guide, user }) {
+function GuideCard({ guide, user, city, date }) {
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
   const searchParams = useSearchParams();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const firestore = useFirestore();
 
   const cameFromHomestayPage = searchParams.get('from') === 'homestay';
 
+  const saveBooking = () => {
+    if (!firestore || !user) return;
+    const bookingDetails = {
+      guideId: guide.id,
+      guideName: guide.name,
+      city: city.name,
+      tourDate: date.from,
+    };
+    saveGuideBooking(firestore, user.uid, bookingDetails);
+  };
+
   const handleHire = () => {
     if (user) {
+      if (!date.from) {
+        toast({
+          variant: 'destructive',
+          title: 'Missing Date',
+          description: 'Please enter a tour date.',
+        });
+        return;
+      }
       if (cameFromHomestayPage) {
+        saveBooking();
         toast({
           variant: 'success',
           title: 'Booking Complete!',
@@ -70,6 +92,7 @@ function GuideCard({ guide, user }) {
   };
 
   const handleDialogNo = () => {
+    saveBooking();
     toast({
       variant: 'success',
       title: "Guide Hired!",
@@ -344,7 +367,7 @@ export default function HireLocalGuidePage() {
         ) : filteredGuides.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredGuides.map(guide => (
-              <GuideCard key={guide.id} guide={guide} user={user} />
+              <GuideCard key={guide.id} guide={guide} user={user} city={city} date={date} />
             ))}
           </div>
         ) : (
