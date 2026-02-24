@@ -24,9 +24,6 @@ import {
   AlertDialogTitle,
   AlertDialogFooter,
 } from '@/components/ui/alert-dialog';
-import { format } from 'date-fns';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 
 const getCityData = (slug) => {
@@ -160,7 +157,7 @@ export default function BookHomestayPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [priceRange, setPriceRange] = useState('all');
   const [rating, setRating] = useState('all');
-  const [date, setDate] = useState({ from: undefined, to: undefined });
+  const [date, setDate] = useState({ from: '', to: '' });
 
   useEffect(() => {
     if (!citySlug) return;
@@ -251,52 +248,25 @@ export default function BookHomestayPage() {
                 onChange={e => setSearchQuery(e.target.value)}
               />
             </div>
-             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "justify-start text-left font-normal bg-background focus:bg-card border-none h-11",
-                    !date.from && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date.from ? format(date.from, "dd/MM/yyyy") : <span>From date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={date.from}
-                  onSelect={(day) => setDate(prev => ({ ...prev, from: day, to: prev.to && day > prev.to ? undefined : prev.to }))}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+             <div className="relative">
+              <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="From (DD/MM/YYYY)"
+                className="pl-10 bg-background focus:bg-card border-none h-11"
+                value={date.from}
+                onChange={e => setDate(prev => ({ ...prev, from: e.target.value }))}
+              />
+            </div>
 
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "justify-start text-left font-normal bg-background focus:bg-card border-none h-11",
-                    !date.to && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date.to ? format(date.to, "dd/MM/yyyy") : <span>To date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={date.to}
-                  onSelect={(day) => setDate(prev => ({ ...prev, to: day }))}
-                  disabled={{ before: date.from }}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <div className="relative">
+              <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="To (DD/MM/YYYY)"
+                className="pl-10 bg-background focus:bg-card border-none h-11"
+                value={date.to}
+                onChange={e => setDate(prev => ({ ...prev, to: e.target.value }))}
+              />
+            </div>
             <Select value={priceRange} onValueChange={setPriceRange}>
                 <SelectTrigger className="bg-background focus:bg-card border-none h-11">
                     <SelectValue placeholder="Price" />
