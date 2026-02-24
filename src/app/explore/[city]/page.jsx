@@ -6,7 +6,14 @@ import { Button } from '@/components/ui/button';
 import { citiesByState } from '@/lib/tourist-cities.js';
 import { notFound } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { MapPin, ArrowLeft } from 'lucide-react';
+import { MapPin, ArrowLeft, Menu } from 'lucide-react';
+import { useUser } from '@/firebase';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+
 
 const getCityData = (slug) => {
   for (const state in citiesByState) {
@@ -43,6 +50,7 @@ function AttractionCard({ attraction }) {
 
 export default function CityPage({ params }) {
   const router = useRouter();
+  const { user } = useUser();
   const city = getCityData(params.city);
 
   if (!city) {
@@ -70,15 +78,56 @@ export default function CityPage({ params }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
         
         <header className="absolute top-0 left-0 right-0 z-20 p-4">
-          <div className="container mx-auto flex items-center">
-            <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white mr-2" onClick={() => router.back()}>
-                <ArrowLeft className="h-6 w-6" />
-                <span className="sr-only">Back</span>
-            </Button>
-            <Link href="/" className="flex items-center gap-2">
-              <MapPin className="h-6 w-6" />
-              <span className="text-xl font-bold tracking-tight">TourMate</span>
-            </Link>
+          <div className="container mx-auto flex items-center justify-between">
+            <div className='flex items-center'>
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white mr-2" onClick={() => router.back()}>
+                  <ArrowLeft className="h-6 w-6" />
+                  <span className="sr-only">Back</span>
+              </Button>
+              <Link href="/" className="flex items-center gap-2">
+                <MapPin className="h-6 w-6" />
+                <span className="text-xl font-bold tracking-tight">TourMate</span>
+              </Link>
+            </div>
+            
+            <nav className="hidden items-center gap-2 sm:flex">
+              {user ? (
+                <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                  <Link href="/profile">Profile</Link>
+                </Button>
+              ) : (
+                <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                  <Link href="/login">Login</Link>
+                </Button>
+              )}
+            </nav>
+
+            <div className="sm:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right">
+                  <nav className="flex flex-col gap-4 pt-8">
+                     <Link href="/" className="flex items-center gap-2 mb-4">
+                      <MapPin className="h-6 w-6 text-primary" />
+                      <span className="text-xl font-bold tracking-tight">
+                        TourMate
+                      </span>
+                    </Link>
+                    {user ? (
+                        <Link href="/profile" className="text-lg">Profile</Link>
+                    ) : (
+                        <Link href="/login" className="text-lg">Login</Link>
+                    )}
+                    <Link href="/explore" className="text-lg">Destinations</Link>
+                  </nav>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </header>
 
@@ -98,7 +147,7 @@ export default function CityPage({ params }) {
       <main className="container mx-auto py-12 md:py-20 px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 items-center mb-12">
             <div className="md:col-span-1">
-                <h2 className="text-3xl font-headline font-bold mb-1">
+                <h2 className="font-headline text-3xl font-bold mb-1">
                     Attractions in {name}
                 </h2>
                 <p className="text-muted-foreground">

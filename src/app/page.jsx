@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -8,8 +10,11 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { PlaceHolderImages } from '@/lib/placeholder-images.js';
+import { useUser } from '@/firebase';
+
 
 export default function Page() {
+  const { user } = useUser();
   const backgroundImage = PlaceHolderImages.find(p => p.id === 'background-image');
   const imageUrl = backgroundImage?.imageUrl || 'https://picsum.photos/seed/bg/1920/1080';
   const imageHint = backgroundImage?.imageHint || 'India travel';
@@ -36,9 +41,15 @@ export default function Page() {
               </span>
             </Link>
             <nav className="hidden items-center gap-2 sm:flex">
-              <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                <Link href="/login">Login</Link>
-              </Button>
+              {user ? (
+                 <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                    <Link href="/profile">Profile</Link>
+                 </Button>
+              ) : (
+                <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                  <Link href="/login">Login</Link>
+                </Button>
+              )}
               <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
                 <Link href="#">About Us</Link>
               </Button>
@@ -65,7 +76,11 @@ export default function Page() {
                         TourMate
                       </span>
                     </Link>
-                    <Link href="/login" className="text-lg">Login</Link>
+                    {user ? (
+                      <Link href="/profile" className="text-lg">Profile</Link>
+                    ): (
+                      <Link href="/login" className="text-lg">Login</Link>
+                    )}
                     <Link href="#" className="text-lg">About Us</Link>
                     <Link href="/explore" className="text-lg">Destinations</Link>
                     <Link href="#" className="text-lg">Contact</Link>

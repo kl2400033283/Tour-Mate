@@ -20,9 +20,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { citiesByState } from '@/lib/tourist-cities.js';
+import { useUser } from '@/firebase';
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const { user } = useUser();
 
   const allCities = Object.entries(citiesByState).flatMap(([stateSlug, cities]) => 
     cities.map(city => ({
@@ -47,12 +49,20 @@ export default function ExplorePage() {
               </Link>
     
               <nav className="hidden items-center gap-2 sm:flex">
-                <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                  <Link href="/login">Login</Link>
-                </Button>
-                <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                  <Link href="/signup">Sign Up</Link>
-                </Button>
+                {user ? (
+                  <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                    <Link href="/profile">Profile</Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                      <Link href="/login">Login</Link>
+                    </Button>
+                    <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                      <Link href="/signup">Sign Up</Link>
+                    </Button>
+                  </>
+                )}
               </nav>
     
                <div className="sm:hidden">
@@ -71,8 +81,14 @@ export default function ExplorePage() {
                             TourMate
                           </span>
                         </Link>
-                        <Link href="/login" className="text-lg">Login</Link>
-                        <Link href="/signup" className="text-lg">Sign Up</Link>
+                        {user ? (
+                          <Link href="/profile" className="text-lg">Profile</Link>
+                        ) : (
+                          <>
+                            <Link href="/login" className="text-lg">Login</Link>
+                            <Link href="/signup" className="text-lg">Sign Up</Link>
+                          </>
+                        )}
                         <Link href="#" className="text-lg">About Us</Link>
                         <Link href="/explore" className="text-lg">Destinations</Link>
                         <Link href="#" className="text-lg">Contact</Link>
