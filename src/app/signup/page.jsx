@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Globe } from 'lucide-react';
+import { Globe, Loader2 } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { initiateEmailSignUp } from '@/firebase/non-blocking-login';
 import { useForm } from 'react-hook-form';
@@ -14,6 +14,9 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images.js';
+import { useState, useEffect } from 'react';
+import { useUser } from '@/firebase';
+import { RoleSelectionDialog } from '@/components/RoleSelectionDialog';
 
 const signupSchema = z.object({
   firstName: z.string().min(2, { message: 'First name must be at least 2 characters.' }),
@@ -25,6 +28,11 @@ const signupSchema = z.object({
 
 export default function SignupPage() {
   const auth = useAuth();
+  const { user, isUserLoading } = useUser();
+  const [isRoleDialogOpen, setRoleDialogOpen] = useState(false);
+  const [signupData, setSignupData] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const form = useForm({
     resolver: zodResolver(signupSchema),
@@ -38,10 +46,18 @@ export default function SignupPage() {
 
   const onSubmit = (data) => {
     if (auth) {
+        setIsSubmitting(true);
+        setSignupData(data);
         initiateEmailSignUp(auth, data.email, data.password);
-        // Potentially update profile with first/last name after signup
     }
   };
+
+  useEffect(() => {
+    if (isSubmitting && user && !isUserLoading) {
+        setRoleDialogOpen(true);
+        setIsSubmitting(false);
+    }
+  }, [user, isUserLoading, isSubmitting]);
 
   const backgroundImage = PlaceHolderImages.find(p => p.id === 'background-image');
   const imageUrl = backgroundImage?.imageUrl || 'https://picsum.photos/seed/bg/1920/1080';
@@ -129,8 +145,9 @@ export default function SignupPage() {
                     </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                Create an account
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isSubmitting}>
+                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isSubmitting ? "Creating Account..." : "Create an account"}
                 </Button>
                 <Button variant="outline" className="w-full bg-transparent hover:bg-white/20 text-white border-white/50 hover:border-white">
                 Sign up with Google
@@ -148,6 +165,11 @@ export default function SignupPage() {
             </CardFooter>
         </Card>
       </div>
+      <RoleSelectionDialog 
+        open={isRoleDialogOpen} 
+        onOpenChange={setRoleDialogOpen}
+        signupData={signupData}
+      />
     </div>
   );
 }

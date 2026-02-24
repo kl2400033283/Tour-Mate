@@ -114,6 +114,48 @@
         "pricePerNight",
         "isAvailable"
       ]
+    },
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User Profile",
+      "type": "object",
+      "description": "Stores public information about a user, including their assigned role within the application.",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique identifier for the user, matching the Firebase Authentication UID."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The user's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The user's last name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "role": {
+          "type": "string",
+          "description": "The user's role, which determines their permissions and access level.",
+          "enum": [
+            "Tourist",
+            "home stay host",
+            "tour guide",
+            "admin"
+          ]
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "role",
+        "firstName",
+        "lastName"
+      ]
     }
   },
   "auth": {
@@ -149,8 +191,18 @@
             }
           ]
         }
+      },
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores user profile information. Each user's document is identified by their Firebase Auth UID. Security rules ensure that users can only create and modify their own profile document, preventing unauthorized access to other users' data. The 'role' field is critical for role-based access control throughout the app."
+        }
       }
     ],
-    "reasoning": "The recommended Firestore structure uses two top-level collections: `/cities` and `/homestays`. This design prioritizes ease of querying, public accessibility, and adherence to security principles.\n\n**Authorization Independence:** In this scenario, both `City` and `Homestay` entities are designed for public read access. Therefore, there's no complex user-based authorization context to denormalize for read operations. Each `Homestay` document includes a `cityId` field, which directly links it to its respective city. This `cityId` field serves as a crucial data-linking mechanism, allowing queries to efficiently retrieve all homestays for a given city without needing to perform `get()` operations on the parent `City` document within security rules (which would be prohibited by the Authorization Independence principle if authorization depended on parent data). Since all data is publicly readable, authorization rules are simplified to `allow read: true;` for both collections.\n\n**Querying for Available Homestays (QAPs - Rules are not Filters):** The user request 'after clicking on view city user need to get home stays which are real' is addressed by the `isAvailable` boolean field within the `Homestay` entity. When a user selects a city (e.g., 'Tirupati'), the client-side application will perform a query on the `/homestays` collection, filtering by `cityId` and `isAvailable == true`. For example: `firestore.collection('homestays').where('cityId', '==', 'selectedCityId').where('isAvailable', '==', true)`. The security rules will simply grant read access to the entire `/homestays` collection, as all documents in this collection have the same security posture (public read). The `isAvailable` field acts as a data filter, not an authorization gate, perfectly aligning with the 'rules are not filters' principle. This ensures that only relevant, 'real' (available) homestays are retrieved by the application while maintaining simple, robust security rules."
+    "reasoning": "The recommended Firestore structure uses three top-level collections: `/cities`, `/homestays`, and `/users`. This design prioritizes ease of querying, public accessibility, and adherence to security principles.\n\n**Authorization Independence:** In this scenario, both `City` and `Homestay` entities are designed for public read access. Therefore, there's no complex user-based authorization context to denormalize for read operations. The `/users` collection stores user profile data, keyed by the user's UID. This allows for storing role information securely, as security rules are configured to only allow a user to create and update their own profile.\n\n**Querying for Available Homestays (QAPs - Rules are not Filters):** The user request 'after clicking on view city user need to get home stays which are real' is addressed by the `isAvailable` boolean field within the `Homestay` entity. When a user selects a city (e.g., 'Tirupati'), the client-side application will perform a query on the `/homestays` collection, filtering by `cityId` and `isAvailable == true`. The security rules will simply grant read access to the entire `/homestays` collection. The `isAvailable` field acts as a data filter, not an authorization gate, perfectly aligning with the 'rules are not filters' principle."
   }
 }
