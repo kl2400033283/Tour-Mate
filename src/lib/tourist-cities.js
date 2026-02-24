@@ -1,7 +1,21 @@
 export const citiesByState = {
   'andhra-pradesh': [
     { name: 'Visakhapatnam', slug: 'visakhapatnam', image: 'https://picsum.photos/seed/visakhapatnam/400/300', hint: 'visakhapatnam beach', attractions: 22, homestays: 45, knownFor: 'Pristine beaches and a bustling port city.' },
-    { name: 'Tirupati', slug: 'tirupati', image: 'https://picsum.photos/seed/tirupati/400/300', hint: 'tirupati temple', attractions: 12, homestays: 80, knownFor: 'A major pilgrimage site, home to the Tirumala Venkateswara Temple.' },
+    { 
+      name: 'Tirupati', 
+      slug: 'tirupati', 
+      image: 'https://picsum.photos/seed/tirupati/400/300', 
+      hint: 'tirupati temple', 
+      attractions: 12, 
+      homestays: 80, 
+      knownFor: 'A major pilgrimage site, home to the Tirumala Venkateswara Temple.',
+      description: 'Discover the spiritual heart of Andhra Pradesh, home to ancient temples and sacred sites.',
+      attractionDetails: [
+        { name: 'Sri Venkateswara Temple', description: 'A landmark Vaishnavite temple situated in the hill town of Tirumala.', image: 'https://picsum.photos/seed/venkateswara-temple/400/250', hint: 'tirumala temple' },
+        { name: 'Sri Govindarajaswami Temple', description: 'An ancient temple dedicated to Lord Vishnu, located in the heart of Tirupati.', image: 'https://picsum.photos/seed/govindarajaswami-temple/400/250', hint: 'tirupati vishnu' },
+        { name: 'Kapila Theertham', description: 'A sacred waterfall and temple dedicated to Lord Shiva, at the entrance of a mountain cave.', image: 'https://picsum.photos/seed/kapila-theertham/400/250', hint: 'tirupati waterfall' }
+      ]
+    },
     { 
       name: 'Vijayawada', 
       slug: 'vijayawada', 
@@ -110,7 +124,22 @@ export const citiesByState = {
     { name: 'Amritsar', slug: 'amritsar', image: 'https://picsum.photos/seed/amritsar/400/300', hint: 'amritsar golden temple', attractions: 20, homestays: 70, knownFor: 'Home to the iconic Golden Temple, the spiritual center for Sikhs.' },
   ],
   'rajasthan': [
-    { name: 'Jaipur', slug: 'jaipur', image: 'https://picsum.photos/seed/jaipur/400/300', hint: 'jaipur hawa mahal', attractions: 35, homestays: 150, knownFor: 'The "Pink City", known for its stunning palaces, forts, and vibrant markets.' },
+    { 
+      name: 'Jaipur', 
+      slug: 'jaipur', 
+      image: 'https://picsum.photos/seed/jaipur/400/300', 
+      hint: 'jaipur hawa mahal', 
+      attractions: 35, 
+      homestays: 150, 
+      knownFor: 'The "Pink City", known for its stunning palaces, forts, and vibrant markets.',
+      description: "Explore the vibrant Pink City, a treasure trove of majestic forts, opulent palaces, and bustling markets.",
+      attractionDetails: [
+        { name: 'Hawa Mahal', description: 'The iconic "Palace of Winds" with its intricate honeycomb facade, a masterpiece of Rajput architecture.', image: 'https://picsum.photos/seed/hawa-mahal-jaipur/400/250', hint: 'jaipur palace' },
+        { name: 'City Palace', description: 'A sprawling complex of palaces, gardens, and courtyards, showcasing a blend of Rajput and Mughal styles.', image: 'https://picsum.photos/seed/city-palace-jaipur/400/250', hint: 'jaipur royal palace' },
+        { name: 'Amber Fort', description: 'A magnificent hilltop fort offering panoramic views and a glimpse into the lavish lifestyle of Rajput rulers.', image: 'https://picsum.photos/seed/amber-fort/400/250', hint: 'jaipur fort' },
+        { name: 'Jantar Mantar', description: 'An astronomical observatory with the world\'s largest stone sundial, a UNESCO World Heritage site.', image: 'https://picsum.photos/seed/jantar-mantar-jaipur/400/250', hint: 'jaipur observatory' }
+      ]
+    },
     { name: 'Udaipur', slug: 'udaipur', image: 'https://picsum.photos/seed/udaipur/400/300', hint: 'udaipur lake palace', attractions: 28, homestays: 120, knownFor: 'The "City of Lakes", famous for its romantic setting and beautiful palaces.' },
     { name: 'Jodhpur', slug: 'jodhpur', image: 'https://picsum.photos/seed/jodhpur/400/300', hint: 'jodhpur blue city', attractions: 22, homestays: 90, knownFor: 'The "Blue City", dominated by the majestic Mehrangarh Fort.' },
   ],
@@ -128,7 +157,21 @@ export const citiesByState = {
     { name: 'Agartala', slug: 'agartala', image: 'https://picsum.photos/seed/agartala/400/300', hint: 'agartala palace', attractions: 18, homestays: 35, knownFor: 'Known for its palaces, temples, and rich cultural history.' },
   ],
   'uttar-pradesh': [
-    { name: 'Agra', slug: 'agra', image: 'https://picsum.photos/seed/agra/400/300', hint: 'agra taj mahal', attractions: 15, homestays: 100, knownFor: 'Home to the iconic Taj Mahal, a symbol of eternal love.' },
+    { 
+      name: 'Agra', 
+      slug: 'agra', 
+      image: 'https://picsum.photos/seed/agra/400/300', 
+      hint: 'agra taj mahal', 
+      attractions: 15, 
+      homestays: 100, 
+      knownFor: 'Home to the iconic Taj Mahal, a symbol of eternal love.',
+      description: "Witness the timeless beauty of the Taj Mahal and explore the grandeur of Mughal architecture in this historic city.",
+      attractionDetails: [
+        { name: 'Taj Mahal', description: 'An ivory-white marble mausoleum, a universal symbol of love and a UNESCO World Heritage site.', image: 'https://picsum.photos/seed/taj-mahal-agra/400/250', hint: 'agra monument' },
+        { name: 'Agra Fort', description: 'A massive red sandstone fort that served as the main residence of Mughal emperors.', image: 'https://picsum.photos/seed/agra-fort/400/250', hint: 'agra historical fort' },
+        { name: 'Fatehpur Sikri', description: 'A magnificent fortified city that was the short-lived capital of the Mughal Empire.', image: 'https://picsum.photos/seed/fatehpur-sikri/400/250', hint: 'mughal city' }
+      ]
+    },
     { 
       name: 'Varanasi', 
       slug: 'varanasi', 
