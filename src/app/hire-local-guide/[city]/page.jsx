@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useUser } from '@/firebase';
 import { useRouter, usePathname, useParams, useSearchParams } from 'next/navigation';
-import { Loader2, MapPin, Search, Star, Menu } from 'lucide-react';
+import { Loader2, MapPin, Search, Star, Menu, Calendar as CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -25,6 +25,10 @@ import {
   AlertDialogTitle,
   AlertDialogFooter,
 } from '@/components/ui/alert-dialog';
+import { format } from 'date-fns';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 const getCityData = (slug) => {
   if (!slug) return null;
@@ -177,6 +181,7 @@ export default function HireLocalGuidePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [specialty, setSpecialty] = useState('all');
   const [rating, setRating] = useState('all');
+  const [date, setDate] = useState({ from: undefined, to: undefined });
 
   useEffect(() => {
     if (!citySlug) return;
@@ -272,9 +277,9 @@ export default function HireLocalGuidePage() {
           <p className="text-lg text-muted-foreground">Find expert guides to enhance your travel experience</p>
         </div>
 
-        <div className="mb-8 p-4 bg-background rounded-lg shadow-md max-w-3xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-            <div className="relative md:col-span-1">
+        <div className="mb-8 p-4 bg-background rounded-lg shadow-md max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
+            <div className="relative lg:col-span-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input 
                 placeholder="Search guides..." 
@@ -283,6 +288,54 @@ export default function HireLocalGuidePage() {
                 onChange={e => setSearchQuery(e.target.value)}
               />
             </div>
+            
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "justify-start text-left font-normal",
+                    !date.from && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date.from ? format(date.from, "dd/MM/yyyy") : <span>From date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date.from}
+                  onSelect={(day) => setDate(prev => ({ ...prev, from: day, to: prev.to && day > prev.to ? undefined : prev.to }))}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "justify-start text-left font-normal",
+                    !date.to && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date.to ? format(date.to, "dd/MM/yyyy") : <span>To date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date.to}
+                  onSelect={(day) => setDate(prev => ({ ...prev, to: day }))}
+                  disabled={{ before: date.from }}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+            
             <Select value={specialty} onValueChange={setSpecialty}>
               <SelectTrigger>
                 <SelectValue placeholder="Specialty" />
