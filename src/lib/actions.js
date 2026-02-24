@@ -72,16 +72,44 @@ function generateMockListings({ city, listingType }) {
     }
   } else if (listingType === 'guides') {
     const count = 32;
-    const specialties = ['Historical Tours', 'Food & Culinary', 'Spiritual Sites', 'Adventure Trips'];
-    for (let i = 1; i <= count; i++) {
-      listings.push({
-        id: `${city.replace(/\s/g, '-')}-guide-${i}`,
-        name: `Sample Guide ${i}`,
-        specialty: specialties[Math.floor(Math.random() * specialties.length)],
-        rate: 500 + Math.floor(Math.random() * 1000),
-        rating: parseFloat((4.0 + Math.random() * 1.0).toFixed(1)),
-        imageHint: 'friendly guide',
-      });
+    
+    let guideNames = [
+        'Aarav Sharma', 'Diya Patel', 'Rohan Das', 'Isha Singh', 'Vikram Rathore', 'Anika Gupta',
+        'Aditya Verma', 'Mira Joshi', 'Arjun Reddy', 'Saanvi Desai', 'Kabir Kumar', 'Zara Khan',
+        'Ishaan Malhotra', 'Priya Rao', 'Dev Mehra', 'Sia Chatterjee', 'Neel Menon', 'Myra Reddy',
+        'Samar Ali', 'Avani Iyer', 'Vivaan Pillai', 'Tara Nair', 'Yash Sinha', 'Kiara Khanna',
+        'Reyansh Thakur', 'Ananya Bajaj', 'Ayaan Krish', 'Riya Dubey', 'Zain Abdullah', 'Navya Bhat',
+        'Arin Saxena', 'Diya Shankar'
+    ];
+    shuffle(guideNames);
+
+    let guideImageHints = [
+        'male guide avatar', 'female guide avatar', 'person illustration', 'character portrait',
+        'friendly guide sketch', 'tour guide icon', 'adventure guide art', 'cultural guide avatar',
+        'historical guide drawing', 'food tour guide illustration', 'nature guide avatar', 'spiritual guide art',
+        'male character art', 'female character art', 'professional guide portrait', 'animated person',
+        'male guide avatar', 'female guide avatar', 'person illustration', 'character portrait',
+        'friendly guide sketch', 'tour guide icon', 'adventure guide art', 'cultural guide avatar',
+        'historical guide drawing', 'food tour guide illustration', 'nature guide avatar', 'spiritual guide art',
+        'male character art', 'female character art', 'professional guide portrait', 'animated person'
+    ];
+    shuffle(guideImageHints);
+
+    const specialties = ['Spiritual Tours', 'Boat Tours', 'Culture & Heritage', 'Food Walks', 'Photography Tours', 'Adventure Trips'];
+    const languages = ['English', 'Hindi', 'Bengali', 'Tamil', 'Telugu', 'Marathi', 'Gujarati', 'Kannada'];
+
+    for (let i = 0; i < count; i++) {
+        const knownLanguages = shuffle([...languages]).slice(0, Math.floor(Math.random() * 2) + 2); // 2-3 languages
+        listings.push({
+            id: `${city.replace(/\s/g, '-')}-guide-${i + 1}-${Math.random()}`,
+            name: guideNames[i] || `Sample Guide ${i + 1}`,
+            experience: Math.floor(Math.random() * 10) + 3, // 3-12 years
+            languages: knownLanguages,
+            rating: parseFloat((4.2 + Math.random() * 0.8).toFixed(1)), // 4.2 to 5.0
+            rate: 2000 + Math.floor(Math.random() * 3000), // 2000-5000 per day
+            specialty: specialties[Math.floor(Math.random() * specialties.length)],
+            imageHint: guideImageHints[i] || 'guide avatar',
+        });
     }
   }
 

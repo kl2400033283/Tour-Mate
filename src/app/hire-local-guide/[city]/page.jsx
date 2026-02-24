@@ -80,31 +80,39 @@ function GuideCard({ guide, user }) {
 
   return (
     <>
-      <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-transform duration-300 flex flex-col">
-        <CardContent className="p-0">
-          <div className="relative h-48 w-full">
+      <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-transform duration-300 flex flex-col text-center">
+        <CardContent className="p-6">
+          <div className="relative h-24 w-24 mx-auto rounded-full overflow-hidden mb-4 border-4 border-primary/20">
             <Image
-              src={`https://picsum.photos/seed/${guide.imageHint?.replace(/\s/g, '-') || guide.id}/400/300`}
+              src={`https://picsum.photos/seed/${guide.imageHint?.replace(/\s/g, '-') || guide.id}/200/200`}
               alt={guide.name}
               fill
               className="object-cover"
               data-ai-hint={guide.imageHint}
             />
           </div>
+          <CardTitle className="text-xl font-bold">{guide.name}</CardTitle>
+          <p className="text-sm text-primary font-semibold">{guide.specialty}</p>
         </CardContent>
-        <CardHeader className="p-4">
-          <CardTitle className="text-lg font-bold">{guide.name}</CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-0 flex-grow space-y-2">
-          <p className="text-sm text-muted-foreground">{guide.specialty}</p>
-          <p className="text-base font-semibold">₹{guide.rate.toLocaleString()}/hour</p>
-          <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 text-primary fill-primary" />
-            <span className="font-bold">{guide.rating.toFixed(1)}</span>
+        <CardContent className="p-6 pt-0 flex-grow space-y-3 text-sm text-muted-foreground">
+          <div className="flex justify-center items-center gap-4">
+              <div className="text-center">
+                  <p className="font-bold text-lg text-foreground">{guide.rating.toFixed(1)}</p>
+                  <p>Rating</p>
+              </div>
+              <div className="text-center">
+                  <p className="font-bold text-lg text-foreground">{guide.experience}</p>
+                  <p>Years Exp.</p>
+              </div>
+          </div>
+          <div>
+            <p className="font-semibold text-foreground">Languages</p>
+            <p>{guide.languages.join(', ')}</p>
           </div>
         </CardContent>
-        <CardFooter className="p-4 pt-0">
-          <Button className="w-full" onClick={handleHire}>Hire</Button>
+        <CardFooter className="p-4 pt-0 flex-col gap-2">
+            <p className="text-xl font-bold">₹{guide.rate.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
+            <Button className="w-full" onClick={handleHire}>Hire</Button>
         </CardFooter>
       </Card>
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -125,15 +133,31 @@ function GuideCard({ guide, user }) {
 
 function CardSkeleton() {
     return (
-        <div className="flex flex-col space-y-3">
-            <Skeleton className="h-48 w-full rounded-lg" />
+        <Card className="flex flex-col text-center p-6 space-y-4">
+            <Skeleton className="h-24 w-24 mx-auto rounded-full" />
             <div className="space-y-2">
-                <Skeleton className="h-4 w-4/5" />
-                <Skeleton className="h-4 w-3/5" />
-                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-6 w-3/4 mx-auto" />
+                <Skeleton className="h-4 w-1/2 mx-auto" />
             </div>
-            <Skeleton className="h-10 w-full" />
-        </div>
+            <div className="flex justify-center items-center gap-4">
+                <div className="text-center w-1/2">
+                    <Skeleton className="h-6 w-1/2 mx-auto mb-1" />
+                    <Skeleton className="h-4 w-3/4 mx-auto" />
+                </div>
+                <div className="text-center w-1/2">
+                    <Skeleton className="h-6 w-1/2 mx-auto mb-1" />
+                    <Skeleton className="h-4 w-3/4 mx-auto" />
+                </div>
+            </div>
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-1/3 mx-auto" />
+                <Skeleton className="h-4 w-2/3 mx-auto" />
+            </div>
+             <div className="space-y-2">
+                <Skeleton className="h-6 w-1/2 mx-auto" />
+                <Skeleton className="h-10 w-full" />
+            </div>
+        </Card>
     )
 }
 
