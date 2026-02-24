@@ -8,7 +8,7 @@
  *
  * Key Security Decisions:
  * - Public Read Access: `/cities` and `/homestays` are public for read operations (`get`, `list`).
- * - User-Owned Profiles & Data: In the `/users` collection, users can only create, read, and update their own document, identified by their UID. This is enforced using the `isOwner` function. This ownership extends to subcollections like `homestayBookings` and `guideBookings`.
+ * - User-Owned Profiles & Data: In the `/users` collection, users can only create, read, and update their own document, identified by their UID. This is enforced using the `isOwner` function. This ownership extends to subcollections like `homestayBookings`, `receivedHomestayBookings`, and `guideBookings`.
  * - All Other Writes Disabled: Public collections are read-only. Users cannot delete their profiles or list other users.
  */
 rules_version = '2';
@@ -54,13 +54,18 @@ service cloud.firestore {
       allow list, delete: if false;
 
       /**
-       * @description Secures a user's homestay bookings. The recursive wildcard `{path=**}` ensures
-       *              that the rule applies to both collection-level operations (like `list`) and
-       *              document-level operations (`get`, `create`, `update`, `delete`).
+       * @description Secures a user's (tourist's) own homestay bookings.
        * @path        /users/{userId}/homestayBookings/{path=**}
-       * @allow       read, write: If the user is signed in and is the owner of the user document.
        */
       match /homestayBookings/{path=**} {
+        allow read, write: if isSignedIn() && isOwner(userId);
+      }
+
+      /**
+       * @description Secures a host's received homestay bookings.
+       * @path        /users/{userId}/receivedHomestayBookings/{path=**}
+       */
+      match /receivedHomestayBookings/{path=**} {
         allow read, write: if isSignedIn() && isOwner(userId);
       }
 
@@ -69,7 +74,6 @@ service cloud.firestore {
        *              that the rule applies to both collection-level operations (like `list`) and
        *              document-level operations (`get`, `create`, `update`, `delete`).
        * @path        /users/{userId}/guideBookings/{path=**}
-       * @allow       read, write: If the user is signed in and is the owner of the user document.
        */
       match /guideBookings/{path=**} {
         allow read, write: if isSignedIn() && isOwner(userId);

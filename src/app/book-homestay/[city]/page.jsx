@@ -26,6 +26,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { saveHomestayBooking } from '@/lib/bookings';
 import { cn } from '@/lib/utils';
+import { differenceInCalendarDays, parse } from 'date-fns';
+
 
 const getCityData = (slug) => {
   if (!slug) return null;
@@ -49,12 +51,31 @@ function HomestayCard({ homestay, user, city, date }) {
 
   const saveBooking = () => {
     if (!firestore || !user) return;
+    
+    let totalPrice = homestay.price;
+    if (date.from && date.to) {
+        try {
+            const fromDate = parse(date.from, 'dd/MM/yyyy', new Date());
+            const toDate = parse(date.to, 'dd/MM/yyyy', new Date());
+            const nights = differenceInCalendarDays(toDate, fromDate);
+            if (nights > 0) {
+                totalPrice = homestay.price * nights;
+            }
+        } catch (e) {
+            console.error("Error calculating date difference:", e);
+        }
+    }
+
     const bookingDetails = {
       homestayId: homestay.id,
       homestayName: homestay.name,
       city: city.name,
       checkInDate: date.from,
       checkOutDate: date.to,
+      hostId: homestay.hostId,
+      guestName: user.displayName || user.email,
+      totalPrice: totalPrice,
+      status: 'pending',
     };
     saveHomestayBooking(firestore, user.uid, bookingDetails);
   };

@@ -43,6 +43,10 @@
           "type": "string",
           "description": "Unique identifier for the Homestay entity."
         },
+        "hostId": {
+          "type": "string",
+          "description": "The UID of the user who owns/hosts this homestay."
+        },
         "cityId": {
           "type": "string",
           "description": "Reference to the City where the homestay is located. (Relationship: City 1:N Homestay)"
@@ -107,6 +111,7 @@
       },
       "required": [
         "id",
+        "hostId",
         "cityId",
         "name",
         "description",
@@ -169,7 +174,15 @@
       "properties": {
         "userId": {
           "type": "string",
-          "description": "The UID of the user who made the booking."
+          "description": "The UID of the user (tourist) who made the booking."
+        },
+        "hostId": {
+          "type": "string",
+          "description": "The UID of the homestay owner (host)."
+        },
+        "guestName": {
+          "type": "string",
+          "description": "The name of the guest making the booking."
         },
         "homestayId": {
           "type": "string"
@@ -191,16 +204,34 @@
         "bookingDate": {
           "type": "string",
           "format": "date-time"
+        },
+        "totalPrice": {
+          "type": "number",
+          "description": "The total price calculated for the booking."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the booking.",
+          "enum": [
+            "pending",
+            "approved",
+            "completed",
+            "declined"
+          ]
         }
       },
       "required": [
         "userId",
+        "hostId",
+        "guestName",
         "homestayId",
         "homestayName",
         "city",
         "checkInDate",
         "checkOutDate",
-        "bookingDate"
+        "bookingDate",
+        "totalPrice",
+        "status"
       ]
     },
     "GuideBooking": {
@@ -265,7 +296,7 @@
           "schema": {
             "$ref": "#/backend/entities/Homestay"
           },
-          "description": "Stores details for individual homestay properties. Each document includes a 'cityId' field to link it to its parent city, enabling efficient queries for homestays within a specific city. The 'isAvailable' field is used for client-side filtering to display only 'real' homestays. All documents in this collection are publicly readable, requiring no denormalized authorization fields.",
+          "description": "Stores details for individual homestay properties. Each document includes a 'cityId' field to link it to its parent city, and a 'hostId' to link to the owner. The 'isAvailable' field is used for client-side filtering. All documents in this collection are publicly readable.",
           "params": [
             {
               "name": "homestayId",
@@ -281,7 +312,7 @@
           "schema": {
             "$ref": "#/backend/entities/UserProfile"
           },
-          "description": "Stores user profile information. Each user's document is identified by their Firebase Auth UID. Security rules ensure that users can only create and modify their own profile document, preventing unauthorized access to other users' data. The 'role' field is critical for role-based access control throughout the app."
+          "description": "Stores user profile information. Each user's document is identified by their Firebase Auth UID. Security rules ensure that users can only create and modify their own profile document. The 'role' field is critical for role-based access control."
         }
       },
       {
@@ -291,7 +322,17 @@
           "schema": {
             "$ref": "#/backend/entities/HomestayBooking"
           },
-          "description": "Stores a user's homestay bookings. Only accessible by the user themselves."
+          "description": "Stores a user's (tourist's) own homestay bookings. Only accessible by the user themselves."
+        }
+      },
+       {
+        "path": "/users/{userId}/receivedHomestayBookings/{bookingId}",
+        "definition": {
+          "entityName": "HomestayBooking",
+          "schema": {
+            "$ref": "#/backend/entities/HomestayBooking"
+          },
+          "description": "Stores homestay bookings received by a host. Only accessible by the host themselves."
         }
       },
       {
@@ -305,6 +346,6 @@
         }
       }
     ],
-    "reasoning": "The recommended Firestore structure uses three top-level collections: `/cities`, `/homestays`, and `/users`. This design prioritizes ease of querying, public accessibility, and adherence to security principles.\n\n**Authorization Independence:** In this scenario, both `City` and `Homestay` entities are designed for public read access. Therefore, there's no complex user-based authorization context to denormalize for read operations. The `/users` collection stores user profile data, keyed by the user's UID. This allows for storing role information securely, as security rules are configured to only allow a user to create and update their own profile.\n\n**Querying for Available Homestays (QAPs - Rules are not Filters):** The user request 'after clicking on view city user need to get home stays which are real' is addressed by the `isAvailable` boolean field within the `Homestay` entity. When a user selects a city (e.g., 'Tirupati'), the client-side application will perform a query on the `/homestays` collection, filtering by `cityId` and `isAvailable == true`. The security rules will simply grant read access to the entire `/homestays` collection. The `isAvailable` field acts as a data filter, not an authorization gate, perfectly aligning with the 'rules are not filters' principle."
+    "reasoning": "The Firestore structure uses top-level collections for `/cities` and `/homestays` for public access, and a `/users` collection for private user data. The `/users/{userId}` document contains subcollections for data specific to that user, such as `homestayBookings` (bookings they've made) and `receivedHomestayBookings` (bookings other users have made for their properties). This denormalized approach facilitates efficient and secure querying. A host can simply query their own `/users/{hostId}/receivedHomestayBookings` collection to get all relevant bookings without needing to scan other parts of the database. This aligns with Firestore's security model where rules are based on paths, and ensures data is only accessible by the correct user (tourist or host)."
   }
 }

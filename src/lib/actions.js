@@ -20,6 +20,7 @@ function shuffle(a) {
  */
 function generateMockListings({ city, listingType }) {
   const listings = [];
+  const mockHostIds = ['mock-host-1', 'mock-host-2', 'mock-host-3'];
   
   if (listingType === 'homestays') {
     const count = 32;
@@ -68,6 +69,7 @@ function generateMockListings({ city, listingType }) {
         rating: parseFloat((3.5 + Math.random() * 1.5).toFixed(1)),
         description: `This is a sample description for a wonderful homestay in ${city}. Enjoy your stay!`,
         imageHint: homestayImageHints[i] || 'homestay interior',
+        hostId: mockHostIds[i % mockHostIds.length], // Assign a mock host ID
       });
     }
   } else if (listingType === 'guides') {
