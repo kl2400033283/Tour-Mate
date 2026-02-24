@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useUser } from '@/firebase';
 import { useRouter, usePathname, useParams, useSearchParams } from 'next/navigation';
-import { Loader2, MapPin, Search, Star, Menu } from 'lucide-react';
+import { Calendar as CalendarIcon, Loader2, MapPin, Search, Star, Menu } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -24,6 +24,10 @@ import {
   AlertDialogTitle,
   AlertDialogFooter,
 } from '@/components/ui/alert-dialog';
+import { format } from 'date-fns';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 const getCityData = (slug) => {
   if (!slug) return null;
@@ -156,6 +160,7 @@ export default function BookHomestayPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [priceRange, setPriceRange] = useState('all');
   const [rating, setRating] = useState('all');
+  const [date, setDate] = useState({ from: undefined, to: undefined });
 
   useEffect(() => {
     if (!citySlug) return;
@@ -236,7 +241,7 @@ export default function BookHomestayPage() {
         </div>
 
         <div className="mb-8 p-3 bg-card rounded-xl shadow-sm">
-          <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr_1fr] gap-3 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-3 items-center">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input 
@@ -246,6 +251,52 @@ export default function BookHomestayPage() {
                 onChange={e => setSearchQuery(e.target.value)}
               />
             </div>
+             <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "justify-start text-left font-normal bg-background focus:bg-card border-none h-11",
+                    !date.from && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date.from ? format(date.from, "dd/MM/yyyy") : <span>From date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date.from}
+                  onSelect={(day) => setDate(prev => ({ ...prev, from: day, to: prev.to && day > prev.to ? undefined : prev.to }))}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "justify-start text-left font-normal bg-background focus:bg-card border-none h-11",
+                    !date.to && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date.to ? format(date.to, "dd/MM/yyyy") : <span>To date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date.to}
+                  onSelect={(day) => setDate(prev => ({ ...prev, to: day }))}
+                  disabled={{ before: date.from }}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
             <Select value={priceRange} onValueChange={setPriceRange}>
                 <SelectTrigger className="bg-background focus:bg-card border-none h-11">
                     <SelectValue placeholder="Price" />
