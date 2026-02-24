@@ -20,7 +20,7 @@ const HomestaySchema = z.object({
     location: z.string().describe('A nearby tourist location, landmark, or area within the city.'),
     price: z.number().describe('The cost per night in the local currency (e.g., INR).'),
     rating: z.number().min(3).max(5).describe('The rating of the homestay, on a scale of 1 to 5.'),
-    description: z.string().describe('A short, compelling description of the homestay (e.g., "Peaceful river-view stay with traditional hospitality").'),
+    description: z.string().describe('A short, compelling, one-sentence summary of the stay (e.g., "Peaceful river-view stay with traditional hospitality").'),
     imageHint: z.string().describe('Two-word hint for a placeholder image (e.g., "modern room").')
 });
 
@@ -61,7 +61,7 @@ const generateListingsPrompt = ai.definePrompt({
 
 Provide a diverse range of options, including different price points, locations, and specialties.
 
-For homestays, the location should be a well-known landmark or area. The price should be a realistic nightly rate in INR.
+For homestays, the location should be a well-known landmark or area. The price should be a realistic nightly rate in INR. The description should be a short, compelling, one-sentence summary of the stay, like "Peaceful river-view stay with traditional hospitality" or "Comfortable rooms close to major spiritual landmarks and Ghats".
 For guides, the rate should be a realistic hourly rate in INR.
 
 Ensure your output is a JSON object matching the requested schema.
