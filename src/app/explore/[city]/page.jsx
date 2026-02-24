@@ -96,6 +96,15 @@ export default function CityPage({ params }) {
                   <Link href="/profile">Profile</Link>
                 </Button>
               ) : null}
+              <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                <Link href="#">About Us</Link>
+              </Button>
+              <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                <Link href="/explore">Destinations</Link>
+              </Button>
+              <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                <Link href="#">Contact</Link>
+              </Button>
             </nav>
 
             <div className="sm:hidden">
@@ -117,7 +126,9 @@ export default function CityPage({ params }) {
                     {user ? (
                         <Link href="/profile" className="text-lg">Profile</Link>
                     ) : null}
+                    <Link href="#" className="text-lg">About Us</Link>
                     <Link href="/explore" className="text-lg">Destinations</Link>
+                    <Link href="#" className="text-lg">Contact</Link>
                   </nav>
                 </SheetContent>
               </Sheet>
