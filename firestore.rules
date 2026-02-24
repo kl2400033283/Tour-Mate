@@ -1,0 +1,57 @@
+/**
+ * Core Philosophy: This ruleset provides a public, read-only interface for browsing cities and homestays. The primary goal is to allow any user, whether authenticated or anonymous, to view all available data for the application's core browsing functionality. All write operations are strictly disabled to protect the integrity of the data.
+ *
+ * Data Structure: The data is organized into two independent, top-level collections:
+ *   - /cities/{cityId}: Contains documents for each city.
+ *   - /homestays/{homestayId}: Contains documents for each homestay property. A `cityId` field on each homestay document links it to a city for client-side querying.
+ *
+ * Key Security Decisions:
+ * - Public Read Access: Both the `/cities` and `/homestays` collections are fully public for read operations (`get` and `list`). This allows the client application to fetch data without requiring user authentication.
+ * - All Writes Disabled: Since the provided requirements do not specify any user roles for creating, updating, or deleting data, all write operations (`create`, `update`, `delete`) are explicitly denied across the entire database. This provides a "locked-down" default security posture.
+ * - No Denormalization Needed: Authorization is not dependent on user identity or related documents, so no denormalized fields (like `ownerId` or `members` lists) are required on the documents. The data model is simple and read-focused.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // The `isSignedIn` helper function and its use of `request` were removed
+    // because the function was unused and not required by the security policy
+    // (all reads are public, all writes are denied).
+
+    /**
+     * @description Allows public, read-only access to city information.
+     * @path        /cities/{cityId}
+     * @allow       Any user, authenticated or not, can read a city document. e.g., (get) /cities/tirupati
+     * @deny        Any user attempting to write to a city document. e.g., (create) /cities/newyork
+     * @principle   Ensures data is publicly browsable but prevents unauthorized modification.
+     */
+    match /cities/{cityId} {
+      // Any user, signed-in or not, can view city information.
+      allow get: if true;
+      allow list: if true;
+
+      // No user is allowed to create, update, or delete cities.
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Allows public, read-only access to homestay listings.
+     * @path        /homestays/{homestayId}
+     * @allow       Any user, authenticated or not, can list all homestays. e.g., (list) /homestays
+     * @deny        Any user attempting to delete a homestay document. e.g., (delete) /homestays/some-homestay
+     * @principle   Ensures data is publicly browsable but prevents unauthorized modification.
+     */
+    match /homestays/{homestayId} {
+      // Any user, signed-in or not, can view and list homestay properties.
+      allow get: if true;
+      allow list: if true;
+
+      // No user is allowed to create, update, or delete homestays.
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}

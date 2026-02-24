@@ -1,0 +1,156 @@
+{
+  "entities": {
+    "City": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "City",
+      "type": "object",
+      "description": "Represents a geographical city where homestays can be located.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the City entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The official name of the city."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description or overview of the city, highlighting its appeal for visitors."
+        },
+        "country": {
+          "type": "string",
+          "description": "The country where the city is located."
+        },
+        "stateProvince": {
+          "type": "string",
+          "description": "The state or province where the city is located, if applicable."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "country"
+      ]
+    },
+    "Homestay": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Homestay",
+      "type": "object",
+      "description": "Represents a single homestay property available for listing, located within a specific city.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Homestay entity."
+        },
+        "cityId": {
+          "type": "string",
+          "description": "Reference to the City where the homestay is located. (Relationship: City 1:N Homestay)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The commercial name or title of the homestay property."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the homestay, including its features, amenities, and unique selling points."
+        },
+        "address": {
+          "type": "string",
+          "description": "The full street address of the homestay."
+        },
+        "latitude": {
+          "type": "number",
+          "description": "The geographical latitude coordinate of the homestay location."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "The geographical longitude coordinate of the homestay location."
+        },
+        "pricePerNight": {
+          "type": "number",
+          "description": "The average price per night for staying at the homestay in a base currency."
+        },
+        "numberOfBedrooms": {
+          "type": "number",
+          "description": "The total number of bedrooms available for guests in the homestay."
+        },
+        "maxGuests": {
+          "type": "number",
+          "description": "The maximum number of guests the homestay can comfortably accommodate."
+        },
+        "amenities": {
+          "type": "array",
+          "description": "A list of amenities offered by the homestay (e.g., 'Wi-Fi', 'Free Parking', 'Kitchen Access').",
+          "items": {
+            "type": "string"
+          }
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to the primary image representing the homestay property.",
+          "format": "uri"
+        },
+        "contactEmail": {
+          "type": "string",
+          "description": "The email address for contacting the homestay owner or manager for inquiries and bookings.",
+          "format": "email"
+        },
+        "contactPhone": {
+          "type": "string",
+          "description": "The phone number for contacting the homestay owner or manager."
+        },
+        "isAvailable": {
+          "type": "boolean",
+          "description": "A flag indicating whether the homestay is currently available for listing or booking."
+        }
+      },
+      "required": [
+        "id",
+        "cityId",
+        "name",
+        "description",
+        "address",
+        "pricePerNight",
+        "isAvailable"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/cities/{cityId}",
+        "definition": {
+          "entityName": "City",
+          "schema": {
+            "$ref": "#/backend/entities/City"
+          },
+          "description": "Stores information about various cities. All documents in this collection are publicly readable. No denormalized authorization fields are required as access is global."
+        }
+      },
+      {
+        "path": "/homestays/{homestayId}",
+        "definition": {
+          "entityName": "Homestay",
+          "schema": {
+            "$ref": "#/backend/entities/Homestay"
+          },
+          "description": "Stores details for individual homestay properties. Each document includes a 'cityId' field to link it to its parent city, enabling efficient queries for homestays within a specific city. The 'isAvailable' field is used for client-side filtering to display only 'real' homestays. All documents in this collection are publicly readable, requiring no denormalized authorization fields.",
+          "params": [
+            {
+              "name": "homestayId",
+              "description": "The unique identifier for a specific homestay property."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The recommended Firestore structure uses two top-level collections: `/cities` and `/homestays`. This design prioritizes ease of querying, public accessibility, and adherence to security principles.\n\n**Authorization Independence:** In this scenario, both `City` and `Homestay` entities are designed for public read access. Therefore, there's no complex user-based authorization context to denormalize for read operations. Each `Homestay` document includes a `cityId` field, which directly links it to its respective city. This `cityId` field serves as a crucial data-linking mechanism, allowing queries to efficiently retrieve all homestays for a given city without needing to perform `get()` operations on the parent `City` document within security rules (which would be prohibited by the Authorization Independence principle if authorization depended on parent data). Since all data is publicly readable, authorization rules are simplified to `allow read: true;` for both collections.\n\n**Querying for Available Homestays (QAPs - Rules are not Filters):** The user request 'after clicking on view city user need to get home stays which are real' is addressed by the `isAvailable` boolean field within the `Homestay` entity. When a user selects a city (e.g., 'Tirupati'), the client-side application will perform a query on the `/homestays` collection, filtering by `cityId` and `isAvailable == true`. For example: `firestore.collection('homestays').where('cityId', '==', 'selectedCityId').where('isAvailable', '==', true)`. The security rules will simply grant read access to the entire `/homestays` collection, as all documents in this collection have the same security posture (public read). The `isAvailable` field acts as a data filter, not an authorization gate, perfectly aligning with the 'rules are not filters' principle. This ensures that only relevant, 'real' (available) homestays are retrieved by the application while maintaining simple, robust security rules."
+  }
+}
