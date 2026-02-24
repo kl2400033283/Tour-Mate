@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MapPin, Loader2 } from 'lucide-react';
+import { MapPin, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { initiateEmailSignUp } from '@/firebase/non-blocking-login';
 import { useForm } from 'react-hook-form';
@@ -25,8 +25,12 @@ const signupSchema = z.object({
   lastName: z.string().min(2, { message: 'Last name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Invalid email address.' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  confirmPassword: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
   countryCode: z.string({required_error: "Please select a country code."}),
   phoneNumber: z.string().min(10, { message: 'Phone number must be at least 10 digits.' }),
+}).refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
 });
 
 
@@ -36,6 +40,8 @@ export default function SignupPage() {
   const [isRoleDialogOpen, setRoleDialogOpen] = useState(false);
   const [signupData, setSignupData] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 
   const form = useForm({
@@ -45,6 +51,7 @@ export default function SignupPage() {
         lastName: '',
         email: '',
         password: '',
+        confirmPassword: '',
         countryCode: '+91',
         phoneNumber: '',
     },
@@ -179,19 +186,66 @@ export default function SignupPage() {
                     </div>
                 </div>
 
-                <FormField
+                 <FormField
                     control={form.control}
                     name="password"
                     render={({ field }) => (
                     <FormItem>
                         <Label htmlFor="password" className="text-white/90">Password</Label>
                         <FormControl>
-                            <Input id="password" type="password" {...field} className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary" />
+                           <div className="relative">
+                                <Input 
+                                    id="password" 
+                                    type={showPassword ? "text" : "password"} 
+                                    {...field} 
+                                    className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary pr-10" 
+                                />
+                                <button
+                                    type="button"
+                                    tabIndex={-1}
+                                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-white/70 hover:text-white"
+                                    onClick={() => setShowPassword(prev => !prev)}
+                                >
+                                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
+                                </button>
+                            </div>
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                     )}
                 />
+
+                <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                    <FormItem>
+                        <Label htmlFor="confirm-password" className="text-white/90">Confirm Password</Label>
+                        <FormControl>
+                            <div className="relative">
+                                <Input 
+                                    id="confirm-password" 
+                                    type={showConfirmPassword ? "text" : "password"} 
+                                    {...field} 
+                                    className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-offset-primary pr-10" 
+                                />
+                                <button
+                                    type="button"
+                                    tabIndex={-1}
+                                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-white/70 hover:text-white"
+                                    onClick={() => setShowConfirmPassword(prev => !prev)}
+                                >
+                                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    <span className="sr-only">{showConfirmPassword ? 'Hide password' : 'Show password'}</span>
+                                </button>
+                            </div>
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+
                 <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" disabled={isSubmitting} suppressHydrationWarning>
                   {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {isSubmitting ? "Creating Account..." : "Create an account"}
