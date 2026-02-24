@@ -42,16 +42,16 @@ export default function SignupPage() {
     }
   };
 
-  const imageUrl = "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+  const imageUrl = "https://images.unsplash.com/photo-1529846835765-17c4596c5efa?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
   return (
     <div className="relative min-h-screen w-full">
       <Image
         src={imageUrl}
-        alt="Indian Tourism Background"
+        alt="Hawa Mahal"
         fill
         className="absolute top-0 left-0 w-full h-full object-cover -z-10"
-        data-ai-hint="India travel"
+        data-ai-hint="Hawa Mahal Jaipur"
         priority
       />
       <div className="absolute inset-0 bg-black/60 -z-10" />

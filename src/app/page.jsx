@@ -10,16 +10,16 @@ import {
 
 export default function Page() {
   const imageUrl =
-    'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+    'https://images.unsplash.com/photo-1529846835765-17c4596c5efa?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
   return (
     <div className="relative h-screen w-screen text-white">
       <Image
         src={imageUrl}
-        alt="Taj Mahal"
+        alt="Hawa Mahal"
         fill
         className="object-cover"
-        data-ai-hint="India travel"
+        data-ai-hint="Hawa Mahal Jaipur"
         priority
       />
       <div className="absolute inset-0 bg-black/50" />
