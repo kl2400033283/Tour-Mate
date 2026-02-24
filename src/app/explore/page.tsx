@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Globe, Search, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,8 +8,25 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 export default function ExplorePage() {
+  const cities = [
+    { name: 'Agra', slug: 'agra', image: 'https://picsum.photos/seed/agra/400/300', hint: 'agra india' },
+    { name: 'Jaipur', slug: 'jaipur', image: 'https://picsum.photos/seed/jaipur/400/300', hint: 'jaipur palace' },
+    { name: 'Goa', slug: 'goa', image: 'https://picsum.photos/seed/goa/400/300', hint: 'goa beach' },
+    { name: 'Mumbai', slug: 'mumbai', image: 'https://picsum.photos/seed/mumbai/400/300', hint: 'mumbai skyline' },
+    { name: 'Delhi', slug: 'delhi', image: 'https://picsum.photos/seed/delhi/400/300', hint: 'delhi monument' },
+    { name: 'Varanasi', slug: 'varanasi', image: 'https://picsum.photos/seed/varanasi/400/300', hint: 'varanasi ganges' },
+    { name: 'Kolkata', slug: 'kolkata', image: 'https://picsum.photos/seed/kolkata/400/300', hint: 'kolkata bridge' },
+    { name: 'Shimla', slug: 'shimla', image: 'https://picsum.photos/seed/shimla/400/300', hint: 'shimla himalayas' },
+  ];
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -67,11 +85,26 @@ export default function ExplorePage() {
         <h1 className="text-3xl font-bold text-center mb-8 font-headline">
           Explore Destinations in India
         </h1>
-        <div className="text-center text-muted-foreground">
-          <p>The city flashcards are coming soon!</p>
-          <p className="text-sm mt-2">
-            For now, feel free to use the search bar above.
-          </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {cities.map((city) => (
+            <Link href={`/explore/${city.slug}`} key={city.slug}>
+              <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+                <CardContent className="p-0">
+                   <Image
+                    src={city.image}
+                    alt={`A scenic view of ${city.name}`}
+                    width={400}
+                    height={300}
+                    className="h-48 w-full object-cover"
+                    data-ai-hint={city.hint}
+                  />
+                </CardContent>
+                <CardHeader>
+                  <CardTitle className="text-center font-semibold text-lg">{city.name}</CardTitle>
+                </CardHeader>
+              </Card>
+            </Link>
+          ))}
         </div>
       </main>
     </div>
