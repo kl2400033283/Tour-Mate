@@ -10,12 +10,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { homestaysByCity } from '@/lib/homestays';
 import { citiesByState } from '@/lib/tourist-cities.js';
 import { notFound } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
-
+import { generateListingsAction } from '@/lib/actions';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const getCityData = (slug) => {
   if (!slug) return null;
@@ -39,33 +39,46 @@ function HomestayCard({ homestay }) {
   return (
     <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-transform duration-300 flex flex-col">
       <CardContent className="p-0">
-        <div className="relative h-48 w-full">
+        <div className="relative h-40 w-full">
           <Image
-            src={homestay.image}
+            src={`https://picsum.photos/seed/${homestay.imageHint?.replace(/\s/g, '-') || homestay.id}/400/300`}
             alt={homestay.name}
             fill
             className="object-cover"
-            data-ai-hint={homestay.hint}
+            data-ai-hint={homestay.imageHint}
           />
         </div>
       </CardContent>
-      <CardHeader className="p-4">
-        <CardTitle className="text-lg font-bold">{homestay.name}</CardTitle>
+      <CardHeader className="p-3">
+        <CardTitle className="text-base font-bold truncate">{homestay.name}</CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-0 flex-grow space-y-2">
-        <p className="text-sm text-muted-foreground">{homestay.location}</p>
-        <p className="text-base font-semibold">₹{homestay.price.toLocaleString()}/Night</p>
+      <CardContent className="p-3 pt-0 flex-grow space-y-2">
+        <p className="text-xs text-muted-foreground truncate">{homestay.location}</p>
+        <p className="text-sm font-semibold">₹{homestay.price.toLocaleString()}/Night</p>
         <div className="flex items-center gap-1">
           <Star className="w-4 h-4 text-primary fill-primary" />
-          <span className="font-bold">{homestay.rating}</span>
+          <span className="font-bold text-sm">{homestay.rating.toFixed(1)}</span>
         </div>
-        <p className="text-sm text-muted-foreground line-clamp-2">{homestay.description}</p>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <Button className="w-full" onClick={handleConfirm}>Confirm</Button>
+      <CardFooter className="p-3 pt-0">
+        <Button className="w-full h-9" onClick={handleConfirm}>Confirm</Button>
       </CardFooter>
     </Card>
   );
+}
+
+function CardSkeleton() {
+    return (
+        <div className="flex flex-col space-y-3">
+            <Skeleton className="h-40 w-full rounded-lg" />
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-4/5" />
+                <Skeleton className="h-4 w-3/5" />
+                <Skeleton className="h-4 w-1/2" />
+            </div>
+             <Skeleton className="h-9 w-full" />
+        </div>
+    )
 }
 
 
@@ -77,8 +90,11 @@ export default function BookHomestayPage() {
 
   const citySlug = params.city;
   const city = useMemo(() => getCityData(citySlug), [citySlug]);
-  const homestays = useMemo(() => homestaysByCity[citySlug] || [], [citySlug]);
   
+  const [homestays, setHomestays] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(true);
+  const [generationError, setGenerationError] = useState(null);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [priceRange, setPriceRange] = useState('all');
   const [rating, setRating] = useState('all');
@@ -88,6 +104,27 @@ export default function BookHomestayPage() {
       router.replace(`/login?redirect=${pathname}`);
     }
   }, [user, isUserLoading, router, pathname]);
+  
+  useEffect(() => {
+    if (!citySlug) return;
+    
+    const fetchHomestays = async () => {
+      setIsGenerating(true);
+      setGenerationError(null);
+      try {
+        const listings = await generateListingsAction({ city: city?.name || citySlug, listingType: 'homestays' });
+        setHomestays(listings || []);
+      } catch (e) {
+        const error = e instanceof Error ? e.message : 'Failed to generate homestays.';
+        setGenerationError(error);
+        console.error(e);
+      } finally {
+        setIsGenerating(false);
+      }
+    };
+
+    fetchHomestays();
+  }, [citySlug, city?.name]);
 
   const filteredHomestays = useMemo(() => {
     return homestays
@@ -216,7 +253,19 @@ export default function BookHomestayPage() {
           </div>
         </div>
         
-        {filteredHomestays.length > 0 ? (
+        {isGenerating ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {Array.from({ length: 12 }).map((_, i) => (
+                    <CardSkeleton key={i} />
+                ))}
+            </div>
+        ) : generationError ? (
+            <div className="text-center py-16 bg-background rounded-lg shadow-md">
+                <h2 className="text-2xl font-semibold text-destructive">Failed to Load Homestays</h2>
+                <p className="text-muted-foreground mt-2">{generationError}</p>
+                <p className="text-muted-foreground mt-1">Please try again later.</p>
+            </div>
+        ) : filteredHomestays.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredHomestays.map(homestay => (
               <HomestayCard key={homestay.id} homestay={homestay} />
