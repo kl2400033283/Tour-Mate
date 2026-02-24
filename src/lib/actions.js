@@ -43,15 +43,27 @@ function generateMockListings({ city, listingType }) {
       'treehouse escape', 'yurt experience', 'glass house', 'A-frame cabin', 'stone cottage', 'log cabin', 'houseboat stay', 'art deco flat'
     ];
     
+    let landmarkNames = [
+        "Central Park", "City Museum", "Riverfront Promenade", "Old Town Square",
+        "Grand Cathedral", "Botanical Gardens", "National Art Gallery", "Historic Clock Tower",
+        "Main Street Market", "Victory Monument", "The Grand Theatre", "Parliament House",
+        "The Royal Palace", "State University Campus", "The Tech Park", "Freedom Bridge",
+        "St. John's Church", "The Observatory", "Sunset Point", "The Art Deco District",
+        "Cultural Heritage Center", "The Great Library", "War Memorial", "The Shopping Arcade",
+        "City Zoo", "The Rose Garden", "Hilltop Viewpoint", "The Ancient Ruins",
+        "Lakeside Park", "The Spice Market", "The Lighthouse", "The Old Fort"
+    ];
+
     // Shuffle the arrays to randomize the data
     shuffle(homestayNames);
     shuffle(homestayImageHints);
+    shuffle(landmarkNames);
 
     for (let i = 0; i < count; i++) {
       listings.push({
         id: `${city.replace(/\s/g, '-')}-homestay-${i + 1}-${Math.random()}`, // Add random suffix to ensure unique key
         name: homestayNames[i] || `Sample Homestay ${i + 1} in ${city}`,
-        location: `Near ${city} Landmark ${i + 1}`,
+        location: `Near ${landmarkNames[i]}`,
         price: 1500 + Math.floor(Math.random() * 8500), // Widen the price range
         rating: parseFloat((3.5 + Math.random() * 1.5).toFixed(1)),
         description: `This is a sample description for a wonderful homestay in ${city}. Enjoy your stay!`,
