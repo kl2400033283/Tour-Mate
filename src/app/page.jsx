@@ -7,19 +7,22 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { PlaceHolderImages } from '@/lib/placeholder-images.js';
 
 export default function Page() {
-  const imageUrl =
-    'https://storage.googleapis.com/project-spark-b1c94.appspot.com/static/1f29c669-e700-4b36-9b59-71511a84f378';
+  const backgroundImage = PlaceHolderImages.find(p => p.id === 'background-image');
+  const imageUrl = backgroundImage?.imageUrl || 'https://picsum.photos/seed/bg/1920/1080';
+  const imageHint = backgroundImage?.imageHint || 'India travel';
+  const imageAlt = backgroundImage?.description || "A collage of famous landmarks in India.";
 
   return (
     <div className="relative h-screen w-screen text-white">
       <Image
         src={imageUrl}
-        alt="A collage of famous landmarks in India."
+        alt={imageAlt}
         fill
         className="object-cover"
-        data-ai-hint="India travel"
+        data-ai-hint={imageHint}
         priority
       />
       <div className="absolute inset-0 bg-black/50" />

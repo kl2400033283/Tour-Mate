@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { PlaceHolderImages } from '@/lib/placeholder-images.js';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -36,16 +37,19 @@ export default function LoginPage() {
     }
   };
 
-  const imageUrl = "https://storage.googleapis.com/project-spark-b1c94.appspot.com/static/1f29c669-e700-4b36-9b59-71511a84f378";
+  const backgroundImage = PlaceHolderImages.find(p => p.id === 'background-image');
+  const imageUrl = backgroundImage?.imageUrl || 'https://picsum.photos/seed/bg/1920/1080';
+  const imageHint = backgroundImage?.imageHint || 'India travel';
+  const imageAlt = backgroundImage?.description || "A collage of famous landmarks in India.";
 
   return (
     <div className="relative min-h-screen w-full">
        <Image
         src={imageUrl}
-        alt="A collage of famous landmarks in India."
+        alt={imageAlt}
         fill
         className="absolute top-0 left-0 w-full h-full object-cover -z-10"
-        data-ai-hint="India travel"
+        data-ai-hint={imageHint}
         priority
       />
       <div className="absolute inset-0 bg-black/60 -z-10" />
