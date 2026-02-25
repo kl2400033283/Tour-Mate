@@ -188,7 +188,7 @@ export default function ProfilePage() {
                         className="flex items-center gap-2"
                     >
                         <ArrowLeft className="h-4 w-4" />
-                        Back
+                        Back to Home
                     </Button>
                     <div className="w-full flex-1" />
                     <Button onClick={handleSignOut} variant="secondary">
