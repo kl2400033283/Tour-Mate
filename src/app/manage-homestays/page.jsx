@@ -1,9 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, Briefcase, LayoutGrid, ArrowLeft } from 'lucide-react';
+import Image from 'next/image';
+import {
+    MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, MoreHorizontal, ArrowLeft, LayoutGrid
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
 import { useRouter, usePathname } from 'next/navigation';
@@ -12,6 +15,24 @@ import { useEffect, useMemo } from 'react';
 import { doc, collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 function SidebarNav({ isMobile = false }) {
   const pathname = usePathname();
@@ -57,29 +78,98 @@ function SidebarNav({ isMobile = false }) {
   );
 }
 
-function StatCard({ title, value, description, icon: Icon, isLoading }) {
+function HomestaysTable({ homestays, users, isLoading }) {
+  if (isLoading) {
+    return (
+      <div className="space-y-4 p-4">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex items-center space-x-4">
+            <Skeleton className="h-12 w-12 rounded-md" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-[250px]" />
+              <Skeleton className="h-4 w-[200px]" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  const usersById = useMemo(() => {
+    if (!users) return {};
+    return users.reduce((acc, user) => {
+      acc[user.uid] = user;
+      return acc;
+    }, {});
+  }, [users]);
+  
+  if (!homestays || homestays.length === 0) {
+    return <p className="p-4 text-center text-muted-foreground">No homestays found.</p>
+  }
+
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
-      </CardHeader>
-      <CardContent>
-        {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : (
-          <>
-            <div className="text-2xl font-bold">{value}</div>
-            <p className="text-xs text-muted-foreground">
-              {description}
-            </p>
-          </>
-        )}
-      </CardContent>
-    </Card>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="hidden w-[100px] sm:table-cell">Image</TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead>Host</TableHead>
+          <TableHead className="hidden md:table-cell">Price</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>
+            <span className="sr-only">Actions</span>
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {homestays?.map((homestay) => {
+          const host = usersById[homestay.hostId];
+          const hostName = host ? `${host.firstName} ${host.lastName}` : 'N/A';
+          return (
+            <TableRow key={homestay.id}>
+              <TableCell className="hidden sm:table-cell">
+                 <Image
+                    alt={homestay.name}
+                    className="aspect-square rounded-md object-cover"
+                    height="64"
+                    src={`https://picsum.photos/seed/${homestay.id}/64/64`}
+                    width="64"
+                />
+              </TableCell>
+              <TableCell className="font-medium">{homestay.name}</TableCell>
+              <TableCell>{hostName}</TableCell>
+              <TableCell className="hidden md:table-cell">₹{homestay.pricePerNight?.toLocaleString()}</TableCell>
+              <TableCell>
+                <Badge variant={homestay.isAvailable ? 'outline' : 'secondary'}>
+                  {homestay.isAvailable ? 'Available' : 'Unavailable'}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button aria-haspopup="true" size="icon" variant="ghost">
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Toggle menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem>View</DropdownMenuItem>
+                    <DropdownMenuItem>Suspend</DropdownMenuItem>
+                    <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
   );
 }
 
 
-export default function AdminDashboardPage() {
+export default function ManageHomestaysPage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
@@ -89,41 +179,17 @@ export default function AdminDashboardPage() {
     return doc(firestore, 'users', user.uid);
   }, [user, firestore]);
   const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
-  
-  const allUsersQuery = useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]);
-  const { data: allUsers, isLoading: isAllUsersLoading } = useCollection(allUsersQuery);
-
-  const allHomestaysQuery = useMemoFirebase(() => firestore ? collection(firestore, 'homestays') : null, [firestore]);
-  const { data: allHomestays, isLoading: isAllHomestaysLoading } = useCollection(allHomestaysQuery);
-  
-  const stats = useMemo(() => {
-    if (!allUsers) {
-      return {
-        tourists: 0,
-        hosts: 0,
-        guides: 0,
-      };
-    }
-
-    const tourists = allUsers.filter(u => u.role === 'Tourist').length;
-    const hosts = allUsers.filter(u => u.role === 'home stay host').length;
-    const guides = allUsers.filter(u => u.role === 'tour guide').length;
-
-    return { tourists, hosts, guides };
-  }, [allUsers]);
-  
 
   useEffect(() => {
     const isLoading = isUserLoading || isProfileLoading;
     if (isLoading) return;
 
     if (!user) {
-      router.replace('/login');
+      router.replace('/login?redirect=/manage-homestays');
       return;
     }
 
-    if (userProfile) {
-      if (userProfile.role !== 'admin') {
+    if (userProfile && userProfile.role !== 'admin') {
         switch (userProfile.role) {
           case 'home stay host':
             router.replace('/host-dashboard');
@@ -138,9 +204,14 @@ export default function AdminDashboardPage() {
             router.replace('/');
             break;
         }
-      }
     }
   }, [user, isUserLoading, userProfile, isProfileLoading, router]);
+
+  const allHomestaysQuery = useMemoFirebase(() => firestore ? collection(firestore, 'homestays') : null, [firestore]);
+  const { data: allHomestays, isLoading: isAllHomestaysLoading } = useCollection(allHomestaysQuery);
+  
+  const allUsersQuery = useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]);
+  const { data: allUsers, isLoading: isAllUsersLoading } = useCollection(allUsersQuery);
 
   const handleSignOut = () => {
     const auth = getAuth();
@@ -149,20 +220,11 @@ export default function AdminDashboardPage() {
     });
   };
 
-  const dashboardIsLoading = isUserLoading || isProfileLoading || isAllUsersLoading || isAllHomestaysLoading;
+  const pageIsLoading = isUserLoading || isProfileLoading;
 
-  if (dashboardIsLoading || !userProfile || userProfile.role !== 'admin') {
+  if (pageIsLoading || !userProfile || userProfile.role !== 'admin') {
     return <div className="h-screen w-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
-  
-  const totalUsers = allUsers?.length || 0;
-  const totalHomestays = allHomestays?.length || 0;
-  const totalGuides = stats.guides;
-  // Placeholder for bookings as it requires complex aggregation
-  const totalBookings = "96";
-  const activeBookings = "12";
-  const completedBookings = "84";
-
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -219,49 +281,21 @@ export default function AdminDashboardPage() {
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
           <div className="mb-4">
-            <h1 className="text-3xl font-bold tracking-tight">Welcome, Admin 👋</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Manage Homestays</h1>
             <p className="text-muted-foreground mt-1">
-              Monitor platform activity and manage users.
+              View, approve, and manage all homestay listings on the platform.
             </p>
           </div>
-          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-            <StatCard 
-              title="Total Users" 
-              value={totalUsers} 
-              description={`${stats.tourists} Tourists, ${stats.hosts} Hosts, ${stats.guides} Guides`} 
-              icon={Users}
-              isLoading={dashboardIsLoading} 
-            />
-            <StatCard 
-              title="Homestay Listings" 
-              value={totalHomestays} 
-              description="5 Pending Approval" // Placeholder
-              icon={Home}
-              isLoading={dashboardIsLoading} 
-            />
-            <StatCard 
-              title="Local Guides" 
-              value={totalGuides} 
-              description="2 Pending Verification" // Placeholder
-              icon={Compass}
-              isLoading={dashboardIsLoading} 
-            />
-            <StatCard 
-              title="Total Bookings" 
-              value={totalBookings}
-              description={`${activeBookings} Active, ${completedBookings} Completed`}
-              icon={Briefcase}
-              isLoading={dashboardIsLoading} // Assuming this is also loading dependent
-            />
-          </div>
+          <Card>
+            <CardHeader>
+                <CardTitle>All Homestays</CardTitle>
+                <CardDescription>A list of all homestays in the system.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <HomestaysTable homestays={allHomestays} users={allUsers} isLoading={isAllHomestaysLoading || isAllUsersLoading} />
+            </CardContent>
+          </Card>
         </main>
-        <footer className="bg-card border-t mt-auto">
-            <div className="container mx-auto text-center py-6 text-muted-foreground text-sm">
-                <div>
-                  &copy; {new Date().getFullYear()} TourMate | All Rights Reserved.
-                </div>
-            </div>
-        </footer>
       </div>
     </div>
   );

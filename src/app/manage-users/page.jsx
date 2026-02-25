@@ -46,7 +46,7 @@ function SidebarNav({ isMobile = false }) {
   const navLinks = [
     { href: '/admin-dashboard', label: 'Dashboard', icon: LayoutGrid },
     { href: '/manage-users', label: 'Manage Users', icon: Users },
-    { href: '#', label: 'Manage Homestays', icon: Home },
+    { href: '/manage-homestays', label: 'Manage Homestays', icon: Home },
     { href: '#', label: 'Manage Guides', icon: Compass },
     { href: '#', label: 'Reports', icon: BarChart2 },
   ];
