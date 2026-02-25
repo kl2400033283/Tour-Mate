@@ -129,9 +129,16 @@ function HireRequestsTable({ bookings, isLoading, onUpdateStatus }) {
             <TableCell className="hidden md:table-cell">{booking.tourDate}</TableCell>
             <TableCell className="hidden sm:table-cell">
               <Badge 
-                variant={booking.status === 'pending' ? 'secondary' : 'default'}
+                variant={
+                  booking.status === 'pending' ? 'secondary' : 
+                  booking.status === 'approved' ? 'default' : 
+                  'destructive'
+                }
                 className={cn({
                   'bg-yellow-500/20 text-yellow-700 border-yellow-500/30': booking.status === 'pending',
+                  'bg-green-500/20 text-green-700 border-green-500/30': booking.status === 'approved',
+                  'bg-red-500/20 text-red-700 border-red-500/30': booking.status === 'declined',
+                  'bg-blue-500/20 text-blue-700 border-blue-500/30': booking.status === 'completed',
                 })}
               >
                 {booking.status}
@@ -164,7 +171,7 @@ export default function HireRequestsPage() {
 
     const bookingsQuery = useMemoFirebase(() => {
         if (!user || !firestore) return null;
-        return query(collection(firestore, 'users', user.uid, 'receivedGuideBookings'), where('status', '==', 'pending'), orderBy('bookingDate', 'desc'));
+        return query(collection(firestore, 'users', user.uid, 'receivedGuideBookings'), orderBy('bookingDate', 'desc'));
     }, [user, firestore]);
     const { data: bookings, isLoading: bookingsLoading } = useCollection(bookingsQuery);
 
@@ -263,8 +270,8 @@ export default function HireRequestsPage() {
                     </div>
                     <Card>
                         <CardHeader>
-                            <CardTitle>Pending Requests</CardTitle>
-                            <CardDescription>A list of all client requests awaiting your response.</CardDescription>
+                            <CardTitle>All Hire Requests</CardTitle>
+                            <CardDescription>A complete list of all hire requests from clients.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <HireRequestsTable bookings={bookings} isLoading={bookingsLoading} onUpdateStatus={handleUpdateBookingStatus} />
