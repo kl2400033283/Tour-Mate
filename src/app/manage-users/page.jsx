@@ -48,7 +48,7 @@ function SidebarNav({ isMobile = false }) {
     { href: '/manage-users', label: 'Manage Users', icon: Users },
     { href: '/manage-homestays', label: 'Manage Homestays', icon: Home },
     { href: '/manage-guides', label: 'Manage Guides', icon: Compass },
-    { href: '#', label: 'Reports', icon: BarChart2 },
+    { href: '/reports', label: 'Reports', icon: BarChart2 },
   ];
 
   return (
