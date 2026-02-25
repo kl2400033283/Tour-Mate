@@ -14,7 +14,8 @@ import {
   ArrowLeft,
   CheckCircle,
   XCircle,
-  Hourglass
+  Hourglass,
+  MapPin,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge.jsx';
 import { Button } from '@/components/ui/button.jsx';
@@ -103,8 +104,11 @@ function ToursTable({ bookings, isLoading }) {
 
   if (!bookings || bookings.length === 0) {
     return (
-       <div className="flex items-center justify-center h-full min-h-48 border-2 border-dashed rounded-lg">
-          <p className="text-muted-foreground">No tours found.</p>
+       <div className="flex flex-col items-center justify-center h-full min-h-48 border-2 border-dashed rounded-lg text-center p-4">
+          <p className="text-muted-foreground mb-4">You have no tours scheduled.</p>
+          <Button asChild>
+            <Link href="/hire-requests">View Hire Requests</Link>
+          </Button>
       </div>
     );
   }
@@ -113,9 +117,9 @@ function ToursTable({ bookings, isLoading }) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Client</TableHead>
+          <TableHead>Tourist</TableHead>
           <TableHead>City</TableHead>
-          <TableHead className="hidden md:table-cell">Date</TableHead>
+          <TableHead className="hidden md:table-cell">Tour Date</TableHead>
           <TableHead className="hidden sm:table-cell">Status</TableHead>
           <TableHead className="text-right">Price</TableHead>
         </TableRow>
