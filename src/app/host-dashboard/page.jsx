@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -374,7 +373,7 @@ export default function HostDashboardPage() {
         </main>
         <footer className="border-t bg-card">
             <div className="container mx-auto text-center py-6 text-muted-foreground text-sm">
-                 <p>Quick Links | For Hosts | Contact @ {new Date().getFullYear()} TourMate | All Rights Reserved.</p>
+                 <p>Quick Links | For Hosts | Contact @ <span suppressHydrationWarning>{new Date().getFullYear()}</span> TourMate | All Rights Reserved.</p>
             </div>
         </footer>
       </div>

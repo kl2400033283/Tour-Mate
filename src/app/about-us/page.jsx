@@ -137,9 +137,9 @@ export default function AboutUsPage() {
               Whether you're seeking a spiritual retreat in Rishikesh, a bustling food walk in Old Delhi, or a serene backwater escape in Kerala, we provide the tools to find the perfect stay and the most knowledgeable guides.
             </p>
           </div>
-          <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
+          <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl bg-muted">
             <Image
-              src="https://www.easternfin.com/blog/incredible-india-making-sense-of-tourism-led-growth-hypothesis"
+              src="https://picsum.photos/seed/indian-hospitality/800/600"
               alt="Indian Hospitality"
               fill
               className="object-cover"
@@ -191,13 +191,13 @@ export default function AboutUsPage() {
         </section>
       </main>
 
-      <footer className="border-t bg-card py-12">
+      <footer className="bg-card py-12">
         <div className="container mx-auto text-center space-y-4 text-muted-foreground">
           <Link href="/" className="flex items-center justify-center gap-2 mb-4">
             <MapPin className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold tracking-tight text-foreground">TourMate</span>
           </Link>
-          <p>&copy; {new Date().getFullYear()} TourMate. All Rights Reserved.</p>
+          <p>&copy; <span suppressHydrationWarning>{new Date().getFullYear()}</span> TourMate. All Rights Reserved.</p>
         </div>
       </footer>
     </div>

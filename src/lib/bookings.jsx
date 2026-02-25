@@ -1,7 +1,7 @@
 'use client';
-import { collection, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore';
-import { setDocumentNonBlocking, addDocumentNonBlocking } from '@/firebase/non-blocking-updates.jsx';
-import { useToast } from '@/hooks/use-toast.jsx';
+import { collection, serverTimestamp, doc } from 'firebase/firestore';
+import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates.jsx';
+import { toast } from '@/hooks/use-toast.jsx';
 
 /**
  * Saves a homestay booking to Firestore for both the tourist and the host.
@@ -12,7 +12,6 @@ import { useToast } from '@/hooks/use-toast.jsx';
 export function saveHomestayBooking(firestore, userId, bookingDetails) {
   if (!firestore || !userId || !bookingDetails.hostId) {
     console.error("Firestore, user ID, or host ID is missing.");
-    const { toast } = useToast();
     toast({
         variant: 'destructive',
         title: 'Booking Error',
@@ -50,7 +49,6 @@ export function saveHomestayBooking(firestore, userId, bookingDetails) {
 export function saveGuideBooking(firestore, userId, bookingDetails) {
   if (!firestore || !userId || !bookingDetails.guideId) {
     console.error("Firestore, user ID, or guide ID is missing.");
-    const { toast } = useToast();
     toast({
         variant: 'destructive',
         title: 'Booking Error',

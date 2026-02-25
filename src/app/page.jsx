@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -122,7 +121,7 @@ export default function Page() {
             <h1 className="font-headline text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl">
               TourMate
             </h1>
-            <p className="mx-auto max-md text-lg text-white/80 sm:text-xl">
+            <p className="mx-auto max-w-md text-lg text-white/80 sm:text-xl">
               Where Travel Meets Comfort
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
