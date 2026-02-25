@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/card';
 import { citiesByState } from '@/lib/tourist-cities';
 import { useUser } from '@/firebase';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,6 +40,8 @@ export default function ExplorePage() {
     city.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     city.stateName.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const cityPlaceholder = PlaceHolderImages.find(p => p.id === 'city-placeholder');
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -134,12 +137,12 @@ export default function ExplorePage() {
               <Card key={`${city.stateSlug}-${city.slug}`} className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl flex flex-col">
                 <CardContent className="p-0">
                     <Image
-                    src={city.image}
+                    src={city.image || cityPlaceholder?.imageUrl || 'https://picsum.photos/seed/city/400/300'}
                     alt={`A scenic view of ${city.name}`}
                     width={400}
                     height={300}
                     className="h-48 w-full object-cover"
-                    data-ai-hint={city.hint}
+                    data-ai-hint={city.hint || 'cityscape'}
                   />
                 </CardContent>
                 <CardHeader>

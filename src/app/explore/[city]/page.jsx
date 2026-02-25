@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/sheet';
 import { useState, useEffect } from 'react';
 import { doc } from 'firebase/firestore';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 
 const getCityData = (slug) => {
@@ -90,17 +91,17 @@ export default function CityPage() {
   }
 
   const { name, stateName, description, image, hint, attractionDetails = [] } = city;
-  
+  const cityPlaceholder = PlaceHolderImages.find(p => p.id === 'city-placeholder');
 
   return (
     <div className="bg-white text-gray-800">
       <div className="relative h-[70vh] min-h-[500px] text-white">
         <Image
-          src={image || 'https://picsum.photos/seed/city-hero/1920/1080'}
+          src={image || cityPlaceholder?.imageUrl || 'https://picsum.photos/seed/city-hero/1920/1080'}
           alt={`Hero image for ${name}`}
           fill
           className="object-cover"
-          data-ai-hint={hint}
+          data-ai-hint={hint || 'cityscape'}
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
