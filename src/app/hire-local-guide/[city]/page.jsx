@@ -283,7 +283,7 @@ export default function HireLocalGuidePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-muted/20 text-gray-800">
-      <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-hidden">
+      <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur overflow-hidden">
         <div className="absolute inset-0 opacity-5 pointer-events-none">
           <Image 
             src="https://picsum.photos/seed/india-strip-2/1200/100" 

@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -92,7 +93,7 @@ function HireRequestsTable({ bookings, isLoading, onUpdateStatus }) {
 
   if (!bookings || bookings.length === 0) {
     return (
-       <div className="flex items-center justify-center h-full min-h-48 border-2 border-dashed rounded-lg">
+       <div className="flex items-center justify-center h-full min-h-48 border-2 border-dashed rounded-lg text-center p-4">
           <p className="text-muted-foreground">No hire requests found.</p>
       </div>
     );
@@ -216,7 +217,7 @@ export default function HireRequestsPage() {
                 </div>
             </aside>
             <div className="flex flex-col bg-background">
-                <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
+                <header className="flex h-14 items-center gap-4 bg-transparent px-4 lg:h-[60px] lg:px-6">
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button

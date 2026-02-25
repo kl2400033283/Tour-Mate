@@ -281,7 +281,7 @@ export default function BookHomestayPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="w-full bg-background/80 backdrop-blur-sm sticky top-0 z-50 overflow-hidden">
+      <header className="w-full bg-transparent backdrop-blur-sm sticky top-0 z-50 overflow-hidden">
         <div className="absolute inset-0 opacity-5 pointer-events-none">
           <Image 
             src="https://picsum.photos/seed/india-strip-1/1200/100" 

@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -255,7 +256,7 @@ export default function ManageHomestaysPage() {
         </div>
       </aside>
       <div className="flex flex-col bg-muted/40">
-        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center gap-4 bg-transparent px-4 lg:h-[60px] lg:px-6">
           <Sheet>
             <SheetTrigger asChild>
               <Button
@@ -271,7 +272,7 @@ export default function ManageHomestaysPage() {
                 <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                   <Link href="/" className="flex items-center gap-2 font-semibold">
                     <MapPin className="h-6 w-6 text-primary" />
-                    <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate</span>
+                    <span className="text-xl font-bold tracking-tight">TourMate</span>
                   </Link>
                 </div>
                 <div className="flex-1 overflow-auto py-4">

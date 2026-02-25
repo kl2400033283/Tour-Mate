@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -232,7 +233,7 @@ export default function ManageUsersPage() {
         </div>
       </aside>
       <div className="flex flex-col bg-muted/40">
-        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center gap-4 bg-transparent px-4 lg:h-[60px] lg:px-6">
           <Sheet>
             <SheetTrigger asChild>
               <Button

@@ -189,7 +189,7 @@ export default function AdminDashboardPage() {
         </div>
       </aside>
       <div className="flex flex-col bg-muted/40">
-        <header className="flex h-14 items-center gap-4 bg-card px-4 lg:h-[60px] lg:px-6 overflow-hidden relative">
+        <header className="flex h-14 items-center gap-4 bg-transparent px-4 lg:h-[60px] lg:px-6 overflow-hidden relative">
           <div className="absolute inset-0 opacity-5 pointer-events-none">
             <Image src="https://picsum.photos/seed/nav-strip-admin/1200/100" alt="" fill className="object-cover" data-ai-hint="india landscape" />
           </div>

@@ -142,7 +142,7 @@ export default function ProfilePage() {
                 </div>
             </aside>
             <div className="flex flex-col bg-background">
-                <header className="flex h-14 items-center gap-4 bg-card px-4 lg:h-[60px] lg:px-6 relative overflow-hidden">
+                <header className="flex h-14 items-center gap-4 bg-transparent px-4 lg:h-[60px] lg:px-6 relative overflow-hidden">
                     <div className="absolute inset-0 opacity-5 pointer-events-none">
                       <Image src="https://picsum.photos/seed/nav-strip-tourist/1200/100" alt="" fill className="object-cover" data-ai-hint="india landscape" />
                     </div>
