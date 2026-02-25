@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { MapPin, Menu, ArrowLeft, Heart, ShieldCheck, Users } from 'lucide-react';
+import { MapPin, Menu, Heart, ShieldCheck, Users } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -130,9 +130,9 @@ export default function AboutUsPage() {
       <main className="container mx-auto py-16 px-4 space-y-24">
         <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <h2 className="text-4xl font-bold font-headline text-primary">Where Travel Meets Comfort</h2>
+            <h2 className="text-4xl font-bold font-headline text-primary">Indian Hospitality</h2>
             <p className="text-lg leading-relaxed text-muted-foreground">
-              At TourMate, we believe that the best way to experience a culture is from the inside. Founded with a passion for Indian heritage and hospitality, our platform bridges the gap between curious travelers and the warm, welcoming homes of local hosts.
+              At TourMate, we believe that the best way to experience a culture is from the inside. Founded with a passion for Indian heritage, our platform bridges the gap between curious travelers and the warm, welcoming homes of local hosts.
             </p>
             <p className="text-lg leading-relaxed text-muted-foreground">
               Whether you're seeking a spiritual retreat in Rishikesh, a bustling food walk in Old Delhi, or a serene backwater escape in Kerala, we provide the tools to find the perfect stay and the most knowledgeable guides.
