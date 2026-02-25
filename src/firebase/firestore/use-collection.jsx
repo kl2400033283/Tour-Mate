@@ -7,7 +7,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 
 /**
  * React hook to subscribe to a Firestore collection or query in real-time.
- * Handles nullable references/queries.
+ * Handles nullable references.
  * 
  *
  * IMPORTANT! YOU MUST MEMOIZE the inputted memoizedTargetRefOrQuery or BAD THINGS WILL HAPPEN
@@ -19,7 +19,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
  */
 export function useCollection(memoizedTargetRefOrQuery) {
   const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {

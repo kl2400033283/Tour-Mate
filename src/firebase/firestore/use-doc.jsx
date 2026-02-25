@@ -19,7 +19,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
  */
 export function useDoc(memoizedDocRef) {
   const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
