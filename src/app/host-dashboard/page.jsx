@@ -60,7 +60,7 @@ function SidebarNav({ isMobile = false }) {
 
     const navLinks = [
         { href: '/host-dashboard', icon: LayoutGrid, label: 'Dashboard' },
-        { href: '#', icon: List, label: 'My Listings' },
+        { href: '/my-listings', icon: List, label: 'My Listings' },
         { href: '#', icon: PlusCircle, label: 'Add Homestay' },
         { href: '#', icon: Bell, label: 'Booking Requests' },
         { href: '#', icon: DollarSign, label: 'Earnings' },
@@ -253,7 +253,7 @@ export default function HostDashboardPage() {
         );
     }
 
-    const displayName = userProfile ? `${userProfile.firstName} ${userProfile.lastName}`.trim() : (user?.email?.split('@')[0] || 'Host');
+    const displayName = userProfile ? `${userProfile.firstName} ${userProfile.lastName}`.trim() : 'Host';
 
 
   return (
