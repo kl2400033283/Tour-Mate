@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -118,13 +117,15 @@ function HomestaysTable({ homestays, users, isLoading, onUpdateStatus }) {
           return (
             <TableRow key={homestay.id}>
               <TableCell className="hidden sm:table-cell">
-                 <Image
-                    alt={homestay.name}
-                    className="aspect-square rounded-md object-cover"
-                    height="64"
-                    src={`https://picsum.photos/seed/${homestay.id}/64/64`}
-                    width="64"
-                />
+                 <div className="relative h-12 w-12 overflow-hidden rounded-md">
+                    <Image
+                        alt={homestay.name}
+                        className="object-cover"
+                        fill
+                        src={homestay.imageUrl || `https://picsum.photos/seed/${homestay.id}/64/64`}
+                        data-ai-hint={homestay.imageHint || 'homestay interior'}
+                    />
+                 </div>
               </TableCell>
               <TableCell className="font-medium">{homestay.name}</TableCell>
               <TableCell>{hostName}</TableCell>

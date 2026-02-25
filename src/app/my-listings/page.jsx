@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
@@ -99,14 +98,15 @@ function ListingsTable({ listings, isLoading }) {
                 {listings.map((listing) => (
                     <TableRow key={listing.id}>
                         <TableCell className="hidden sm:table-cell">
-                            <Image
-                                alt={listing.name}
-                                className="aspect-square rounded-md object-cover"
-                                height="64"
-                                src={`https://picsum.photos/seed/${listing.imageHint?.replace(/\s/g, '-') || listing.id}/64/64`}
-                                width="64"
-                                data-ai-hint={listing.imageHint}
-                            />
+                            <div className="relative h-16 w-16 overflow-hidden rounded-md bg-muted">
+                                <Image
+                                    alt={listing.name}
+                                    fill
+                                    className="object-cover"
+                                    src={listing.imageUrl || `https://picsum.photos/seed/${listing.imageHint?.replace(/\s/g, '-') || listing.id}/64/64`}
+                                    data-ai-hint={listing.imageHint || 'homestay cozy'}
+                                />
+                            </div>
                         </TableCell>
                         <TableCell className="font-medium">{listing.name}</TableCell>
                         <TableCell>

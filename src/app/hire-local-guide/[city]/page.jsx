@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
 import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { useRouter, usePathname, useParams, useSearchParams } from 'next/navigation';
-import { Loader2, MapPin, Search, Star, Menu, Calendar as CalendarIcon } from 'lucide-react';
+import { Loader2, MapPin, Search, Star, Menu, Calendar as CalendarIcon, Languages, Award } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button.jsx';
@@ -29,6 +28,7 @@ import {
 import { saveGuideBooking } from '@/lib/bookings.js';
 import { cn } from '@/lib/utils.js';
 import { doc } from 'firebase/firestore';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const getCityData = (slug) => {
   if (!slug) return null;
@@ -39,7 +39,7 @@ const getCityData = (slug) => {
   return null;
 };
 
-function GuideCard({ guide, user, city, date }) {
+function GuideCard({ guide, user, city, date, fallbackImage }) {
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
@@ -109,39 +109,44 @@ function GuideCard({ guide, user, city, date }) {
 
   return (
     <>
-      <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-transform duration-300 flex flex-col">
-        <div className="relative w-full h-48">
+      <Card className="overflow-hidden bg-card shadow-lg transform hover:-translate-y-1 transition-all duration-300 flex flex-col border-none">
+        <div className="relative w-full h-56 bg-muted">
            <Image
-              src={`https://picsum.photos/seed/${guide.imageHint?.replace(/\s/g, '-') || guide.id}/300/400`}
+              src={guide.imageUrl || `https://picsum.photos/seed/${guide.id}/400/600`}
               alt={guide.name}
               fill
               className="object-cover"
-              data-ai-hint={guide.imageHint}
+              data-ai-hint={guide.imageHint || 'person portrait'}
             />
+            <div className="absolute top-2 right-2 bg-background/90 backdrop-blur px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-sm">
+                <Star className="w-3 h-3 text-primary fill-primary" />
+                {guide.rating.toFixed(1)}
+            </div>
         </div>
-        <CardHeader className="p-4 text-center">
-            <CardTitle className="text-xl font-bold">{guide.name}</CardTitle>
+        <CardHeader className="p-4 text-center pb-2">
+            <CardTitle className="text-xl font-bold line-clamp-1">{guide.name}</CardTitle>
             <p className="text-sm text-primary font-semibold">{guide.specialty}</p>
         </CardHeader>
-        <CardContent className="p-4 pt-0 flex-grow text-center space-y-3 text-sm text-muted-foreground">
-            <div className="flex justify-center items-center gap-4">
+        <CardContent className="p-4 pt-0 flex-grow text-center space-y-4 text-sm text-muted-foreground">
+            <div className="grid grid-cols-2 gap-2 border-y py-3 border-muted/50">
                 <div className="text-center">
-                    <p className="font-bold text-lg text-foreground">{guide.rating.toFixed(1)}</p>
-                    <p>Rating</p>
+                    <p className="font-bold text-lg text-foreground leading-none">{guide.experience}</p>
+                    <p className="text-[10px] uppercase tracking-wider">Years Exp.</p>
                 </div>
                 <div className="text-center">
-                    <p className="font-bold text-lg text-foreground">{guide.experience}</p>
-                    <p>Years Exp.</p>
+                    <p className="font-bold text-lg text-foreground leading-none">₹{guide.rate.toLocaleString()}</p>
+                    <p className="text-[10px] uppercase tracking-wider">Daily Rate</p>
                 </div>
             </div>
-            <div>
-                <p className="font-semibold text-foreground">Languages</p>
-                <p>{guide.languages.join(', ')}</p>
+            <div className="space-y-2">
+                <div className="flex items-center justify-center gap-1.5 text-xs text-foreground font-medium">
+                    <Languages className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span>{guide.languages.join(', ')}</span>
+                </div>
             </div>
         </CardContent>
-        <CardFooter className="p-4 pt-0 flex-col gap-2">
-            <p className="text-xl font-bold">₹{guide.rate.toLocaleString()}<span className="text-sm font-normal text-muted-foreground">/day</span></p>
-            <Button className="w-full" onClick={handleHire}>Hire</Button>
+        <CardFooter className="p-4 pt-0">
+            <Button className="w-full rounded-xl h-11 font-bold" onClick={handleHire}>Hire Guide</Button>
         </CardFooter>
       </Card>
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -162,28 +167,16 @@ function GuideCard({ guide, user, city, date }) {
 
 function CardSkeleton() {
     return (
-        <Card className="flex flex-col text-center p-6 space-y-4">
-            <Skeleton className="h-24 w-24 mx-auto rounded-full" />
-            <div className="space-y-2">
+        <Card className="flex flex-col text-center p-0 space-y-0 overflow-hidden">
+            <Skeleton className="h-56 w-full" />
+            <div className="p-4 space-y-2">
                 <Skeleton className="h-6 w-3/4 mx-auto" />
                 <Skeleton className="h-4 w-1/2 mx-auto" />
             </div>
-            <div className="flex justify-center items-center gap-4">
-                <div className="text-center w-1/2">
-                    <Skeleton className="h-6 w-1/2 mx-auto mb-1" />
-                    <Skeleton className="h-4 w-3/4 mx-auto" />
-                </div>
-                <div className="text-center w-1/2">
-                    <Skeleton className="h-6 w-1/2 mx-auto mb-1" />
-                    <Skeleton className="h-4 w-3/4 mx-auto" />
-                </div>
+            <div className="p-4 border-y border-muted/50 space-y-2">
+                <Skeleton className="h-10 w-full" />
             </div>
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-1/3 mx-auto" />
-                <Skeleton className="h-4 w-2/3 mx-auto" />
-            </div>
-             <div className="space-y-2">
-                <Skeleton className="h-6 w-1/2 mx-auto" />
+             <div className="p-4">
                 <Skeleton className="h-10 w-full" />
             </div>
         </Card>
@@ -281,6 +274,8 @@ export default function HireLocalGuidePage() {
       notFound();
   }
 
+  const guidePlaceholder = PlaceHolderImages.find(p => p.id === 'guide-placeholder');
+
   return (
     <div className="flex flex-col min-h-screen bg-muted/20 text-gray-800">
       <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur overflow-hidden">
@@ -347,7 +342,7 @@ export default function HireLocalGuidePage() {
           <p className="text-lg text-muted-foreground">Find expert guides to enhance your travel experience</p>
         </div>
 
-        <div className="mb-8 p-4 bg-background rounded-lg shadow-md max-w-5xl mx-auto">
+        <div className="mb-8 p-4 bg-background rounded-xl shadow-md max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
             <div className="relative lg:col-span-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -417,7 +412,14 @@ export default function HireLocalGuidePage() {
         ) : filteredGuides.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredGuides.map(guide => (
-              <GuideCard key={guide.id} guide={guide} user={user} city={city} date={date} />
+              <GuideCard 
+                key={guide.id} 
+                guide={guide} 
+                user={user} 
+                city={city} 
+                date={date} 
+                fallbackImage={guidePlaceholder?.imageUrl}
+              />
             ))}
           </div>
         ) : (

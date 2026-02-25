@@ -35,6 +35,18 @@
       "description": "A generic landmark or attraction placeholder.",
       "imageUrl": "https://images.unsplash.com/photo-1548013146-72479768bbfd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxJbmRpYSUyMGxhbmRtYXJrfGVufDB8fHx8MTc3MTk1MDAwMHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "India landmark"
+    },
+    {
+      "id": "homestay-placeholder",
+      "description": "A generic cozy homestay placeholder.",
+      "imageUrl": "https://images.unsplash.com/photo-1518780664697-55e3ad937233?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxob21lc3RheSUyMGNvenl8ZW58MHx8fHwxNzcxOTUwMTAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "homestay cozy"
+    },
+    {
+      "id": "guide-placeholder",
+      "description": "A friendly tour guide avatar placeholder.",
+      "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzbWlsaW5nJTIwcGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzcxOTUwMTUwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
     }
   ]
 }

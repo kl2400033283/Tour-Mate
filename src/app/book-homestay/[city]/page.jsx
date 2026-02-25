@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
@@ -29,6 +28,7 @@ import { saveHomestayBooking } from '@/lib/bookings';
 import { cn } from '@/lib/utils';
 import { differenceInCalendarDays, parse } from 'date-fns';
 import { doc } from 'firebase/firestore';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 
 const getCityData = (slug) => {
@@ -40,7 +40,7 @@ const getCityData = (slug) => {
   return null;
 };
 
-function HomestayCard({ homestay, user, city, date }) {
+function HomestayCard({ homestay, user, city, date, fallbackImage }) {
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
@@ -127,30 +127,34 @@ function HomestayCard({ homestay, user, city, date }) {
 
   return (
     <>
-      <Card className="overflow-hidden bg-card shadow-md rounded-xl flex flex-col">
+      <Card className="overflow-hidden bg-card shadow-md rounded-xl flex flex-col transition-all hover:shadow-lg">
         <div className="relative h-48 w-full">
           <Image
-            src={`https://picsum.photos/seed/${homestay.imageHint?.replace(/\s/g, '-') || homestay.id}/400/300`}
+            src={homestay.imageUrl || `https://picsum.photos/seed/${homestay.imageHint?.replace(/\s/g, '-') || homestay.id}/600/400`}
             alt={homestay.name}
             fill
             className="object-cover"
-            data-ai-hint={homestay.imageHint}
+            data-ai-hint={homestay.imageHint || 'homestay cozy'}
           />
         </div>
         <div className="p-4 space-y-3 flex flex-col flex-grow">
           <div className="flex-grow">
-            <h3 className="text-xl font-bold">{homestay.name}</h3>
-            <p className="text-sm text-muted-foreground">{homestay.location}</p>
+            <h3 className="text-xl font-bold line-clamp-1">{homestay.name}</h3>
+            <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <MapPin className="h-3 w-3" /> {homestay.location}
+            </p>
           </div>
           <div className="space-y-2">
-              <p className="text-base font-semibold">{homestay.price.toLocaleString()}/Night</p>
-              <div className="flex items-center gap-1 text-sm">
-                  <Star className="w-4 h-4 text-primary fill-primary" />
-                  <span className="font-bold text-foreground">{homestay.rating.toFixed(1)}</span>
+              <div className="flex justify-between items-center">
+                <p className="text-lg font-bold text-primary">₹{homestay.price.toLocaleString()}<span className="text-xs font-normal text-muted-foreground">/Night</span></p>
+                <div className="flex items-center gap-1 text-sm bg-accent/50 px-2 py-1 rounded">
+                    <Star className="w-3.5 h-3.5 text-primary fill-primary" />
+                    <span className="font-bold text-foreground">{homestay.rating.toFixed(1)}</span>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground h-10">{homestay.description}</p>
+              <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">{homestay.description}</p>
           </div>
-          <Button className="w-full mt-2" onClick={handleConfirm}>Confirm</Button>
+          <Button className="w-full mt-2" onClick={handleConfirm}>Book Now</Button>
         </div>
       </Card>
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -279,6 +283,8 @@ export default function BookHomestayPage() {
       notFound();
   }
 
+  const homestayPlaceholder = PlaceHolderImages.find(p => p.id === 'homestay-placeholder');
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="w-full bg-transparent backdrop-blur-sm sticky top-0 z-50 overflow-hidden">
@@ -391,7 +397,14 @@ export default function BookHomestayPage() {
         ) : filteredHomestays.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredHomestays.map(homestay => (
-              <HomestayCard key={homestay.id} homestay={homestay} user={user} city={city} date={date} />
+              <HomestayCard 
+                key={homestay.id} 
+                homestay={homestay} 
+                user={user} 
+                city={city} 
+                date={date} 
+                fallbackImage={homestayPlaceholder?.imageUrl}
+              />
             ))}
           </div>
         ) : (

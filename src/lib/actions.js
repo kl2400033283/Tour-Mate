@@ -62,14 +62,14 @@ function generateMockListings({ city, listingType }) {
 
     for (let i = 0; i < count; i++) {
       listings.push({
-        id: `${city.replace(/\s/g, '-')}-homestay-${i + 1}-${Math.random()}`, // Add random suffix to ensure unique key
+        id: `${city.replace(/\s/g, '-')}-homestay-${i + 1}-${Math.random()}`,
         name: homestayNames[i] || `Sample Homestay ${i + 1} in ${city}`,
         location: `Near ${landmarkNames[i]}`,
-        price: 1500 + Math.floor(Math.random() * 8500), // Widen the price range
+        price: 1500 + Math.floor(Math.random() * 8500),
         rating: parseFloat((3.5 + Math.random() * 1.5).toFixed(1)),
-        description: `This is a sample description for a wonderful homestay in ${city}. Enjoy your stay!`,
+        description: `Experience the local culture in this beautiful ${homestayImageHints[i].split(' ').pop()} located near ${landmarkNames[i]}.`,
         imageHint: homestayImageHints[i] || 'homestay interior',
-        hostId: mockHostIds[i % mockHostIds.length], // Assign a mock host ID
+        hostId: mockHostIds[i % mockHostIds.length],
       });
     }
   } else if (listingType === 'guides') {
@@ -86,14 +86,14 @@ function generateMockListings({ city, listingType }) {
     shuffle(guideNames);
 
     let guideImageHints = [
-        'male guide avatar', 'female guide avatar', 'person illustration', 'character portrait',
-        'friendly guide sketch', 'tour guide icon', 'adventure guide art', 'cultural guide avatar',
-        'historical guide drawing', 'food tour guide illustration', 'nature guide avatar', 'spiritual guide art',
-        'male character art', 'female character art', 'professional guide portrait', 'animated person',
-        'male guide avatar', 'female guide avatar', 'person illustration', 'character portrait',
-        'friendly guide sketch', 'tour guide icon', 'adventure guide art', 'cultural guide avatar',
-        'historical guide drawing', 'food tour guide illustration', 'nature guide avatar', 'spiritual guide art',
-        'male character art', 'female character art', 'professional guide portrait', 'animated person'
+        'male guide portrait', 'female guide portrait', 'person portrait', 'friendly guide',
+        'professional guide', 'tour guide illustration', 'adventure guide', 'cultural guide avatar',
+        'historical guide', 'smiling guide', 'nature guide', 'travel expert',
+        'male character', 'female character', 'smiling person', 'young professional',
+        'experienced guide', 'local expert', 'friendly face', 'travel companion',
+        'knowledgeable guide', 'happy guide', 'smiling expert', 'local host',
+        'mountain guide', 'city expert', 'heritage guide', 'culture expert',
+        'cheerful guide', 'outdoor expert', 'tour expert', 'travel guide'
     ];
     shuffle(guideImageHints);
 
@@ -101,16 +101,16 @@ function generateMockListings({ city, listingType }) {
     const languages = ['English', 'Hindi', 'Bengali', 'Tamil', 'Telugu', 'Marathi', 'Gujarati', 'Kannada'];
 
     for (let i = 0; i < count; i++) {
-        const knownLanguages = shuffle([...languages]).slice(0, Math.floor(Math.random() * 2) + 2); // 2-3 languages
+        const knownLanguages = shuffle([...languages]).slice(0, Math.floor(Math.random() * 2) + 2);
         listings.push({
             id: `${city.replace(/\s/g, '-')}-guide-${i + 1}-${Math.random()}`,
             name: guideNames[i] || `Sample Guide ${i + 1}`,
-            experience: Math.floor(Math.random() * 10) + 3, // 3-12 years
+            experience: Math.floor(Math.random() * 10) + 3,
             languages: knownLanguages,
-            rating: parseFloat((4.2 + Math.random() * 0.8).toFixed(1)), // 4.2 to 5.0
-            rate: 1500 + Math.floor(Math.random() * 1501), // 1500-3000 per day
+            rating: parseFloat((4.2 + Math.random() * 0.8).toFixed(1)),
+            rate: 1500 + Math.floor(Math.random() * 1501),
             specialty: specialties[Math.floor(Math.random() * specialties.length)],
-            imageHint: guideImageHints[i] || 'guide avatar',
+            imageHint: guideImageHints[i] || 'person portrait',
         });
     }
   }
@@ -120,9 +120,7 @@ function generateMockListings({ city, listingType }) {
 
 export async function generateListingsAction(input) {
     try {
-        // Replace AI call with local mock data generation
         const listings = generateMockListings(input);
-        // Simulate network delay for realism
         await new Promise(resolve => setTimeout(resolve, 500));
         return listings;
     } catch (error) {
