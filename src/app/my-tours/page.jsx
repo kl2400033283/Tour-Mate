@@ -92,9 +92,6 @@ function ToursTable({ bookings, isLoading }) {
     return (
        <div className="flex flex-col items-center justify-center h-full min-h-48 border-2 border-dashed rounded-lg text-center p-4">
           <p className="text-muted-foreground mb-4">You have no tours scheduled.</p>
-          <Button asChild>
-            <Link href="/hire-requests">View Hire Requests</Link>
-          </Button>
       </div>
     );
   }
