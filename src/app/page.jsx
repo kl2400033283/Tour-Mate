@@ -76,14 +76,11 @@ export default function Page() {
                   data-ai-hint="india landmark"
                 />
               </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-white" />
-                  <span className="text-xl font-bold tracking-tight text-white">
-                    TourMate
-                  </span>
-                </div>
-                <span className="text-[9px] uppercase tracking-[0.2em] text-primary font-bold">Discover India</span>
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-white" />
+                <span className="text-xl font-bold tracking-tight text-white">
+                  TourMate
+                </span>
               </div>
             </Link>
             <nav className="hidden items-center gap-2 sm:flex">
@@ -138,7 +135,7 @@ export default function Page() {
             <h1 className="font-headline text-5xl font-extrabold tracking-tighter sm:text-7xl md:text-8xl">
               TourMate
             </h1>
-            <p className="mx-auto max-w-md text-lg text-white/80 sm:text-xl">
+            <p className="mx-auto max-md text-lg text-white/80 sm:text-xl">
               Where Travel Meets Comfort
             </p>
             <Button

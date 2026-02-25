@@ -277,12 +277,9 @@ export default function HostDashboardPage() {
                   data-ai-hint="india landmark"
                 />
               </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1">
-                  <Home className="h-4 w-4 text-primary" />
-                  <span className="text-lg font-bold tracking-tight text-foreground">TourMate Host</span>
-                </div>
-                <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Manage Your Stays</span>
+              <div className="flex items-center gap-1">
+                <Home className="h-4 w-4 text-primary" />
+                <span className="text-lg font-bold tracking-tight text-foreground">TourMate Host</span>
               </div>
             </Link>
           </div>

@@ -54,14 +54,11 @@ export default function ExplorePage() {
                     data-ai-hint="india landmark"
                   />
                 </div>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-white" />
-                    <span className="text-xl font-bold tracking-tight text-white">
-                      TourMate
-                    </span>
-                  </div>
-                  <span className="text-[9px] uppercase tracking-[0.2em] text-primary font-bold">Explore India</span>
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-white" />
+                  <span className="text-xl font-bold tracking-tight text-white">
+                    TourMate
+                  </span>
                 </div>
               </Link>
     

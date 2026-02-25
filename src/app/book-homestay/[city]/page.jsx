@@ -302,12 +302,9 @@ export default function BookHomestayPage() {
                 data-ai-hint="india landmark"
               />
             </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-primary" />
-                <span className="text-xl font-bold tracking-tight">TourMate</span>
-              </div>
-              <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-bold">Discover India</span>
+            <div className="flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-primary" />
+              <span className="text-xl font-bold tracking-tight">TourMate</span>
             </div>
           </Link>
           <nav className="flex items-center gap-4">

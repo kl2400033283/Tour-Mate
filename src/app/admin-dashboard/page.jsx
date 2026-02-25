@@ -186,12 +186,9 @@ export default function AdminDashboardPage() {
                   data-ai-hint="india landmark"
                 />
               </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4 text-primary" />
-                  <span className="text-lg font-bold tracking-tight text-foreground">TourMate</span>
-                </div>
-                <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Admin Panel</span>
+              <div className="flex items-center gap-1">
+                <MapPin className="h-4 w-4 text-primary" />
+                <span className="text-lg font-bold tracking-tight text-foreground">TourMate</span>
               </div>
             </Link>
           </div>

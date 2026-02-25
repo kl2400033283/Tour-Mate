@@ -131,12 +131,9 @@ export default function ProfilePage() {
                           <div className="relative h-8 w-8 overflow-hidden rounded shadow-sm ring-1 ring-primary/20">
                             <Image src="https://picsum.photos/seed/india-tourist/100/100" alt="India" fill className="object-cover" data-ai-hint="india landmark" />
                           </div>
-                          <div className="flex flex-col">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-4 w-4 text-primary" />
-                              <span className="text-lg font-bold tracking-tight text-foreground">TourMate</span>
-                            </div>
-                            <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Discover India</span>
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-4 w-4 text-primary" />
+                            <span className="text-lg font-bold tracking-tight text-foreground">TourMate</span>
                           </div>
                         </Link>
                     </div>
@@ -164,7 +161,7 @@ export default function ProfilePage() {
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="left" className="flex flex-col p-0">
-                             <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
+                             <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                                 <Link href="/" className="flex items-center gap-2 font-semibold">
                                      <MapPin className="h-6 w-6 text-primary" />
                                      <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate</span>
