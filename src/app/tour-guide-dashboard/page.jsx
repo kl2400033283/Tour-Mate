@@ -145,7 +145,7 @@ export default function TourGuideDashboardPage() {
 
     const totalEarnings = !bookingsLoading && bookings ? 
         (bookings || [])
-        .filter(b => b.status === 'completed')
+        .filter(b => b.status === 'completed' || b.status === 'approved')
         .reduce((acc, booking) => acc + (booking.totalPrice || 0), 0) : 0;
 
     const completedToursCount = !bookingsLoading && bookings ?

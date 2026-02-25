@@ -13,6 +13,7 @@ import {
   Loader2,
   ArrowLeft,
   Banknote,
+  MapPin
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge.jsx';
 import { Button } from '@/components/ui/button.jsx';
@@ -127,6 +128,7 @@ function EarningsTable({ bookings, isLoading }) {
             <TableCell>
               <Badge 
                 className={cn({
+                  'bg-green-500/20 text-green-700 border-green-500/30': booking.status === 'approved',
                   'bg-blue-500/20 text-blue-700 border-blue-500/30': booking.status === 'completed',
                 })}
               >
@@ -155,7 +157,7 @@ export default function GuideEarningsPage() {
     const { totalEarnings, monthlyEarnings, earningsBreakdown } = useMemo(() => {
         if (!bookings) return { totalEarnings: 0, monthlyEarnings: 0, earningsBreakdown: [] };
 
-        const relevantBookings = bookings.filter(b => b.status === 'completed');
+        const relevantBookings = bookings.filter(b => b.status === 'completed' || b.status === 'approved');
         
         const total = relevantBookings.reduce((acc, booking) => acc + (booking.totalPrice || 0), 0);
         
@@ -260,7 +262,7 @@ export default function GuideEarningsPage() {
                           <CardContent>
                             {bookingsLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : <div className="text-2xl font-bold">₹{totalEarnings.toLocaleString()}</div>}
                             <p className="text-xs text-muted-foreground">
-                              From all completed tours.
+                              From all completed and approved tours.
                             </p>
                           </CardContent>
                         </Card>

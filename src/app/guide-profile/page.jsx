@@ -15,6 +15,7 @@ import {
   Mail,
   Phone,
   KeyRound,
+  MapPin,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button.jsx';
 import {

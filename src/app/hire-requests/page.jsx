@@ -40,9 +40,10 @@ import {
 } from '@/components/ui/sheet.jsx';
 import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
-import { useUser, useFirestore, useCollection, useMemoFirebase, updateDocumentNonBlocking } from '@/firebase';
+import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { cn } from '@/lib/utils.js';
-import { collection, query, doc, orderBy, where } from 'firebase/firestore';
+import { collection, query, doc, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton.jsx';
 import { useToast } from '@/hooks/use-toast.jsx';
 
