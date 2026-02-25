@@ -1,27 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, LogOut, Menu, Users, Home, Compass, BarChart2 } from 'lucide-react';
+import { MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, Briefcase, LayoutGrid } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
 import { useEffect, useMemo } from 'react';
 import { doc, collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
-
-const navLinks = [
-  { href: '/admin-dashboard', label: 'Dashboard', icon: BarChart2 },
-  { href: '#', label: 'Manage Users', icon: Users },
-  { href: '#', label: 'Manage Homestays', icon: Home },
-  { href: '#', label: 'Manage Guides', icon: Compass },
-  { href: '#', label: 'Reports', icon: BarChart2 },
-];
+import { Loader2 } from 'lucide-react';
 
 function SidebarNav({ isMobile = false }) {
+  const pathname = usePathname();
   const handleSignOut = () => {
     const auth = getAuth();
     signOut(auth).then(() => {
@@ -29,68 +22,57 @@ function SidebarNav({ isMobile = false }) {
     });
   };
 
+  const navLinks = [
+    { href: '/admin-dashboard', label: 'Dashboard', icon: LayoutGrid },
+    { href: '#', label: 'Manage Users', icon: Users },
+    { href: '#', label: 'Manage Homestays', icon: Home },
+    { href: '#', label: 'Manage Guides', icon: Compass },
+    { href: '#', label: 'Reports', icon: BarChart2 },
+  ];
+
   return (
-    <div className="flex h-full flex-col bg-card text-foreground rounded-r-2xl shadow-2xl">
-      <div className="flex h-20 items-center border-b px-6 shrink-0">
-        <Link href="/" className="flex items-center gap-3 font-semibold">
-          <MapPin className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold">TourMate</span>
-        </Link>
-      </div>
-      <nav className="flex-1 space-y-2 p-4 mt-4">
-        {navLinks.map(link => (
+    <div className="flex flex-col h-full">
+      <nav className={cn("grid items-start gap-1 px-2", isMobile ? "text-lg font-medium" : "text-sm font-medium")}>
+        {navLinks.map((link) => (
           <Link
             key={link.label}
             href={link.href}
             className={cn(
-              "relative flex items-center gap-3 rounded-xl px-4 py-3 text-lg font-medium text-foreground/70 transition-colors hover:bg-primary/10 hover:text-primary",
-              {'bg-primary/10 text-primary font-semibold': link.href.includes('admin-dashboard')}
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+              pathname === link.href && "bg-muted text-primary"
             )}
           >
-            {link.href.includes('admin-dashboard') && <span className="absolute left-0 h-8 w-1.5 bg-primary rounded-r-full"></span>}
-            <link.icon className="h-5 w-5" />
-            <span>{link.label}</span>
+            <link.icon className="h-4 w-4" />
+            {link.label}
           </Link>
         ))}
       </nav>
-      <div className="mt-auto p-4 mb-4">
-        <button onClick={handleSignOut} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-lg font-medium text-foreground/70 transition-colors hover:bg-primary/10 hover:text-primary">
-          <LogOut className="h-5 w-5" />
+      <div className={cn("mt-auto", isMobile ? 'p-4' : 'p-4')}>
+        <Button variant="ghost" className="w-full justify-start gap-3 rounded-lg px-3 py-2" onClick={handleSignOut}>
+          <LogOut className={cn("h-4 w-4", { "h-5 w-5": isMobile })} />
           Logout
-        </button>
+        </Button>
       </div>
     </div>
   );
 }
 
-function StatCard({ title, value, breakdown, isLoading }) {
-  if (isLoading) {
-    return (
-      <Card className="shadow-lg rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-muted-foreground"><Skeleton className="h-6 w-3/4" /></CardTitle>
-        </CardHeader>
-        <CardContent className="text-center">
-          <Skeleton className="h-12 w-1/2 mx-auto mb-4" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-2/3 mx-auto" />
-            <Skeleton className="h-4 w-1/2 mx-auto" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
+function StatCard({ title, value, description, icon: Icon, isLoading }) {
   return (
-    <Card className="shadow-lg rounded-2xl">
-      <CardHeader>
-        <CardTitle className="text-xl text-center font-semibold text-muted-foreground">{title}</CardTitle>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <Icon className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
-      <CardContent className="text-center">
-        <p className="text-5xl font-bold">{value}</p>
-        <div className="mt-4 text-base text-muted-foreground space-y-1">
-          {breakdown.map(item => <p key={item}>{item}</p>)}
-        </div>
+      <CardContent>
+        {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : (
+          <>
+            <div className="text-2xl font-bold">{value}</div>
+            <p className="text-xs text-muted-foreground">
+              {description}
+            </p>
+          </>
+        )}
       </CardContent>
     </Card>
   );
@@ -115,11 +97,11 @@ export default function AdminDashboardPage() {
   const { data: allHomestays, isLoading: isAllHomestaysLoading } = useCollection(allHomestaysQuery);
   
   const stats = useMemo(() => {
-    if (!allUsers || !allHomestays) {
+    if (!allUsers) {
       return {
-        totalUsers: { value: 0, breakdown: [] },
-        homestayListings: { value: 0, breakdown: [] },
-        localGuides: { value: 0, breakdown: [] },
+        tourists: 0,
+        hosts: 0,
+        guides: 0,
       };
     }
 
@@ -127,29 +109,9 @@ export default function AdminDashboardPage() {
     const hosts = allUsers.filter(u => u.role === 'home stay host').length;
     const guides = allUsers.filter(u => u.role === 'tour guide').length;
 
-    return {
-      totalUsers: {
-        value: allUsers.length,
-        breakdown: [`${tourists} Tourists`, `${hosts} Hosts`, `${guides} Guides`],
-      },
-      homestayListings: {
-        value: allHomestays.length,
-        breakdown: ["5 Pending Approval"], // Placeholder
-      },
-      localGuides: {
-        value: guides,
-        breakdown: ["2 Pending Verification"], // Placeholder
-      },
-    };
-  }, [allUsers, allHomestays]);
+    return { tourists, hosts, guides };
+  }, [allUsers]);
   
-  // Using placeholder for bookings as it requires complex aggregation
-  const totalBookings = {
-    title: "Total Bookings",
-    value: "96",
-    breakdown: ["12 Active", "84 Completed"],
-  };
-
 
   useEffect(() => {
     const isLoading = isUserLoading || isProfileLoading;
@@ -190,48 +152,105 @@ export default function AdminDashboardPage() {
   const dashboardIsLoading = isUserLoading || isProfileLoading || isAllUsersLoading || isAllHomestaysLoading;
 
   if (dashboardIsLoading || !userProfile || userProfile.role !== 'admin') {
-    return <div className="h-screen w-screen flex items-center justify-center">Loading...</div>;
+    return <div className="h-screen w-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
+  
+  const totalUsers = allUsers?.length || 0;
+  const totalHomestays = allHomestays?.length || 0;
+  const totalGuides = stats.guides;
+  // Placeholder for bookings as it requires complex aggregation
+  const totalBookings = "96";
+  const activeBookings = "12";
+  const completedBookings = "84";
+
 
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr] bg-muted/30">
-      <aside className="hidden lg:block">
-        <SidebarNav />
-      </aside>
-      <div className="flex flex-col">
-        <header className="flex h-16 items-center justify-between gap-4 px-6 lg:justify-end">
-          <div className="lg:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="flex flex-col p-0 w-[280px]">
-                <SidebarNav isMobile={true} />
-              </SheetContent>
-            </Sheet>
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+      <aside className="hidden border-r bg-card md:block">
+        <div className="flex h-full max-h-screen flex-col">
+          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+            <Link href="/" className="flex items-center gap-2 font-semibold">
+              <MapPin className="h-6 w-6 text-primary" />
+              <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate</span>
+            </Link>
           </div>
-           <Button variant="secondary" size="lg" onClick={handleSignOut} className="hidden lg:flex">Logout</Button>
+          <div className="flex-1 overflow-auto py-4">
+            <SidebarNav />
+          </div>
+        </div>
+      </aside>
+      <div className="flex flex-col bg-muted/40">
+        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="shrink-0 md:hidden"
+              >
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="flex flex-col p-0">
+                <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+                  <Link href="/" className="flex items-center gap-2 font-semibold">
+                    <MapPin className="h-6 w-6 text-primary" />
+                    <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate</span>
+                  </Link>
+                </div>
+                <div className="flex-1 overflow-auto py-4">
+                  <SidebarNav isMobile={true}/>
+                </div>
+            </SheetContent>
+          </Sheet>
+           <div className="w-full flex-1" />
+           <Button onClick={handleSignOut} variant="secondary">
+              Logout
+            </Button>
         </header>
-        <main className="flex-1 p-6 md:p-8">
-          <div className="mb-12">
-            <h1 className="text-4xl font-bold">Welcome, Admin 👋</h1>
-            <p className="text-muted-foreground mt-2 text-lg">
+        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+          <div className="mb-4">
+            <h1 className="text-3xl font-bold tracking-tight">Welcome, Admin 👋</h1>
+            <p className="text-muted-foreground mt-1">
               Monitor platform activity and manage users.
             </p>
           </div>
-          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-             <StatCard title="Total Users" value={stats.totalUsers.value} breakdown={stats.totalUsers.breakdown} isLoading={dashboardIsLoading} />
-             <StatCard title="Homestay Listings" value={stats.homestayListings.value} breakdown={stats.homestayListings.breakdown} isLoading={dashboardIsLoading} />
-             <StatCard title="Local Guides" value={stats.localGuides.value} breakdown={stats.localGuides.breakdown} isLoading={dashboardIsLoading} />
-             <StatCard title={totalBookings.title} value={totalBookings.value} breakdown={totalBookings.breakdown} isLoading={dashboardIsLoading} />
+          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+            <StatCard 
+              title="Total Users" 
+              value={totalUsers} 
+              description={`${stats.tourists} Tourists, ${stats.hosts} Hosts, ${stats.guides} Guides`} 
+              icon={Users}
+              isLoading={dashboardIsLoading} 
+            />
+            <StatCard 
+              title="Homestay Listings" 
+              value={totalHomestays} 
+              description="5 Pending Approval" // Placeholder
+              icon={Home}
+              isLoading={dashboardIsLoading} 
+            />
+            <StatCard 
+              title="Local Guides" 
+              value={totalGuides} 
+              description="2 Pending Verification" // Placeholder
+              icon={Compass}
+              isLoading={dashboardIsLoading} 
+            />
+            <StatCard 
+              title="Total Bookings" 
+              value={totalBookings}
+              description={`${activeBookings} Active, ${completedBookings} Completed`}
+              icon={Briefcase}
+              isLoading={dashboardIsLoading} // Assuming this is also loading dependent
+            />
           </div>
         </main>
-        <footer className="bg-foreground text-background/80 py-6 px-6 mt-auto">
-            <div className="container mx-auto flex justify-center items-center text-sm">
+        <footer className="bg-card border-t mt-auto">
+            <div className="container mx-auto text-center py-6 text-muted-foreground text-sm">
                 <div>
-                  TourMate | Quick Links | For Users | Contact @ {new Date().getFullYear()} TourMate | All Rights Reserved.
+                  &copy; {new Date().getFullYear()} TourMate | All Rights Reserved.
                 </div>
             </div>
         </footer>
