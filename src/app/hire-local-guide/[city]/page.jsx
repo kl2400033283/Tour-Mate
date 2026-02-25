@@ -294,16 +294,7 @@ export default function HireLocalGuidePage() {
           />
         </div>
         <div className="container mx-auto flex h-14 items-center justify-between relative z-10">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative h-8 w-8 overflow-hidden rounded-md shadow-md ring-1 ring-primary/30 transition-all group-hover:scale-105">
-              <Image 
-                src="https://picsum.photos/seed/india-nav-guide/100/100" 
-                alt="India" 
-                fill 
-                className="object-cover"
-                data-ai-hint="india monument"
-              />
-            </div>
+          <Link href="/" className="flex items-center gap-2 group">
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5 text-primary" />
               <span className="text-xl font-bold tracking-tight">TourMate</span>

@@ -112,16 +112,7 @@ export default function CityPage() {
                   <ArrowLeft className="h-6 w-6" />
                   <span className="sr-only">Back</span>
               </Button>
-              <Link href="/" className="flex items-center gap-3 group">
-                <div className="relative h-9 w-9 overflow-hidden rounded-md shadow-lg ring-1 ring-white/30 transition-all group-hover:ring-primary/50">
-                  <Image 
-                    src="https://picsum.photos/seed/india-nav-city/100/100" 
-                    alt="India" 
-                    fill 
-                    className="object-cover"
-                    data-ai-hint="india landmark"
-                  />
-                </div>
+              <Link href="/" className="flex items-center gap-2 group">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-white" />
                   <span className="text-xl font-bold tracking-tight text-white">TourMate</span>

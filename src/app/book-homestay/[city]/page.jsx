@@ -292,16 +292,7 @@ export default function BookHomestayPage() {
           />
         </div>
         <div className="container mx-auto flex h-20 items-center justify-between relative z-10">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative h-10 w-10 overflow-hidden rounded-lg shadow-md ring-2 ring-primary/20 transition-all group-hover:scale-105">
-              <Image 
-                src="https://picsum.photos/seed/india-nav-booking/100/100" 
-                alt="India Tourism" 
-                fill 
-                className="object-cover"
-                data-ai-hint="india landmark"
-              />
-            </div>
+          <Link href="/" className="flex items-center gap-2 group">
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5 text-primary" />
               <span className="text-xl font-bold tracking-tight">TourMate</span>

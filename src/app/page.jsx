@@ -66,16 +66,7 @@ export default function Page() {
       <div className="relative z-10 flex h-full flex-col">
         <header className="p-4">
           <div className="container mx-auto flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative h-10 w-10 overflow-hidden rounded-lg shadow-lg ring-2 ring-white/20 transition-all group-hover:ring-primary/50">
-                <Image 
-                  src="https://picsum.photos/seed/india-nav-logo/100/100" 
-                  alt="India Tourism" 
-                  fill 
-                  className="object-cover"
-                  data-ai-hint="india landmark"
-                />
-              </div>
+            <Link href="/" className="flex items-center gap-2 group">
               <div className="flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-white" />
                 <span className="text-xl font-bold tracking-tight text-white">

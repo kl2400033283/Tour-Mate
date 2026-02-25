@@ -176,16 +176,7 @@ export default function AdminDashboardPage() {
       <aside className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col">
           <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative h-8 w-8 overflow-hidden rounded shadow-sm ring-1 ring-primary/20">
-                <Image 
-                  src="https://picsum.photos/seed/india-admin/100/100" 
-                  alt="India" 
-                  fill 
-                  className="object-cover"
-                  data-ai-hint="india landmark"
-                />
-              </div>
+            <Link href="/" className="flex items-center gap-2 group">
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4 text-primary" />
                 <span className="text-lg font-bold tracking-tight text-foreground">TourMate</span>

@@ -267,16 +267,7 @@ export default function HostDashboardPage() {
       <aside className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col">
           <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative h-8 w-8 overflow-hidden rounded shadow-sm ring-1 ring-primary/20 transition-all group-hover:ring-primary/50">
-                <Image 
-                  src="https://picsum.photos/seed/india-host/100/100" 
-                  alt="India" 
-                  fill 
-                  className="object-cover"
-                  data-ai-hint="india landmark"
-                />
-              </div>
+            <Link href="/" className="flex items-center gap-2 group">
               <div className="flex items-center gap-1">
                 <Home className="h-4 w-4 text-primary" />
                 <span className="text-lg font-bold tracking-tight text-foreground">TourMate Host</span>
@@ -325,7 +316,7 @@ export default function HostDashboardPage() {
               Back to Home
           </Button>
           <div className="w-full flex-1" />
-           <Button onClick={handleSignOut} variant="secondary" size="sm" className="relative z-10">
+          <Button onClick={handleSignOut} variant="secondary" size="sm" className="relative z-10">
                 Logout
             </Button>
         </header>
