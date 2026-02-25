@@ -1,15 +1,24 @@
 'use client';
 
-import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { doc, collection, query, orderBy } from 'firebase/firestore';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
 import { Loader2, MapPin, LogOut, LayoutGrid, Bed, UserCheck, Menu, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
 
@@ -17,6 +26,7 @@ import { useEffect } from 'react';
 function SidebarNav({ isMobile = false }) {
     const router = useRouter();
     const pathname = usePathname();
+
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
@@ -57,41 +67,82 @@ function SidebarNav({ isMobile = false }) {
     );
 }
 
+function BookingsTable({ bookings, isLoading }) {
+    if (isLoading) {
+        return (
+            <div className="space-y-4">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+            </div>
+        );
+    }
 
-export default function ProfilePage() {
+    if (!bookings || bookings.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg text-center p-4">
+                <p className="text-muted-foreground mb-4">You haven't booked any stays yet.</p>
+                <Button asChild>
+                    <Link href="/explore">Explore Destinations</Link>
+                </Button>
+            </div>
+        );
+    }
+
+    return (
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Homestay</TableHead>
+                    <TableHead>City</TableHead>
+                    <TableHead>Dates</TableHead>
+                    <TableHead className="text-right">Total Price</TableHead>
+                    <TableHead className="text-center">Status</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {bookings.map((booking) => (
+                    <TableRow key={booking.id}>
+                        <TableCell className="font-medium">{booking.homestayName}</TableCell>
+                        <TableCell>{booking.city}</TableCell>
+                        <TableCell>{booking.checkInDate} - {booking.checkOutDate}</TableCell>
+                        <TableCell className="text-right">₹{booking.totalPrice?.toLocaleString()}</TableCell>
+                        <TableCell className="text-center">
+                            <Badge 
+                                variant="outline"
+                                className={cn({
+                                    'border-yellow-500 text-yellow-700': booking.status === 'pending',
+                                    'border-green-500 text-green-700': booking.status === 'approved',
+                                    'border-red-500 text-red-700': booking.status === 'declined',
+                                    'border-blue-500 text-blue-700': booking.status === 'completed',
+                                })}
+                            >
+                                {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                            </Badge>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    );
+}
+
+export default function MyStaysPage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
     const firestore = useFirestore();
 
     useEffect(() => {
         if (!isUserLoading && !user) {
-            router.replace('/login?redirect=/profile');
+            router.replace('/login?redirect=/my-stays');
         }
     }, [isUserLoading, user, router]);
-
-    const userProfileRef = useMemoFirebase(() => {
-        if (!user || !firestore) return null;
-        return doc(firestore, 'users', user.uid);
-    }, [user, firestore]);
-
-    const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
 
     const homestayBookingsQuery = useMemoFirebase(() => {
         if (!user || !firestore) return null;
         return query(collection(firestore, 'users', user.uid, 'homestayBookings'), orderBy('bookingDate', 'desc'));
     }, [user, firestore]);
     const { data: homestayBookings, isLoading: homestayLoading } = useCollection(homestayBookingsQuery);
-    const latestHomestayBooking = homestayBookings?.[0];
-
-    const guideBookingsQuery = useMemoFirebase(() => {
-        if (!user || !firestore) return null;
-        return query(collection(firestore, 'users', user.uid, 'guideBookings'), orderBy('bookingDate', 'desc'));
-    }, [user, firestore]);
-    const { data: guideBookings, isLoading: guideLoading } = useCollection(guideBookingsQuery);
-    const latestGuideBooking = guideBookings?.[0];
-
-    const totalTrips = (homestayBookings?.length || 0) + (guideBookings?.length || 0);
-    const isCardsLoading = homestayLoading || guideLoading;
 
     const handleSignOut = () => {
         const auth = getAuth();
@@ -100,15 +151,13 @@ export default function ProfilePage() {
         });
     };
 
-    if (isUserLoading || isProfileLoading || !user) {
+    if (isUserLoading || !user) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
         );
     }
-
-    const displayName = userProfile ? `${userProfile.firstName} ${userProfile.lastName}`.trim() : (user?.email?.split('@')[0] || 'User');
 
     return (
         <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -168,75 +217,18 @@ export default function ProfilePage() {
                     </Button>
                 </header>
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-                    <div className="flex flex-col">
-                        <h1 className="text-2xl font-bold tracking-tight">Welcome, {displayName}</h1>
-                        <p className="text-muted-foreground">
-                            Here&apos;s a summary of your bookings and activities.
-                        </p>
+                    <div className="flex items-center">
+                        <h1 className="text-lg font-semibold md:text-2xl">My Stays</h1>
                     </div>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">
-                                    Upcoming Stay
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {isCardsLoading ? (
-                                    <div className="space-y-2">
-                                        <Skeleton className="h-6 w-3/4" />
-                                        <Skeleton className="h-4 w-1/2" />
-                                    </div>
-                                ) : latestHomestayBooking ? (
-                                    <>
-                                        <div className="text-lg font-bold">{latestHomestayBooking.homestayName}</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            {latestHomestayBooking.checkInDate} – {latestHomestayBooking.checkOutDate}
-                                        </p>
-                                    </>
-                                ) : (
-                                    <div className="text-lg font-bold">No bookings yet.</div>
-                                )}
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">
-                                    Guide Tour
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                               {isCardsLoading ? (
-                                    <div className="space-y-2">
-                                        <Skeleton className="h-6 w-3/4" />
-                                        <Skeleton className="h-4 w-1/2" />
-                                    </div>
-                                ) : latestGuideBooking ? (
-                                    <>
-                                        <div className="text-lg font-bold">{latestGuideBooking.guideName}</div>
-                                        <p className="text-xs text-muted-foreground">
-                                            {latestGuideBooking.tourDate}
-                                        </p>
-                                    </>
-                                ) : (
-                                    <div className="text-lg font-bold">No bookings yet.</div>
-                                )}
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Trips</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {isCardsLoading ? (
-                                    <Skeleton className="h-6 w-1/2" />
-                                ) : (
-                                    <div className="text-lg font-bold">{totalTrips} Booking{totalTrips !== 1 ? 's' : ''}</div>
-                                )}
-                                <p className='text-xs text-muted-foreground invisible'>-</p>
-                            </CardContent>
-                        </Card>
-                    </div>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Your Homestay Bookings</CardTitle>
+                            <CardDescription>A list of all your past and present homestay bookings.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <BookingsTable bookings={homestayBookings} isLoading={homestayLoading} />
+                        </CardContent>
+                    </Card>
                 </main>
             </div>
         </div>
