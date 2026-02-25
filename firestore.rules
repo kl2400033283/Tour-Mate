@@ -9,7 +9,8 @@
  * Key Security Decisions:
  * - Public Read Access: `/cities` and `/homestays` are public for read operations (`get`, `list`).
  * - User-Owned Profiles & Data: In the `/users` collection, users can only create, read, and update their own document, identified by their UID. This is enforced using the `isOwner` function. This ownership extends to subcollections like `homestayBookings`, `receivedHomestayBookings`, `guideBookings`, and `receivedGuideBookings`.
- * - All Other Writes Disabled: Public collections are read-only. Users cannot delete their profiles or list other users.
+ * - Admin Access: Users with the 'admin' role are granted list access to the `/users` collection to manage platform users.
+ * - All Other Writes Disabled: Public collections are read-only. Users cannot delete their profiles.
  */
 rules_version = '2';
 service cloud.firestore {
@@ -47,11 +48,13 @@ service cloud.firestore {
      * @description Secures user profile data and their subcollections.
      * @path        /users/{userId}
      * @allow       create, get, update: If the user is signed in and is the owner of the document.
-     * @deny        list, delete: For all users to protect privacy and prevent data loss.
+     * @allow       list: For admin users to manage platform users.
+     * @deny        delete: For all users to protect privacy and prevent data loss.
      */
     match /users/{userId} {
       allow create, get, update: if isSignedIn() && isOwner(userId);
-      allow list, delete: if false;
+      allow list: if isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow delete: if false;
 
       /**
        * @description Secures a user's (tourist's) own homestay bookings.
