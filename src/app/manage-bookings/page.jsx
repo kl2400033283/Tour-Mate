@@ -9,7 +9,7 @@ import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@
 import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
 import { useEffect, useMemo } from 'react';
-import { doc, collection, collectionGroup } from 'firebase/firestore';
+import { doc, collection, collectionGroup, orderBy } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
