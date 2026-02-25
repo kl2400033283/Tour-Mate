@@ -93,9 +93,14 @@ function GuideBookingsTable({ bookings, isLoading }) {
                         <TableCell className="text-center">
                             <Badge 
                                 variant="outline"
-                                className='border-green-500 text-green-700'
+                                className={cn({
+                                    'border-yellow-500 text-yellow-700': booking.status === 'pending',
+                                    'border-green-500 text-green-700': booking.status === 'approved',
+                                    'border-red-500 text-red-700': booking.status === 'declined',
+                                    'border-blue-500 text-blue-700': booking.status === 'completed',
+                                })}
                             >
-                                Confirmed
+                               {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
                             </Badge>
                         </TableCell>
                     </TableRow>
