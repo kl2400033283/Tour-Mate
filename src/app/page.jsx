@@ -133,14 +133,6 @@ export default function Page() {
               >
                 <Link href="/explore">Explore with TourMate</Link>
               </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="bg-transparent border-white text-white hover:bg-white/10 text-lg rounded-full px-8"
-              >
-                <Link href="/about-us">Learn More</Link>
-              </Button>
             </div>
           </div>
         </main>
