@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/button';
 import { citiesByState } from '@/lib/tourist-cities';
 import { notFound, useRouter, useParams } from 'next/navigation';
 import { MapPin, ArrowLeft, Menu } from 'lucide-react';
-import { useUser } from '@/firebase';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { useState, useEffect } from 'react';
+import { doc } from 'firebase/firestore';
 
 
 const getCityData = (slug) => {
@@ -51,6 +53,35 @@ export default function CityPage() {
   const router = useRouter();
   const params = useParams();
   const { user } = useUser();
+  const firestore = useFirestore();
+  const [dashboardPath, setDashboardPath] = useState('/profile');
+
+  const userProfileRef = useMemoFirebase(() => {
+    if (!user || !firestore) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [user, firestore]);
+  const { data: userProfile } = useDoc(userProfileRef);
+
+  useEffect(() => {
+    if (user && userProfile) {
+        switch (userProfile.role) {
+          case 'home stay host':
+            setDashboardPath('/host-dashboard');
+            break;
+          case 'tour guide':
+            setDashboardPath('/tour-guide-dashboard');
+            break;
+          case 'admin':
+            setDashboardPath('/admin-dashboard');
+            break;
+          case 'Tourist':
+          default:
+            setDashboardPath('/profile');
+            break;
+        }
+    }
+  }, [user, userProfile]);
+
   const city = getCityData(params.city);
 
   if (!city) {
@@ -89,7 +120,7 @@ export default function CityPage() {
             <nav className="hidden items-center gap-2 sm:flex">
               {user ? (
                 <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                  <Link href="/profile">Dashboard</Link>
+                  <Link href={dashboardPath}>Dashboard</Link>
                 </Button>
               ) : (
                 <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
@@ -121,7 +152,7 @@ export default function CityPage() {
                       </span>
                     </Link>
                     {user ? (
-                        <Link href="/profile" className="text-lg">Dashboard</Link>
+                        <Link href={dashboardPath} className="text-lg">Dashboard</Link>
                     ) : (
                       <Link href="/login" className="text-lg">Login</Link>
                     )}

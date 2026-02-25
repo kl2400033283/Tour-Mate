@@ -10,14 +10,16 @@ import {
   BarChart,
   LogOut,
   Menu,
-  Home
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useUser } from '@/firebase/index.jsx';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase/index.jsx';
 import { useRouter } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
+import { useEffect } from 'react';
+import { doc } from 'firebase/firestore';
+import { cn } from '@/lib/utils';
 
 const navLinks = [
   { href: '/admin-dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -53,9 +55,6 @@ function SidebarNav({ isMobile = false }) {
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-all hover:text-primary data-[active=true]:text-primary data-[active=true]:bg-primary/10"
             data-active={link.href.includes('admin-dashboard')}
           >
-            <div className="w-5 h-5 flex items-center justify-center">
-              <div className={cn("w-1 h-full bg-primary rounded-full transform scale-y-0 transition-transform duration-300", { "scale-y-100": link.href.includes('admin-dashboard') })}/>
-            </div>
             <link.icon className="h-5 w-5" />
             {link.label}
           </Link>
@@ -101,6 +100,42 @@ const statsCards = [
 export default function AdminDashboardPage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const firestore = useFirestore();
+
+  const userProfileRef = useMemoFirebase(() => {
+    if (!user || !firestore) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [user, firestore]);
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
+
+  useEffect(() => {
+    const isLoading = isUserLoading || isProfileLoading;
+    if (isLoading) return;
+
+    if (!user) {
+      router.replace('/login');
+      return;
+    }
+
+    if (userProfile) {
+      if (userProfile.role !== 'admin') {
+        switch (userProfile.role) {
+          case 'home stay host':
+            router.replace('/host-dashboard');
+            break;
+          case 'tour guide':
+            router.replace('/tour-guide-dashboard');
+            break;
+          case 'Tourist':
+            router.replace('/profile');
+            break;
+          default:
+            router.replace('/');
+            break;
+        }
+      }
+    }
+  }, [user, isUserLoading, userProfile, isProfileLoading, router]);
 
   const handleSignOut = () => {
     const auth = getAuth();
@@ -109,13 +144,9 @@ export default function AdminDashboardPage() {
     });
   };
 
-  if (isUserLoading) {
+  const isLoading = isUserLoading || isProfileLoading;
+  if (isLoading || !userProfile || userProfile.role !== 'admin') {
     return <div className="h-screen w-screen flex items-center justify-center">Loading...</div>;
-  }
-
-  if (!user) {
-    router.push('/login');
-    return null;
   }
 
   return (

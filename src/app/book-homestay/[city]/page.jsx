@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { useUser, useFirestore } from '@/firebase';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { useRouter, usePathname, useParams, useSearchParams } from 'next/navigation';
 import { Calendar as CalendarIcon, Loader2, MapPin, Search, Star, Menu } from 'lucide-react';
 import Link from 'next/link';
@@ -27,6 +27,7 @@ import {
 import { saveHomestayBooking } from '@/lib/bookings';
 import { cn } from '@/lib/utils';
 import { differenceInCalendarDays, parse } from 'date-fns';
+import { doc } from 'firebase/firestore';
 
 
 const getCityData = (slug) => {
@@ -191,6 +192,34 @@ export default function BookHomestayPage() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
+  const firestore = useFirestore();
+  const [dashboardPath, setDashboardPath] = useState('/profile');
+
+  const userProfileRef = useMemoFirebase(() => {
+    if (!user || !firestore) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [user, firestore]);
+  const { data: userProfile } = useDoc(userProfileRef);
+
+  useEffect(() => {
+    if (user && userProfile) {
+        switch (userProfile.role) {
+          case 'home stay host':
+            setDashboardPath('/host-dashboard');
+            break;
+          case 'tour guide':
+            setDashboardPath('/tour-guide-dashboard');
+            break;
+          case 'admin':
+            setDashboardPath('/admin-dashboard');
+            break;
+          case 'Tourist':
+          default:
+            setDashboardPath('/profile');
+            break;
+        }
+    }
+  }, [user, userProfile]);
 
   const citySlug = params.city;
   const city = useMemo(() => getCityData(citySlug), [citySlug]);
@@ -265,7 +294,7 @@ export default function BookHomestayPage() {
             </Button>
             {user ? (
                  <Button asChild variant="secondary" className="rounded-lg px-6 hidden sm:flex">
-                    <Link href="/profile">Dashboard</Link>
+                    <Link href={dashboardPath}>Dashboard</Link>
                  </Button>
             ) : (
                 <Button asChild variant="secondary" className="rounded-lg px-6 hidden sm:flex">

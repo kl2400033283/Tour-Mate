@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { useUser, useFirestore } from '@/firebase';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { useRouter, usePathname, useParams, useSearchParams } from 'next/navigation';
 import { Loader2, MapPin, Search, Star, Menu, Calendar as CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/alert-dialog.jsx';
 import { saveGuideBooking } from '@/lib/bookings.js';
 import { cn } from '@/lib/utils.js';
+import { doc } from 'firebase/firestore';
 
 const getCityData = (slug) => {
   if (!slug) return null;
@@ -193,6 +194,34 @@ export default function HireLocalGuidePage() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
+  const firestore = useFirestore();
+  const [dashboardPath, setDashboardPath] = useState('/profile');
+
+  const userProfileRef = useMemoFirebase(() => {
+    if (!user || !firestore) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [user, firestore]);
+  const { data: userProfile } = useDoc(userProfileRef);
+
+  useEffect(() => {
+    if (user && userProfile) {
+        switch (userProfile.role) {
+          case 'home stay host':
+            setDashboardPath('/host-dashboard');
+            break;
+          case 'tour guide':
+            setDashboardPath('/tour-guide-dashboard');
+            break;
+          case 'admin':
+            setDashboardPath('/admin-dashboard');
+            break;
+          case 'Tourist':
+          default:
+            setDashboardPath('/profile');
+            break;
+        }
+    }
+  }, [user, userProfile]);
 
   const citySlug = params.city;
   const city = useMemo(() => getCityData(citySlug), [citySlug]);
@@ -267,7 +296,7 @@ export default function HireLocalGuidePage() {
             </Button>
             {user ? (
                 <Button asChild>
-                  <Link href="/profile">Dashboard</Link>
+                  <Link href={dashboardPath}>Dashboard</Link>
                 </Button>
             ) : (
                  <Button asChild>
@@ -291,7 +320,7 @@ export default function HireLocalGuidePage() {
                     </Link>
                     <Link href={`/explore/${citySlug}`} className="text-lg">Back to City</Link>
                     {user ? (
-                        <Link href="/profile" className="text-lg">Dashboard</Link>
+                        <Link href={dashboardPath} className="text-lg">Dashboard</Link>
                     ): (
                         <Link href={`/login?redirect=${pathname}`} className="text-lg">Login</Link>
                     )}

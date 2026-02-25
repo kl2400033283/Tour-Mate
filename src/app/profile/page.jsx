@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 function SidebarNav({ isMobile = false }) {
     const router = useRouter();
     const pathname = usePathname();
+
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
@@ -64,18 +65,40 @@ export default function ProfilePage() {
     const router = useRouter();
     const firestore = useFirestore();
 
-    useEffect(() => {
-        if (!isUserLoading && !user) {
-            router.replace('/login?redirect=/profile');
-        }
-    }, [isUserLoading, user, router]);
-
     const userProfileRef = useMemoFirebase(() => {
         if (!user || !firestore) return null;
         return doc(firestore, 'users', user.uid);
     }, [user, firestore]);
-
     const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
+
+    useEffect(() => {
+        const isLoading = isUserLoading || isProfileLoading;
+        if (isLoading) return;
+
+        if (!user) {
+        router.replace('/login?redirect=/profile');
+        return;
+        }
+
+        if (userProfile) {
+        if (userProfile.role !== 'Tourist') {
+            switch (userProfile.role) {
+            case 'admin':
+                router.replace('/admin-dashboard');
+                break;
+            case 'home stay host':
+                router.replace('/host-dashboard');
+                break;
+            case 'tour guide':
+                router.replace('/tour-guide-dashboard');
+                break;
+            default:
+                router.replace('/');
+                break;
+            }
+        }
+        }
+    }, [user, isUserLoading, userProfile, isProfileLoading, router]);
 
     const homestayBookingsQuery = useMemoFirebase(() => {
         if (!user || !firestore) return null;
@@ -101,7 +124,9 @@ export default function ProfilePage() {
         });
     };
 
-    if (isUserLoading || isProfileLoading || !user) {
+    const isLoading = isUserLoading || isProfileLoading;
+
+    if (isLoading || !userProfile || userProfile.role !== 'Tourist') {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />

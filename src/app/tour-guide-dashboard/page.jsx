@@ -13,6 +13,7 @@ import {
   Loader2,
   Calendar,
   Wallet,
+  ArrowLeft,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button.jsx';
 import {
@@ -32,6 +33,7 @@ import { getAuth, signOut } from 'firebase/auth';
 import { useUser, useFirestore, useCollection, useDoc, useMemoFirebase } from '@/firebase';
 import { cn } from '@/lib/utils.js';
 import { collection, query, where, doc, orderBy } from 'firebase/firestore';
+import { useEffect } from 'react';
 
 
 function SidebarNav({ isMobile = false }) {
@@ -90,6 +92,35 @@ export default function TourGuideDashboardPage() {
     }, [user, firestore]);
     const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
 
+    useEffect(() => {
+        const isLoading = isUserLoading || isProfileLoading;
+        if (isLoading) return;
+
+        if (!user) {
+        router.replace('/login');
+        return;
+        }
+
+        if (userProfile) {
+        if (userProfile.role !== 'tour guide') {
+            switch (userProfile.role) {
+            case 'admin':
+                router.replace('/admin-dashboard');
+                break;
+            case 'home stay host':
+                router.replace('/host-dashboard');
+                break;
+            case 'Tourist':
+                router.replace('/profile');
+                break;
+            default:
+                router.replace('/');
+                break;
+            }
+        }
+        }
+    }, [user, isUserLoading, userProfile, isProfileLoading, router]);
+
     const bookingsQuery = useMemoFirebase(() => {
         if (!user || !firestore) return null;
         return query(collection(firestore, 'users', user.uid, 'receivedGuideBookings'), orderBy('bookingDate', 'desc'));
@@ -119,24 +150,15 @@ export default function TourGuideDashboardPage() {
     const completedToursCount = !bookingsLoading && bookings ?
         (bookings || []).filter(b => b.status === 'completed').length : 0;
 
-    if (isUserLoading || isProfileLoading) {
+    const displayName = userProfile ? `${userProfile.firstName} ${userProfile.lastName}`.trim() : 'Guide';
+    
+    if (isLoading || !userProfile || userProfile.role !== 'tour guide') {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
         );
     }
-    
-    if (!user) {
-        router.replace('/login');
-        return (
-             <div className="flex h-screen w-full items-center justify-center bg-background">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-        );
-    }
-
-    const displayName = userProfile ? `${userProfile.firstName} ${userProfile.lastName}`.trim() : 'Guide';
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -178,6 +200,14 @@ export default function TourGuideDashboardPage() {
                 </div>
             </SheetContent>
           </Sheet>
+          <Button
+              variant="outline"
+              onClick={() => router.push('/')}
+              className="flex items-center gap-2"
+          >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+          </Button>
           <div className="w-full flex-1" />
            <Button onClick={handleSignOut} variant="secondary" size="sm">
                 Logout
