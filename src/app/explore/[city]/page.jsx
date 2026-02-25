@@ -107,7 +107,7 @@ export default function CityPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
         
-        <header className="absolute top-0 left-0 right-0 z-20 p-4">
+        <header className="absolute top-0 left-0 right-0 z-20 p-4 bg-transparent">
           <div className="container mx-auto flex items-center justify-between">
             <div className='flex items-center gap-4'>
               <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white" onClick={() => router.push('/explore')}>
@@ -133,10 +133,7 @@ export default function CityPage() {
                 </Button>
               )}
               <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                <Link href="#">About Us</Link>
-              </Button>
-              <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                <Link href="#">Contact</Link>
+                <Link href="/about-us">About Us</Link>
               </Button>
             </nav>
 
@@ -161,8 +158,7 @@ export default function CityPage() {
                     ) : (
                       <Link href="/login" className="text-lg">Login</Link>
                     )}
-                    <Link href="#" className="text-lg">About Us</Link>
-                    <Link href="#" className="text-lg">Contact</Link>
+                    <Link href="/about-us" className="text-lg">About Us</Link>
                   </nav>
                 </SheetContent>
               </Sheet>

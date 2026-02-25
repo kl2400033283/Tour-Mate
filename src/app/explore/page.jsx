@@ -45,7 +45,7 @@ export default function ExplorePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-        <header className="absolute top-0 z-50 w-full p-4">
+        <header className="absolute top-0 z-50 w-full p-4 bg-transparent">
             <div className="container mx-auto flex items-center justify-between">
               <Link href="/" className="flex items-center gap-2 group">
                 <div className="flex items-center gap-2">
@@ -67,10 +67,7 @@ export default function ExplorePage() {
                   </Button>
                 )}
                 <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                    <Link href="#">About Us</Link>
-                </Button>
-                <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                    <Link href="#">Contact</Link>
+                    <Link href="/about-us">About Us</Link>
                 </Button>
               </nav>
     
@@ -95,8 +92,7 @@ export default function ExplorePage() {
                         ) : (
                            <Link href="/login" className="text-lg">Login</Link>
                         )}
-                        <Link href="#" className="text-lg">About Us</Link>
-                        <Link href="#" className="text-lg">Contact</Link>
+                        <Link href="/about-us" className="text-lg">About Us</Link>
                       </nav>
                     </SheetContent>
                   </Sheet>

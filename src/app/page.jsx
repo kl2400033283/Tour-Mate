@@ -64,7 +64,7 @@ export default function Page() {
       />
       <div className="absolute inset-0 bg-black/50" />
       <div className="relative z-10 flex h-full flex-col">
-        <header className="p-4">
+        <header className="p-4 bg-transparent">
           <div className="container mx-auto flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 group">
               <div className="flex items-center gap-2">
@@ -85,10 +85,7 @@ export default function Page() {
                 </Button>
               )}
               <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                <Link href="#">About Us</Link>
-              </Button>
-              <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-                <Link href="#">Contact</Link>
+                <Link href="/about-us">About Us</Link>
               </Button>
             </nav>
             <div className="sm:hidden">
@@ -112,8 +109,7 @@ export default function Page() {
                     ): (
                       <Link href="/login" className="text-lg">Login</Link>
                     )}
-                    <Link href="#" className="text-lg">About Us</Link>
-                    <Link href="#" className="text-lg">Contact</Link>
+                    <Link href="/about-us" className="text-lg">About Us</Link>
                   </nav>
                 </SheetContent>
               </Sheet>
@@ -129,13 +125,23 @@ export default function Page() {
             <p className="mx-auto max-md text-lg text-white/80 sm:text-xl">
               Where Travel Meets Comfort
             </p>
-            <Button
-              asChild
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg"
-            >
-              <Link href="/explore">Explore with TourMate</Link>
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                asChild
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg rounded-full px-8"
+              >
+                <Link href="/explore">Explore with TourMate</Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="bg-transparent border-white text-white hover:bg-white/10 text-lg rounded-full px-8"
+              >
+                <Link href="/about-us">Learn More</Link>
+              </Button>
+            </div>
           </div>
         </main>
       </div>
