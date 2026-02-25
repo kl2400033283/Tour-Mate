@@ -61,14 +61,16 @@ service cloud.firestore {
       allow list: if isAdmin();
       allow delete: if false;
 
-      // Subcollections remain user-owned for writes, but readable by admins via collection group queries.
-      match /homestayBookings/{bookingId} { allow read, write: if isSignedIn() && isOwner(userId); }
-      match /receivedHomestayBookings/{bookingId} { allow read, write: if isSignedIn() && isOwner(userId); }
-      match /guideBookings/{bookingId} { allow read, write: if isSignedIn() && isOwner(userId); }
-      match /receivedGuideBookings/{bookingId} { allow read, write: if isSignedIn() && isOwner(userId); }
+      // Subcollections are readable/writable by the owner OR an admin.
+      match /homestayBookings/{bookingId} { allow read, write: if isSignedIn() && (isOwner(userId) || isAdmin()); }
+      match /receivedHomestayBookings/{bookingId} { allow read, write: if isSignedIn() && (isOwner(userId) || isAdmin()); }
+      match /guideBookings/{bookingId} { allow read, write: if isSignedIn() && (isOwner(userId) || isAdmin()); }
+      match /receivedGuideBookings/{bookingId} { allow read, write: if isSignedIn() && (isOwner(userId) || isAdmin()); }
     }
 
     // --- COLLECTION GROUP RULES FOR ADMINS ---
+    // These rules ensure that admins can perform collection group queries across all users' bookings.
+    // While the direct path rules above also grant admin access, these are still necessary for collection group queries.
     match /{path=**}/homestayBookings/{bookingId} {
       allow read: if isAdmin();
     }
