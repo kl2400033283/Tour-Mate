@@ -1,12 +1,11 @@
-
 'use client';
 
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy } from 'firebase/firestore';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
-import { Loader2, Home, List, LogOut, Menu, PlusCircle, User, LayoutGrid, DollarSign, Bell, ArrowLeft, Banknote } from 'lucide-react';
+import { Loader2, Home, List, Menu, PlusCircle, User, LayoutGrid, DollarSign, Bell, ArrowLeft, Banknote } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -174,7 +173,7 @@ export default function EarningsPage() {
         <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
             <aside className="hidden border-r bg-card md:block">
                 <div className="flex h-full max-h-screen flex-col">
-                    <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+                    <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
                         <Link href="/" className="flex items-center gap-2 font-semibold">
                             <Home className="h-6 w-6 text-primary" />
                             <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate Host</span>
@@ -199,7 +198,7 @@ export default function EarningsPage() {
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="left" className="flex flex-col p-0">
-                             <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+                             <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
                                 <Link href="/" className="flex items-center gap-2 font-semibold">
                                      <Home className="h-6 w-6 text-primary" />
                                      <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate Host</span>

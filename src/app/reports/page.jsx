@@ -1,18 +1,17 @@
-
 'use client';
 
 import Link from 'next/link';
 import {
-    MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, LayoutGrid, ArrowLeft, MoreHorizontal, DollarSign, LineChart, Briefcase
+    MapPin, Menu, Users, Home, Compass, BarChart2, LayoutGrid, ArrowLeft, DollarSign, LineChart, Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
-import { useEffect, useMemo } from 'react';
-import { doc, collection } from 'firebase/firestore';
+import { useEffect } from 'react';
+import { doc } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts";
@@ -148,7 +147,7 @@ export default function ReportsPage() {
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <aside className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+          <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
               <MapPin className="h-6 w-6 text-primary" />
               <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate</span>
@@ -176,7 +175,7 @@ export default function ReportsPage() {
                 <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                   <Link href="/" className="flex items-center gap-2 font-semibold">
                     <MapPin className="h-6 w-6 text-primary" />
-                    <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate</span>
+                    <span className="text-xl font-bold tracking-tight">TourMate</span>
                   </Link>
                 </div>
                 <div className="flex-1 overflow-auto py-4">

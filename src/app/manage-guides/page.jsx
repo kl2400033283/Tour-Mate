@@ -1,9 +1,8 @@
-
 'use client';
 
 import Link from 'next/link';
 import {
-    MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, LayoutGrid, ArrowLeft, MoreHorizontal, Briefcase
+    MapPin, Menu, Users, Home, Compass, BarChart2, LayoutGrid, ArrowLeft, MoreHorizontal, Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';

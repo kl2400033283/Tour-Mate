@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-    MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, MoreHorizontal, ArrowLeft, LayoutGrid, Briefcase
+    MapPin, Menu, Users, Home, Compass, BarChart2, MoreHorizontal, ArrowLeft, LayoutGrid, Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';

@@ -1,9 +1,8 @@
-
 'use client';
 
 import Link from 'next/link';
 import {
-    MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, Briefcase, LayoutGrid, ArrowLeft, MoreHorizontal
+    MapPin, Menu, Users, Home, Compass, BarChart2, Briefcase, LayoutGrid, ArrowLeft, MoreHorizontal
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -13,7 +12,7 @@ import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { doc, collection } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
@@ -249,7 +248,7 @@ export default function ManageUsersPage() {
                 <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                   <Link href="/" className="flex items-center gap-2 font-semibold">
                     <MapPin className="h-6 w-6 text-primary" />
-                    <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate</span>
+                    <span className="text-xl font-bold tracking-tight">TourMate</span>
                   </Link>
                 </div>
                 <div className="flex-1 overflow-auto py-4">
