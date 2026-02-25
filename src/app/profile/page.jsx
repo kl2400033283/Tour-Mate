@@ -20,7 +20,7 @@ function SidebarNav({ isMobile = false }) {
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
-            router.replace('/');
+            window.location.href = '/';
         });
     };
 
@@ -97,7 +97,7 @@ export default function ProfilePage() {
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
-            router.replace('/');
+            window.location.href = '/';
         });
     };
 

@@ -30,7 +30,7 @@ function SidebarNav({ isMobile = false }) {
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
-            router.replace('/');
+            window.location.href = '/';
         });
     };
 
@@ -148,7 +148,7 @@ export default function MyStaysPage() {
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
-            router.replace('/');
+            window.location.href = '/';
         });
     };
 

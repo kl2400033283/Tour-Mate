@@ -54,7 +54,7 @@ function SidebarNav({ isMobile = false }) {
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
-            router.replace('/');
+            window.location.href = '/';
         });
     };
 
@@ -197,7 +197,7 @@ export default function HostDashboardPage() {
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
-            router.replace('/');
+            window.location.href = '/';
         });
     };
 
@@ -218,13 +218,13 @@ export default function HostDashboardPage() {
       });
   };
 
-    const totalListings = listings?.length || 0;
-    const pendingBookings = (bookings || []).filter(b => b.status === 'pending').length;
-    const totalEarnings = (bookings || [])
-      .filter(b => b.status === 'completed' || b.status === 'approved')
-      .reduce((acc, booking) => acc + (booking.totalPrice || 0), 0);
-
     const isLoading = isUserLoading || listingsLoading || bookingsLoading;
+    
+    const totalListings = listings ? listings.length : 0;
+    const pendingBookings = bookings ? (bookings || []).filter(b => b.status === 'pending').length : 0;
+    const totalEarnings = bookings ? (bookings || [])
+      .filter(b => b.status === 'completed' || b.status === 'approved')
+      .reduce((acc, booking) => acc + (booking.totalPrice || 0), 0) : 0;
 
     if (isUserLoading) {
         return (
