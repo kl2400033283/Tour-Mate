@@ -30,6 +30,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.easternfin.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

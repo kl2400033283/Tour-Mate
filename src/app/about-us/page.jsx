@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -140,7 +139,7 @@ export default function AboutUsPage() {
           </div>
           <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
             <Image
-              src="https://images.unsplash.com/photo-1514222139-b57c44ce91b2?q=80&w=2070&auto=format&fit=crop"
+              src="https://www.easternfin.com/blog/incredible-india-making-sense-of-tourism-led-growth-hypothesis"
               alt="Indian Hospitality"
               fill
               className="object-cover"
