@@ -298,7 +298,7 @@ export const citiesByState = {
       attractions: 10, 
       homestays: 22, 
       knownFor: 'A key commercial hub in southern Assam.',
-      description: 'Discover the gateway to the Barak Valley, Silchar, a bustling commercial town.',
+      description: 'Discover the gateway to the Baron Valley, Silchar, a bustling commercial town.',
       attractionDetails: [
         { name: 'Khaspur', description: 'The ruins of the capital of the Dimasa Kachari Kingdom, showcasing unique architecture.', image: 'https://picsum.photos/seed/khaspur-ruins/400/250', hint: 'ancient kingdom' },
         { name: 'Maniharan Tunnel', description: 'A tunnel believed to have been used by Lord Krishna, with a holy stream flowing through it.', image: 'https://picsum.photos/seed/maniharan-tunnel/400/250', hint: 'holy tunnel' }
@@ -582,7 +582,7 @@ export const citiesByState = {
       knownFor: 'A UNESCO World Heritage Site with ancient ruins of the Vijayanagara Empire.',
       description: 'Journey back in time amidst the captivating ruins of Hampi, a UNESCO World Heritage Site.',
       attractionDetails: [
-        { name: 'Virupaksha Temple', description: 'The main center of pilgrimage at Hampi, it has been an important pilgrimage centre for centuries.', image: 'https://picsum.photos/seed/virupaksha-temple/400/250', hint: 'ancient temple complex' },
+        { name: 'Virupaksha Temple', description: 'The main center of pilgrimage at Hampi, it has been an important pilgrimage centre for centuries.', image: 'https://picsum.photos/seed/virupaksha-temple/400/250', hint: 'ancient temple' },
         { name: 'Vittala Temple', description: 'An ancient monument that is well-known for its exceptional architecture and unmatched craftsmanship.', image: 'https://picsum.photos/seed/vittala-temple/400/250', hint: 'stone chariot' }
       ]
     },
@@ -598,7 +598,7 @@ export const citiesByState = {
       knownFor: 'A vibrant port city with a mix of colonial history and modern culture.',
       description: 'Explore the "Queen of the Arabian Sea," Kochi, a vibrant city with a rich history.',
       attractionDetails: [
-        { name: 'Fort Kochi', description: 'A charming seaside area, known for its Dutch, Portuguese, and British colonial architecture, and giant fishing nets.', image: 'https://picsum.photos/seed/fort-kochi/400/250', hint: 'chinese fishing nets' },
+        { name: 'Fort Kochi', description: 'A charming seaside area, known for its Dutch, Portuguese, and British colonial architecture, and giant fishing nets.', image: 'https://picsum.photos/seed/fort-kochi/400/250', hint: 'fort architecture' },
         { name: 'Mattancherry Palace', description: 'Also known as the Dutch Palace, it features Kerala murals depicting portraits and exhibits of the Rajas of Kochi.', image: 'https://picsum.photos/seed/mattancherry-palace/400/250', hint: 'dutch palace' }
       ]
     },
@@ -780,8 +780,8 @@ export const citiesByState = {
       knownFor: 'The "Temple City of India", with hundreds of ancient temples.',
       description: 'Explore the "Temple City of India," Bhubaneswar, a confluence of Hindu, Buddhist, and Jain heritage.',
       attractionDetails: [
-        { name: 'Lingaraj Temple', description: 'An ancient temple dedicated to Shiva and is one of the oldest temples in Bhubaneswar.', image: 'https://picsum.photos/seed/lingaraj-temple/400/250', hint: 'shiva temple odisha' },
-        { name: 'Udayagiri and Khandagiri Caves', description: 'Have a number of finely and ornately carved caves built during the 1st century BCE.', image: 'https://picsum.photos/seed/udayagiri-caves/400/250', hint: 'ancient rock caves' }
+        { name: 'Lingaraj Temple', description: 'An ancient temple dedicated to Shiva and is one of the oldest temples in Bhubaneswar.', image: 'https://picsum.photos/seed/lingaraj-temple/400/250', hint: 'shiva temple' },
+        { name: 'Udayagiri and Khandagiri Caves', description: 'Have a number of finely and ornately carved caves built during the 1st century BCE.', image: 'https://picsum.photos/seed/udayagiri-caves/400/250', hint: 'ancient caves' }
       ]
     },
     { 
@@ -795,7 +795,7 @@ export const citiesByState = {
       description: 'Seek blessings at the Jagannath Temple and relax on the golden beaches of Puri.',
       attractionDetails: [
         { name: 'Jagannath Temple', description: 'An important Hindu temple dedicated to Jagannath, a form of Vishnu.', image: 'https://picsum.photos/seed/jagannath-temple-puri/400/250', hint: 'hindu pilgrimage' },
-        { name: 'Puri Beach', description: 'A beach in the city of Puri, it is on the shore of the Bay of Bengal.', image: 'https://picsum.photos/seed/puri-beach-odisha/400/250', hint: 'bay of bengal' }
+        { name: 'Puri Beach', description: 'A beach in the city of Puri, it is on the shore of the Bay of Bengal.', image: 'https://picsum.photos/seed/puri-beach-odisha/400/250', hint: 'bay bengal' }
       ]
     },
   ],
@@ -810,7 +810,7 @@ export const citiesByState = {
       knownFor: 'Home to the iconic Golden Temple, the spiritual center for Sikhs.',
       description: 'Experience the spiritual aura of Amritsar, home to the magnificent Golden Temple.',
       attractionDetails: [
-        { name: 'Golden Temple', description: 'The Harmandir Sahib, also known as Darbar Sahib, is a Gurdwara located in the city of Amritsar.', image: 'https://picsum.photos/seed/golden-temple-amritsar/400/250', hint: 'sikh holy site' },
+        { name: 'Golden Temple', description: 'The Harmandir Sahib, also known as Darbar Sahib, is a Gurdwara located in the city of Amritsar.', image: 'https://picsum.photos/seed/golden-temple-amritsar/400/250', hint: 'sikh temple' },
         { name: 'Jallianwala Bagh', description: 'A historic garden and memorial of national importance, preserved in the memory of those wounded and killed in the Jallianwala Bagh Massacre.', image: 'https://picsum.photos/seed/jallianwala-bagh/400/250', hint: 'historical memorial' }
       ]
     },
@@ -827,9 +827,9 @@ export const citiesByState = {
       description: "Explore the vibrant Pink City, a treasure trove of majestic forts, opulent palaces, and bustling markets.",
       attractionDetails: [
         { name: 'Hawa Mahal', description: 'The iconic "Palace of Winds" with its intricate honeycomb facade, a masterpiece of Rajput architecture.', image: 'https://picsum.photos/seed/hawa-mahal-jaipur/400/250', hint: 'jaipur palace' },
-        { name: 'City Palace', description: 'A sprawling complex of palaces, gardens, and courtyards, showcasing a blend of Rajput and Mughal styles.', image: 'https://picsum.photos/seed/city-palace-jaipur/400/250', hint: 'jaipur royal palace' },
+        { name: 'City Palace', description: 'A sprawling complex of palaces, gardens, and courtyards, showcasing a blend of Rajput and Mughal styles.', image: 'https://picsum.photos/seed/city-palace-jaipur/400/250', hint: 'royal palace' },
         { name: 'Amber Fort', description: 'A magnificent hilltop fort offering panoramic views and a glimpse into the lavish lifestyle of Rajput rulers.', image: 'https://picsum.photos/seed/amber-fort/400/250', hint: 'jaipur fort' },
-        { name: 'Jantar Mantar', description: 'An astronomical observatory with the world\'s largest stone sundial, a UNESCO World Heritage site.', image: 'https://picsum.photos/seed/jantar-mantar-jaipur/400/250', hint: 'jaipur observatory' }
+        { name: 'Jantar Mantar', description: 'An astronomical observatory with the world\'s largest stone sundial, a UNESCO World Heritage site.', image: 'https://picsum.photos/seed/jantar-mantar-jaipur/400/250', hint: 'astronomical observatory' }
       ]
     },
     { 
@@ -889,7 +889,7 @@ export const citiesByState = {
       description: 'Discover the cultural capital of South India, Chennai.',
       attractionDetails: [
         { name: 'Marina Beach', description: 'A natural urban beach in Chennai, Tamil Nadu, India, along the Bay of Bengal.', image: 'https://picsum.photos/seed/marina-beach/400/250', hint: 'urban beach' },
-        { name: 'Kapaleeshwarar Temple', description: 'A Hindu temple dedicated to lord Shiva located in Mylapore, Chennai.', image: 'https://picsum.photos/seed/kapaleeshwarar-temple/400/250', hint: 'dravidian architecture' }
+        { name: 'Kapaleeshwarar Temple', description: 'A Hindu temple dedicated to lord Shiva located in Mylapore, Chennai.', image: 'https://picsum.photos/seed/kapaleeshwarar-temple/400/250', hint: 'dravidian temple' }
       ]
     },
     { 
@@ -903,7 +903,7 @@ export const citiesByState = {
       description: 'Explore the ancient city of Madurai, the soul of Tamil Nadu.',
       attractionDetails: [
         { name: 'Meenakshi Amman Temple', description: 'A historic Hindu temple located on the southern bank of the Vaigai River in the temple city of Madurai.', image: 'https://picsum.photos/seed/meenakshi-temple/400/250', hint: 'famous temple' },
-        { name: 'Thirumalai Nayakkar Palace', description: 'A 17th-century palace erected in 1636 AD by King Tirumala Nayaka.', image: 'https://picsum.photos/seed/thirumalai-nayakkar-palace/400/250', hint: 'royal palace madurai' }
+        { name: 'Thirumalai Nayakkar Palace', description: 'A 17th-century palace erected in 1636 AD by King Tirumala Nayaka.', image: 'https://picsum.photos/seed/thirumalai-nayakkar-palace/400/250', hint: 'royal palace' }
       ]
     },
   ],
@@ -919,7 +919,7 @@ export const citiesByState = {
       description: 'Discover the "City of Pearls," Hyderabad, a blend of history, culture, and cuisine.',
       attractionDetails: [
         { name: 'Charminar', description: 'A monument and mosque located in Hyderabad, Telangana, India. The structure was built in 1591 AD.', image: 'https://picsum.photos/seed/charminar-hyderabad/400/250', hint: 'hyderabad monument' },
-        { name: 'Golconda Fort', description: 'A fortified citadel and an early capital city of the Qutb Shahi dynasty.', image: 'https://picsum.photos/seed/golconda-fort/400/250', hint: 'historic fort hyderabad' }
+        { name: 'Golconda Fort', description: 'A fortified citadel and an early capital city of the Qutb Shahi dynasty.', image: 'https://picsum.photos/seed/golconda-fort/400/250', hint: 'historic fort' }
       ]
     },
   ],
@@ -934,7 +934,7 @@ export const citiesByState = {
       knownFor: 'Known for its palaces, temples, and rich cultural history.',
       description: 'Explore the royal heritage of Tripura in its capital, Agartala.',
       attractionDetails: [
-        { name: 'Ujjayanta Palace', description: 'A museum and the former palace of the Kingdom of Tripura, situated in Agartala.', image: 'https://picsum.photos/seed/ujjayanta-palace/400/250', hint: 'royal palace tripura' },
+        { name: 'Ujjayanta Palace', description: 'A museum and the former palace of the Kingdom of Tripura, situated in Agartala.', image: 'https://picsum.photos/seed/ujjayanta-palace/400/250', hint: 'royal palace' },
         { name: 'Neermahal', description: 'A former royal palace built by King Bir Bikram Kishore Debbarman of the erstwhile Kingdom of Tripura.', image: 'https://picsum.photos/seed/neermahal/400/250', hint: 'water palace' }
       ]
     },
@@ -951,7 +951,7 @@ export const citiesByState = {
       description: "Witness the timeless beauty of the Taj Mahal and explore the grandeur of Mughal architecture in this historic city.",
       attractionDetails: [
         { name: 'Taj Mahal', description: 'An ivory-white marble mausoleum, a universal symbol of love and a UNESCO World Heritage site.', image: 'https://picsum.photos/seed/taj-mahal-agra/400/250', hint: 'agra monument' },
-        { name: 'Agra Fort', description: 'A massive red sandstone fort that served as the main residence of Mughal emperors.', image: 'https://picsum.photos/seed/agra-fort/400/250', hint: 'agra historical fort' },
+        { name: 'Agra Fort', description: 'A massive red sandstone fort that served as the main residence of Mughal emperors.', image: 'https://picsum.photos/seed/agra-fort/400/250', hint: 'agra fort' },
         { name: 'Fatehpur Sikri', description: 'A magnificent fortified city that was the short-lived capital of the Mughal Empire.', image: 'https://picsum.photos/seed/fatehpur-sikri/400/250', hint: 'mughal city' }
       ]
     },
@@ -965,7 +965,7 @@ export const citiesByState = {
       knownFor: 'A spiritual city on the banks of the Ganges, known for its ghats and temples.',
       description: 'Explore spiritual landmarks, book comfortable homestays, and experience local traditions in Varanasi.',
       attractionDetails: [
-        { name: 'Shri Kashi Vishwanath Temple', description: 'One of the most sacred Hindu temples dedicated to Lord Shiva, attracting millions of devotees every year.', image: 'https://picsum.photos/seed/kashi-vishwanath/400/250', hint: 'kashi vishwanath temple' },
+        { name: 'Shri Kashi Vishwanath Temple', description: 'One of the most sacred Hindu temples dedicated to Lord Shiva, attracting millions of devotees every year.', image: 'https://picsum.photos/seed/kashi-vishwanath/400/250', hint: 'kashi temple' },
         { name: 'Dashashwamedh Ghat', description: 'The main and most vibrant ghat of Varanasi, famous for the grand evening Ganga Aarti ceremony.', image: 'https://picsum.photos/seed/dashashwamedh-ghat/400/250', hint: 'varanasi ghat' },
         { name: 'Assi Ghat', description: 'A peaceful riverside ghat known for sunrise views, spiritual gatherings, and cultural performances.', image: 'https://picsum.photos/seed/assi-ghat/400/250', hint: 'varanasi sunrise' },
       ]
@@ -997,7 +997,7 @@ export const citiesByState = {
       description: 'Enjoy the serene beauty of the "Lake District of India," Nainital.',
       attractionDetails: [
         { name: 'Naini Lake', description: 'A natural freshwater body, situated in the township of Nainital in Kumaon region.', image: 'https://picsum.photos/seed/naini-lake/400/250', hint: 'freshwater lake' },
-        { name: 'Naina Devi Temple', description: 'A temple dedicated to the goddess Naina Devi, located on the northern shore of Naini Lake.', image: 'https://picsum.photos/seed/naina-devi-temple/400/250', hint: 'hindu goddess temple' }
+        { name: 'Naina Devi Temple', description: 'A temple dedicated to the goddess Naina Devi, located on the northern shore of Naini Lake.', image: 'https://picsum.photos/seed/naina-devi-temple/400/250', hint: 'goddess temple' }
       ]
     },
   ],
@@ -1026,7 +1026,7 @@ export const citiesByState = {
       knownFor: 'Famous for its tea plantations and stunning views of Kanchenjunga.',
       description: 'Sip on world-famous tea and enjoy stunning Himalayan views in Darjeeling.',
       attractionDetails: [
-        { name: 'Darjeeling Himalayan Railway', description: 'Also known as the "Toy Train", is a 2 ft narrow-gauge railway that runs between New Jalpaiguri and Darjeeling.', image: 'https://picsum.photos/seed/toy-train-darjeeling/400/250', hint: 'narrow gauge railway' },
+        { name: 'Darjeeling Himalayan Railway', description: 'Also known as the "Toy Train", is a 2 ft narrow-gauge railway that runs between New Jalpaiguri and Darjeeling.', image: 'https://picsum.photos/seed/toy-train-darjeeling/400/250', hint: 'narrow railway' },
         { name: 'Tiger Hill', description: 'It has a panoramic view of Mount Everest and Mount Kanchenjunga together.', image: 'https://picsum.photos/seed/tiger-hill-darjeeling/400/250', hint: 'himalayan sunrise' }
       ]
     },

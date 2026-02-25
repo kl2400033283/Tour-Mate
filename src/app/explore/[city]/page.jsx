@@ -31,12 +31,12 @@ const getCityData = (slug) => {
   return null;
 };
 
-function AttractionCard({ attraction }) {
+function AttractionCard({ attraction, cityImage, attractionPlaceholder }) {
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
       <div className="relative h-48 w-full">
         <Image
-          src={attraction.image || 'https://picsum.photos/seed/attraction/400/250'}
+          src={attraction.image || cityImage || attractionPlaceholder || 'https://picsum.photos/seed/attraction/400/250'}
           alt={attraction.name}
           fill
           className="object-cover"
@@ -92,6 +92,7 @@ export default function CityPage() {
 
   const { name, stateName, description, image, hint, attractionDetails = [] } = city;
   const cityPlaceholder = PlaceHolderImages.find(p => p.id === 'city-placeholder');
+  const attractionPlaceholder = PlaceHolderImages.find(p => p.id === 'attraction-placeholder');
 
   return (
     <div className="bg-white text-gray-800">
@@ -195,7 +196,12 @@ export default function CityPage() {
         {attractionDetails.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {attractionDetails.map((attraction, index) => (
-              <AttractionCard key={index} attraction={attraction} />
+              <AttractionCard 
+                key={index} 
+                attraction={attraction} 
+                cityImage={image}
+                attractionPlaceholder={attractionPlaceholder?.imageUrl}
+              />
             ))}
           </div>
         ) : (
