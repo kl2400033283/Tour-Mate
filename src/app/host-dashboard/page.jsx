@@ -1,6 +1,8 @@
+
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Bell,
   Home,
@@ -17,6 +19,7 @@ import {
   CheckCircle,
   XCircle,
   ArrowLeft,
+  MapPin,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -264,9 +267,23 @@ export default function HostDashboardPage() {
       <aside className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
-              <Home className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate Host</span>
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative h-8 w-8 overflow-hidden rounded shadow-sm ring-1 ring-primary/20 transition-all group-hover:ring-primary/50">
+                <Image 
+                  src="https://picsum.photos/seed/india-host/100/100" 
+                  alt="India" 
+                  fill 
+                  className="object-cover"
+                  data-ai-hint="india landmark"
+                />
+              </div>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1">
+                  <Home className="h-4 w-4 text-primary" />
+                  <span className="text-lg font-bold tracking-tight text-foreground">TourMate Host</span>
+                </div>
+                <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Manage Your Stays</span>
+              </div>
             </Link>
           </div>
           <div className="flex-1 overflow-auto py-4">
@@ -275,7 +292,10 @@ export default function HostDashboardPage() {
         </div>
       </aside>
       <div className="flex flex-col bg-muted/20">
-        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-5 pointer-events-none">
+            <Image src="https://picsum.photos/seed/nav-strip-host/1200/100" alt="" fill className="object-cover" data-ai-hint="india landscape" />
+          </div>
           <Sheet>
             <SheetTrigger asChild>
               <Button
@@ -302,13 +322,13 @@ export default function HostDashboardPage() {
           <Button
               variant="outline"
               onClick={() => router.push('/')}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 relative z-10"
           >
               <ArrowLeft className="h-4 w-4" />
               Back to Home
           </Button>
           <div className="w-full flex-1" />
-           <Button onClick={handleSignOut} variant="secondary" size="sm">
+           <Button onClick={handleSignOut} variant="secondary" size="sm" className="relative z-10">
                 Logout
             </Button>
         </header>

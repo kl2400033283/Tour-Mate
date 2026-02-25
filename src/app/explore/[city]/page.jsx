@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -104,16 +105,27 @@ export default function CityPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
         
-        <header className="absolute top-0 left-0 right-0 z-20 p-4">
+        <header className="absolute top-0 left-0 right-0 z-20 p-4 border-b border-white/10">
           <div className="container mx-auto flex items-center justify-between">
-            <div className='flex items-center'>
-              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white mr-2" onClick={() => router.push('/explore')}>
+            <div className='flex items-center gap-4'>
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white" onClick={() => router.push('/explore')}>
                   <ArrowLeft className="h-6 w-6" />
                   <span className="sr-only">Back</span>
               </Button>
-              <Link href="/" className="flex items-center gap-2">
-                <MapPin className="h-6 w-6" />
-                <span className="text-xl font-bold tracking-tight">TourMate</span>
+              <Link href="/" className="flex items-center gap-3 group">
+                <div className="relative h-9 w-9 overflow-hidden rounded-md shadow-lg ring-1 ring-white/30 transition-all group-hover:ring-primary/50">
+                  <Image 
+                    src="https://picsum.photos/seed/india-nav-city/100/100" 
+                    alt="India" 
+                    fill 
+                    className="object-cover"
+                    data-ai-hint="india landmark"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-white" />
+                  <span className="text-xl font-bold tracking-tight text-white">TourMate</span>
+                </div>
               </Link>
             </div>
             

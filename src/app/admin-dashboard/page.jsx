@@ -1,6 +1,8 @@
+
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, LayoutGrid, ArrowLeft, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -174,9 +176,23 @@ export default function AdminDashboardPage() {
       <aside className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
-              <MapPin className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate</span>
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative h-8 w-8 overflow-hidden rounded shadow-sm ring-1 ring-primary/20">
+                <Image 
+                  src="https://picsum.photos/seed/india-admin/100/100" 
+                  alt="India" 
+                  fill 
+                  className="object-cover"
+                  data-ai-hint="india landmark"
+                />
+              </div>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-4 w-4 text-primary" />
+                  <span className="text-lg font-bold tracking-tight text-foreground">TourMate</span>
+                </div>
+                <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Admin Panel</span>
+              </div>
             </Link>
           </div>
           <div className="flex-1 overflow-auto py-4">
@@ -185,7 +201,10 @@ export default function AdminDashboardPage() {
         </div>
       </aside>
       <div className="flex flex-col bg-muted/40">
-        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6 overflow-hidden relative">
+          <div className="absolute inset-0 opacity-5 pointer-events-none">
+            <Image src="https://picsum.photos/seed/nav-strip-admin/1200/100" alt="" fill className="object-cover" data-ai-hint="india landscape" />
+          </div>
           <Sheet>
             <SheetTrigger asChild>
               <Button
@@ -201,7 +220,7 @@ export default function AdminDashboardPage() {
                 <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                   <Link href="/" className="flex items-center gap-2 font-semibold">
                     <MapPin className="h-6 w-6 text-primary" />
-                    <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate</span>
+                    <span className="text-xl font-bold tracking-tight">TourMate</span>
                   </Link>
                 </div>
                 <div className="flex-1 overflow-auto py-4">
@@ -212,13 +231,13 @@ export default function AdminDashboardPage() {
            <Button
               variant="outline"
               onClick={() => router.push('/')}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 relative z-10"
           >
               <ArrowLeft className="h-4 w-4" />
               Back to Home
           </Button>
            <div className="w-full flex-1" />
-           <Button onClick={handleSignOut} variant="secondary">
+           <Button onClick={handleSignOut} variant="secondary" className="relative z-10">
               Logout
             </Button>
         </header>

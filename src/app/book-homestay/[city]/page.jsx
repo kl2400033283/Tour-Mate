@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
@@ -280,13 +281,34 @@ export default function BookHomestayPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="w-full bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto flex h-20 items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <MapPin className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold tracking-tight text-foreground">
-              TourMate
-            </span>
+      <header className="w-full bg-background/80 backdrop-blur-sm sticky top-0 z-50 border-b overflow-hidden">
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          <Image 
+            src="https://picsum.photos/seed/india-strip-1/1200/100" 
+            alt="" 
+            fill 
+            className="object-cover"
+            data-ai-hint="india landscape"
+          />
+        </div>
+        <div className="container mx-auto flex h-20 items-center justify-between relative z-10">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative h-10 w-10 overflow-hidden rounded-lg shadow-md ring-2 ring-primary/20 transition-all group-hover:scale-105">
+              <Image 
+                src="https://picsum.photos/seed/india-nav-booking/100/100" 
+                alt="India Tourism" 
+                fill 
+                className="object-cover"
+                data-ai-hint="india landmark"
+              />
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-primary" />
+                <span className="text-xl font-bold tracking-tight">TourMate</span>
+              </div>
+              <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-bold">Discover India</span>
+            </div>
           </Link>
           <nav className="flex items-center gap-4">
             <Button asChild variant="secondary" className="rounded-lg px-6 hidden sm:flex">

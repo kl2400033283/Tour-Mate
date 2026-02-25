@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -41,11 +42,27 @@ export default function ExplorePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-        <header className="absolute top-0 z-50 w-full p-4">
+        <header className="absolute top-0 z-50 w-full p-4 border-b border-white/10">
             <div className="container mx-auto flex items-center justify-between">
-              <Link href="/" className="flex items-center gap-2">
-                <MapPin className="h-6 w-6 text-white" />
-                <span className="text-xl font-bold tracking-tight text-white">TourMate</span>
+              <Link href="/" className="flex items-center gap-3 group">
+                <div className="relative h-10 w-10 overflow-hidden rounded-lg shadow-lg ring-2 ring-white/20 transition-all group-hover:ring-primary/50">
+                  <Image 
+                    src="https://picsum.photos/seed/india-nav-explore/100/100" 
+                    alt="India Tourism" 
+                    fill 
+                    className="object-cover"
+                    data-ai-hint="india landmark"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-white" />
+                    <span className="text-xl font-bold tracking-tight text-white">
+                      TourMate
+                    </span>
+                  </div>
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-primary font-bold">Explore India</span>
+                </div>
               </Link>
     
               <nav className="hidden items-center gap-2 sm:flex">
