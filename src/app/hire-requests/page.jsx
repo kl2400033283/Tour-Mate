@@ -14,6 +14,7 @@ import {
   ArrowLeft,
   CheckCircle,
   XCircle,
+  MapPin,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge.jsx';
 import { Button } from '@/components/ui/button.jsx';
@@ -41,7 +42,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
 import { useUser, useFirestore, useCollection, useMemoFirebase, updateDocumentNonBlocking } from '@/firebase';
 import { cn } from '@/lib/utils.js';
-import { collection, query, doc, orderBy } from 'firebase/firestore';
+import { collection, query, doc, orderBy, where } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton.jsx';
 import { useToast } from '@/hooks/use-toast.jsx';
 
