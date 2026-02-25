@@ -56,7 +56,7 @@ function SidebarNav({ isMobile = false }) {
     const navLinks = [
         { href: '/host-dashboard', icon: LayoutGrid, label: 'Dashboard' },
         { href: '/my-listings', icon: List, label: 'My Listings' },
-        { href: '#', icon: PlusCircle, label: 'Add Homestay' },
+        { href: '/add-homestay', icon: PlusCircle, label: 'Add Homestay' },
         { href: '/booking-requests', icon: Bell, label: 'Booking Requests' },
         { href: '/earnings', icon: DollarSign, label: 'Earnings' },
         { href: '/host-profile', icon: User, label: 'Profile' },

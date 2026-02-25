@@ -29,7 +29,7 @@ function SidebarNav({ isMobile = false }) {
     const navLinks = [
         { href: '/host-dashboard', icon: LayoutGrid, label: 'Dashboard' },
         { href: '/my-listings', icon: List, label: 'My Listings' },
-        { href: '#', icon: PlusCircle, label: 'Add Homestay' },
+        { href: '/add-homestay', icon: PlusCircle, label: 'Add Homestay' },
         { href: '/booking-requests', icon: Bell, label: 'Booking Requests' },
         { href: '/earnings', icon: DollarSign, label: 'Earnings' },
         { href: '/host-profile', icon: User, label: 'Profile' },
@@ -70,7 +70,7 @@ function ListingsTable({ listings, isLoading }) {
             <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg text-center p-4">
                 <p className="text-muted-foreground mb-4">You haven't created any listings yet.</p>
                 <Button asChild>
-                    <Link href="#">Add Homestay</Link>
+                    <Link href="/add-homestay">Add Homestay</Link>
                 </Button>
             </div>
         );
@@ -224,7 +224,7 @@ export default function MyListingsPage() {
                             </p>
                         </div>
                          <Button asChild size="sm" className="ml-auto gap-1">
-                            <Link href="#">
+                            <Link href="/add-homestay">
                                 <PlusCircle className="h-3.5 w-3.5" />
                                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                                 Add Homestay
