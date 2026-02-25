@@ -5,12 +5,13 @@ import { doc, collection, query, orderBy } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
-import { Loader2, ShieldAlert, MapPin, LogOut, LayoutGrid, Bed, UserCheck, Menu, ArrowLeft } from 'lucide-react';
+import { Loader2, MapPin, LogOut, LayoutGrid, Bed, UserCheck, Menu, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { useEffect } from 'react';
 
 
 function SidebarNav({ isMobile = false }) {
@@ -63,6 +64,12 @@ export default function ProfilePage() {
     const router = useRouter();
     const firestore = useFirestore();
 
+    useEffect(() => {
+        if (!isUserLoading && !user) {
+            router.replace('/login?redirect=/profile');
+        }
+    }, [isUserLoading, user, router]);
+
     const userProfileRef = useMemoFirebase(() => {
         if (!user || !firestore) return null;
         return doc(firestore, 'users', user.uid);
@@ -94,44 +101,10 @@ export default function ProfilePage() {
         });
     };
 
-    if (isUserLoading || isProfileLoading) {
+    if (isUserLoading || isProfileLoading || !user) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-        );
-    }
-
-    if (!user) {
-        return (
-            <div className="flex flex-col min-h-screen bg-muted/20">
-                <header className="p-4 border-b bg-background">
-                    <div className="container mx-auto flex items-center justify-between">
-                        <Link href="/" className="flex items-center gap-2">
-                            <MapPin className="h-6 w-6 text-primary" />
-                            <span className="text-xl font-bold tracking-tight">
-                                TourMate
-                            </span>
-                        </Link>
-                        <Button asChild variant="outline">
-                            <Link href="/">Back to Home</Link>
-                        </Button>
-                    </div>
-                </header>
-                <main className="flex-grow container mx-auto p-4 md:p-8 flex items-center justify-center">
-                    <Card className="max-w-md w-full text-center shadow-lg">
-                        <CardHeader>
-                            <div className="mx-auto bg-destructive/10 rounded-full p-3 w-fit">
-                                <ShieldAlert className="h-10 w-10 text-destructive" />
-                            </div>
-                            <CardTitle className="text-2xl pt-4">Access Denied</CardTitle>
-                            <CardDescription>You must be logged in to view your dashboard.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-sm text-muted-foreground">Please return to the homepage to log in.</p>
-                        </CardContent>
-                    </Card>
-                </main>
             </div>
         );
     }
