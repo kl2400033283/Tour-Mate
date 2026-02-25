@@ -68,7 +68,7 @@ function SidebarNav({ isMobile = false }) {
     );
 }
 
-function BookingsTable({ bookings, isLoading }) {
+function GuideBookingsTable({ bookings, isLoading }) {
     if (isLoading) {
         return (
             <div className="space-y-4">
@@ -82,7 +82,7 @@ function BookingsTable({ bookings, isLoading }) {
     if (!bookings || bookings.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg text-center p-4">
-                <p className="text-muted-foreground mb-4">You haven't booked any stays yet.</p>
+                <p className="text-muted-foreground mb-4">You haven't hired any guides yet.</p>
                 <Button asChild>
                     <Link href="/explore">Explore Destinations</Link>
                 </Button>
@@ -94,31 +94,24 @@ function BookingsTable({ bookings, isLoading }) {
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>Homestay</TableHead>
+                    <TableHead>Guide Name</TableHead>
                     <TableHead>City</TableHead>
-                    <TableHead>Dates</TableHead>
-                    <TableHead className="text-right">Total Price</TableHead>
+                    <TableHead>Tour Date</TableHead>
                     <TableHead className="text-center">Status</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {bookings.map((booking) => (
                     <TableRow key={booking.id}>
-                        <TableCell className="font-medium">{booking.homestayName}</TableCell>
+                        <TableCell className="font-medium">{booking.guideName}</TableCell>
                         <TableCell>{booking.city}</TableCell>
-                        <TableCell>{booking.checkInDate} - {booking.checkOutDate}</TableCell>
-                        <TableCell className="text-right">₹{booking.totalPrice?.toLocaleString()}</TableCell>
+                        <TableCell>{booking.tourDate}</TableCell>
                         <TableCell className="text-center">
                             <Badge 
                                 variant="outline"
-                                className={cn({
-                                    'border-yellow-500 text-yellow-700': booking.status === 'pending',
-                                    'border-green-500 text-green-700': booking.status === 'approved',
-                                    'border-red-500 text-red-700': booking.status === 'declined',
-                                    'border-blue-500 text-blue-700': booking.status === 'completed',
-                                })}
+                                className='border-green-500 text-green-700'
                             >
-                                {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                                Confirmed
                             </Badge>
                         </TableCell>
                     </TableRow>
@@ -128,22 +121,22 @@ function BookingsTable({ bookings, isLoading }) {
     );
 }
 
-export default function MyStaysPage() {
+export default function MyGuideBookingsPage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
     const firestore = useFirestore();
 
     useEffect(() => {
         if (!isUserLoading && !user) {
-            router.replace('/login?redirect=/my-stays');
+            router.replace('/login?redirect=/my-guide-bookings');
         }
     }, [isUserLoading, user, router]);
 
-    const homestayBookingsQuery = useMemoFirebase(() => {
+    const guideBookingsQuery = useMemoFirebase(() => {
         if (!user || !firestore) return null;
-        return query(collection(firestore, 'users', user.uid, 'homestayBookings'), orderBy('bookingDate', 'desc'));
+        return query(collection(firestore, 'users', user.uid, 'guideBookings'), orderBy('bookingDate', 'desc'));
     }, [user, firestore]);
-    const { data: homestayBookings, isLoading: homestayLoading } = useCollection(homestayBookingsQuery);
+    const { data: guideBookings, isLoading: guideLoading } = useCollection(guideBookingsQuery);
 
     const handleSignOut = () => {
         const auth = getAuth();
@@ -219,15 +212,15 @@ export default function MyStaysPage() {
                 </header>
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                     <div className="flex items-center">
-                        <h1 className="text-lg font-semibold md:text-2xl">My Stays</h1>
+                        <h1 className="text-lg font-semibold md:text-2xl">My Guide Bookings</h1>
                     </div>
                     <Card>
                         <CardHeader>
-                            <CardTitle>Your Homestay Bookings</CardTitle>
-                            <CardDescription>A list of all your past and present homestay bookings.</CardDescription>
+                            <CardTitle>Your Tour Guide Bookings</CardTitle>
+                            <CardDescription>A list of all your tour guide reservations.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <BookingsTable bookings={homestayBookings} isLoading={homestayLoading} />
+                            <GuideBookingsTable bookings={guideBookings} isLoading={guideLoading} />
                         </CardContent>
                     </Card>
                 </main>

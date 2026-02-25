@@ -1,24 +1,15 @@
 'use client';
 
-import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { doc, collection, query, orderBy } from 'firebase/firestore';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
-import { Loader2, MapPin, LogOut, LayoutGrid, Bed, User, UserCheck, Menu, ArrowLeft } from 'lucide-react';
+import { Loader2, MapPin, LogOut, LayoutGrid, Bed, User, UserCheck, Menu, ArrowLeft, Mail, Phone, KeyRound } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
 
@@ -68,82 +59,64 @@ function SidebarNav({ isMobile = false }) {
     );
 }
 
-function BookingsTable({ bookings, isLoading }) {
+function ProfileDetails({ userProfile, isLoading }) {
     if (isLoading) {
         return (
             <div className="space-y-4">
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-8 w-3/4" />
+                <Skeleton className="h-6 w-1/2" />
+                <Skeleton className="h-6 w-1/2" />
+                <Skeleton className="h-6 w-1/2" />
             </div>
         );
+    }
+    
+    if (!userProfile) {
+        return <p>Could not load profile details.</p>;
     }
 
-    if (!bookings || bookings.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg text-center p-4">
-                <p className="text-muted-foreground mb-4">You haven't booked any stays yet.</p>
-                <Button asChild>
-                    <Link href="/explore">Explore Destinations</Link>
-                </Button>
-            </div>
-        );
-    }
+    const { firstName, lastName, email, phoneNumber, role } = userProfile;
 
     return (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Homestay</TableHead>
-                    <TableHead>City</TableHead>
-                    <TableHead>Dates</TableHead>
-                    <TableHead className="text-right">Total Price</TableHead>
-                    <TableHead className="text-center">Status</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {bookings.map((booking) => (
-                    <TableRow key={booking.id}>
-                        <TableCell className="font-medium">{booking.homestayName}</TableCell>
-                        <TableCell>{booking.city}</TableCell>
-                        <TableCell>{booking.checkInDate} - {booking.checkOutDate}</TableCell>
-                        <TableCell className="text-right">₹{booking.totalPrice?.toLocaleString()}</TableCell>
-                        <TableCell className="text-center">
-                            <Badge 
-                                variant="outline"
-                                className={cn({
-                                    'border-yellow-500 text-yellow-700': booking.status === 'pending',
-                                    'border-green-500 text-green-700': booking.status === 'approved',
-                                    'border-red-500 text-red-700': booking.status === 'declined',
-                                    'border-blue-500 text-blue-700': booking.status === 'completed',
-                                })}
-                            >
-                                {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                            </Badge>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+        <div className="space-y-4">
+            <div className="flex items-center">
+                <User className="h-5 w-5 text-muted-foreground mr-3" />
+                <span className="font-medium">{firstName} {lastName}</span>
+            </div>
+            <div className="flex items-center">
+                <Mail className="h-5 w-5 text-muted-foreground mr-3" />
+                <span className="text-muted-foreground">{email}</span>
+            </div>
+             <div className="flex items-center">
+                <Phone className="h-5 w-5 text-muted-foreground mr-3" />
+                <span className="text-muted-foreground">{phoneNumber}</span>
+            </div>
+            <div className="flex items-center">
+                <KeyRound className="h-5 w-5 text-muted-foreground mr-3" />
+                <span className="text-muted-foreground capitalize">{role}</span>
+            </div>
+        </div>
     );
 }
 
-export default function MyStaysPage() {
+
+export default function MyProfilePage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
     const firestore = useFirestore();
 
     useEffect(() => {
         if (!isUserLoading && !user) {
-            router.replace('/login?redirect=/my-stays');
+            router.replace('/login?redirect=/my-profile');
         }
     }, [isUserLoading, user, router]);
-
-    const homestayBookingsQuery = useMemoFirebase(() => {
+    
+    const userProfileRef = useMemoFirebase(() => {
         if (!user || !firestore) return null;
-        return query(collection(firestore, 'users', user.uid, 'homestayBookings'), orderBy('bookingDate', 'desc'));
+        return doc(firestore, 'users', user.uid);
     }, [user, firestore]);
-    const { data: homestayBookings, isLoading: homestayLoading } = useCollection(homestayBookingsQuery);
+
+    const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
 
     const handleSignOut = () => {
         const auth = getAuth();
@@ -219,15 +192,15 @@ export default function MyStaysPage() {
                 </header>
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                     <div className="flex items-center">
-                        <h1 className="text-lg font-semibold md:text-2xl">My Stays</h1>
+                        <h1 className="text-lg font-semibold md:text-2xl">My Profile</h1>
                     </div>
                     <Card>
                         <CardHeader>
-                            <CardTitle>Your Homestay Bookings</CardTitle>
-                            <CardDescription>A list of all your past and present homestay bookings.</CardDescription>
+                            <CardTitle>Your Account Details</CardTitle>
+                            <CardDescription>This is the information associated with your account.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <BookingsTable bookings={homestayBookings} isLoading={homestayLoading} />
+                            <ProfileDetails userProfile={userProfile} isLoading={isProfileLoading} />
                         </CardContent>
                     </Card>
                 </main>

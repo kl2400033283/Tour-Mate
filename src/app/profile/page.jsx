@@ -5,7 +5,7 @@ import { doc, collection, query, orderBy } from 'firebase/firestore';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
-import { Loader2, MapPin, LogOut, LayoutGrid, Bed, UserCheck, Menu, ArrowLeft } from 'lucide-react';
+import { Loader2, MapPin, LogOut, LayoutGrid, Bed, User, UserCheck, Menu, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -27,7 +27,8 @@ function SidebarNav({ isMobile = false }) {
     const navLinks = [
         { href: '/profile', icon: LayoutGrid, label: 'Dashboard' },
         { href: '/my-stays', icon: Bed, label: 'My Stays' },
-        { href: '#', icon: UserCheck, label: 'My Guide Bookings' },
+        { href: '/my-guide-bookings', icon: UserCheck, label: 'My Guide Bookings' },
+        { href: '/my-profile', icon: User, label: 'Profile' },
     ];
 
     return (
