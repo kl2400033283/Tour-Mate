@@ -262,9 +262,13 @@ export default function HireLocalGuidePage() {
              <Button asChild variant="outline">
                 <Link href={`/explore/${citySlug}`}>Back</Link>
             </Button>
-            {user && (
+            {user ? (
                 <Button asChild>
                   <Link href="/profile">Dashboard</Link>
+                </Button>
+            ) : (
+                 <Button asChild>
+                  <Link href={`/login?redirect=${pathname}`}>Login</Link>
                 </Button>
             )}
           </nav>
@@ -283,7 +287,11 @@ export default function HireLocalGuidePage() {
                       <span className="text-xl font-bold tracking-tight">TourMate</span>
                     </Link>
                     <Link href={`/explore/${citySlug}`} className="text-lg">Back to City</Link>
-                    {user && <Link href="/profile" className="text-lg">Dashboard</Link>}
+                    {user ? (
+                        <Link href="/profile" className="text-lg">Dashboard</Link>
+                    ): (
+                        <Link href={`/login?redirect=${pathname}`} className="text-lg">Login</Link>
+                    )}
                   </nav>
                 </SheetContent>
               </Sheet>

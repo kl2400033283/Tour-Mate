@@ -221,10 +221,14 @@ export default function HostDashboardPage() {
     const isLoading = isUserLoading || listingsLoading || bookingsLoading;
     
     const totalListings = listings ? listings.length : 0;
-    const pendingBookings = bookings ? (bookings || []).filter(b => b.status === 'pending').length : 0;
-    const totalEarnings = bookings ? (bookings || [])
-      .filter(b => b.status === 'completed' || b.status === 'approved')
-      .reduce((acc, booking) => acc + (booking.totalPrice || 0), 0) : 0;
+    
+    const pendingBookings = !bookingsLoading && bookings ? 
+        (bookings || []).filter(b => b.status === 'pending').length : 0;
+
+    const totalEarnings = !bookingsLoading && bookings ? 
+        (bookings || [])
+        .filter(b => b.status === 'completed' || b.status === 'approved')
+        .reduce((acc, booking) => acc + (booking.totalPrice || 0), 0) : 0;
 
     if (isUserLoading) {
         return (

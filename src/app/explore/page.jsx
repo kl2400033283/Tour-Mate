@@ -53,7 +53,11 @@ export default function ExplorePage() {
                   <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
                     <Link href="/profile">Dashboard</Link>
                   </Button>
-                ) : null}
+                ) : (
+                   <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
+                    <Link href="/login">Login</Link>
+                  </Button>
+                )}
                 <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
                     <Link href="#">About Us</Link>
                 </Button>
@@ -80,7 +84,9 @@ export default function ExplorePage() {
                         </Link>
                         {user ? (
                           <Link href="/profile" className="text-lg">Dashboard</Link>
-                        ) : null}
+                        ) : (
+                           <Link href="/login" className="text-lg">Login</Link>
+                        )}
                         <Link href="#" className="text-lg">About Us</Link>
                         <Link href="#" className="text-lg">Contact</Link>
                       </nav>
