@@ -184,7 +184,7 @@ export default function ProfilePage() {
                     </Sheet>
                     <Button
                         variant="outline"
-                        onClick={() => router.back()}
+                        onClick={() => router.push('/')}
                         className="flex items-center gap-2"
                     >
                         <ArrowLeft className="h-4 w-4" />
