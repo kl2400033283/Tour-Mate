@@ -24,15 +24,7 @@ import { useEffect } from 'react';
 
 
 function SidebarNav({ isMobile = false }) {
-    const router = useRouter();
     const pathname = usePathname();
-
-    const handleSignOut = () => {
-        const auth = getAuth();
-        signOut(auth).then(() => {
-            window.location.href = '/';
-        });
-    };
 
     const navLinks = [
         { href: '/profile', icon: LayoutGrid, label: 'Dashboard' },
@@ -42,29 +34,21 @@ function SidebarNav({ isMobile = false }) {
     ];
 
     return (
-        <>
-            <nav className={cn("flex flex-col gap-2", isMobile ? "text-lg" : "text-sm font-medium")}>
-                {navLinks.map((link) => (
-                    <Link
-                        key={link.label}
-                        href={link.href}
-                        className={cn(
-                            "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                            pathname === link.href && "text-primary bg-muted"
-                        )}
-                    >
-                        <link.icon className="h-4 w-4" />
-                        {link.label}
-                    </Link>
-                ))}
-            </nav>
-            <div className={cn("mt-auto flex flex-col gap-2", isMobile ? 'pt-6' : 'p-4')}>
-                 <Button variant="ghost" className="w-full justify-start gap-3 rounded-lg px-3 py-2" onClick={handleSignOut}>
-                    <LogOut className={cn("h-4 w-4", { "h-5 w-5": isMobile })} />
-                    Logout
-                </Button>
-            </div>
-        </>
+        <nav className={cn("flex flex-col gap-2", isMobile ? "text-lg" : "text-sm font-medium")}>
+            {navLinks.map((link) => (
+                <Link
+                    key={link.label}
+                    href={link.href}
+                    className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+                        pathname === link.href && "text-primary bg-muted"
+                    )}
+                >
+                    <link.icon className="h-4 w-4" />
+                    {link.label}
+                </Link>
+            ))}
+        </nav>
     );
 }
 
