@@ -43,7 +43,7 @@ import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebas
 import { cn } from '@/lib/utils.js';
 import { collection, query, where, doc, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton.jsx';
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { format } from 'date-fns';
 
 function SidebarNav({ isMobile = false }) {
@@ -133,6 +133,12 @@ export default function GuideEarningsPage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
     const firestore = useFirestore();
+
+     useEffect(() => {
+        if (!isUserLoading && !user) {
+            router.replace('/login?redirect=/guide-earnings');
+        }
+    }, [isUserLoading, user, router]);
 
     const bookingsQuery = useMemoFirebase(() => {
         if (!user || !firestore) return null;

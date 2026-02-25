@@ -49,22 +49,30 @@ export default function LoginPage() {
     if (!isUserLoading && user && !isProfileLoading) {
       if (userProfile) {
         const { role } = userProfile;
-        switch (role) {
-          case 'home stay host':
-            router.push('/host-dashboard');
-            return;
-          case 'tour guide':
-            router.push('/tour-guide-dashboard');
-            return;
-          case 'admin':
-            router.push('/admin-dashboard');
-            return;
-          case 'Tourist':
-          default:
-            router.push(redirect || '/profile');
-            return;
+        let targetDashboard = '/profile';
+        if (redirect) {
+          targetDashboard = redirect;
+        } else {
+            switch (role) {
+              case 'home stay host':
+                targetDashboard = '/host-dashboard';
+                break;
+              case 'tour guide':
+                targetDashboard = '/tour-guide-dashboard';
+                break;
+              case 'admin':
+                targetDashboard = '/admin-dashboard';
+                break;
+              case 'Tourist':
+              default:
+                targetDashboard = '/profile';
+                break;
+            }
         }
+        router.push(targetDashboard);
       } else if (redirect) {
+        // If there's no profile yet, but a redirect is present, go there.
+        // This can happen during the signup flow.
         router.push(redirect);
       }
     }

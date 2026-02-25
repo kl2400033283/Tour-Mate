@@ -37,6 +37,7 @@ import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { cn } from '@/lib/utils.js';
 import { doc } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton.jsx';
+import { useEffect } from 'react';
 
 function SidebarNav({ isMobile = false }) {
     const pathname = usePathname();
@@ -112,6 +113,12 @@ export default function GuideProfilePage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
     const firestore = useFirestore();
+
+    useEffect(() => {
+        if (!isUserLoading && !user) {
+            router.replace('/login?redirect=/guide-profile');
+        }
+    }, [isUserLoading, user, router]);
 
     const userProfileRef = useMemoFirebase(() => {
         if (!user || !firestore) return null;

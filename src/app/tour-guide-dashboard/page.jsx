@@ -34,7 +34,7 @@ import { getAuth, signOut } from 'firebase/auth';
 import { useUser, useFirestore, useCollection, useDoc, useMemoFirebase } from '@/firebase';
 import { cn } from '@/lib/utils.js';
 import { collection, query, where, doc, orderBy } from 'firebase/firestore';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 
 function SidebarNav({ isMobile = false }) {
@@ -122,19 +122,27 @@ export default function TourGuideDashboardPage() {
 
     const isLoading = isUserLoading || isProfileLoading || bookingsLoading;
 
-    const upcomingTours = !bookingsLoading && bookings ? 
-        (bookings || []).filter(b => b.status === 'approved' && new Date(b.tourDate.split('/').reverse().join('-')) >= new Date()) : [];
+    const upcomingTours = useMemo(() => {
+        if (!bookings) return [];
+        return (bookings || []).filter(b => b.status === 'approved' && new Date(b.tourDate.split('/').reverse().join('-')) >= new Date());
+    }, [bookings]);
     
-    const pendingRequests = !bookingsLoading && bookings ? 
-        (bookings || []).filter(b => b.status === 'pending').length : 0;
+    const pendingRequests = useMemo(() => {
+         if (!bookings) return 0;
+        return (bookings || []).filter(b => b.status === 'pending').length;
+    }, [bookings]);
 
-    const totalEarnings = !bookingsLoading && bookings ? 
-        (bookings || [])
-        .filter(b => b.status === 'completed' || b.status === 'approved')
-        .reduce((acc, booking) => acc + (booking.totalPrice || 0), 0) : 0;
+    const totalEarnings = useMemo(() => {
+         if (!bookings) return 0;
+        return (bookings || [])
+            .filter(b => b.status === 'completed' || b.status === 'approved')
+            .reduce((acc, booking) => acc + (booking.totalPrice || 0), 0);
+    }, [bookings]);
 
-    const completedToursCount = !bookingsLoading && bookings ?
-        (bookings || []).filter(b => b.status === 'completed').length : 0;
+    const completedToursCount = useMemo(() => {
+        if (!bookings) return 0;
+        return (bookings || []).filter(b => b.status === 'completed').length;
+    }, [bookings]);
 
     const displayName = userProfile ? `${userProfile.firstName} ${userProfile.lastName}`.trim() : 'Guide';
     
@@ -215,9 +223,8 @@ export default function TourGuideDashboardPage() {
               <CardContent>
                 {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : upcomingTours.length > 0 ? (
                     <div>
-                        <div className="text-lg font-bold">{upcomingTours[0].guideName}</div>
-                        <p className="text-xs text-muted-foreground">Client: {upcomingTours[0].guestName}</p>
-                        <p className="text-xs text-muted-foreground">Date: {upcomingTours[0].tourDate}</p>
+                        <div className="text-lg font-bold">{upcomingTours.length} tour(s) scheduled</div>
+                        <p className="text-xs text-muted-foreground">Next: {upcomingTours[0].city} on {upcomingTours[0].tourDate}</p>
                     </div>
                 ) : (
                     <div className="text-lg font-bold">No upcoming tours</div>

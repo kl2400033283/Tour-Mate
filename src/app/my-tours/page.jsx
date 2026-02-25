@@ -103,7 +103,7 @@ function ToursTable({ bookings, isLoading }) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Tourist</TableHead>
+          <TableHead>Client</TableHead>
           <TableHead>City</TableHead>
           <TableHead className="hidden md:table-cell">Tour Date</TableHead>
           <TableHead className="hidden sm:table-cell">Status</TableHead>

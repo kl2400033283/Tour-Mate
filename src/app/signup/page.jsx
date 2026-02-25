@@ -88,7 +88,7 @@ export default function SignupPage() {
       />
       <div className="absolute inset-0 bg-black/60 -z-10" />
       <div className="min-h-screen w-full flex items-center justify-center p-4">
-        <Card className="mx-auto max-w-sm w-full bg-white/10 backdrop-blur-md text-primary-foreground border-white/20 shadow-2xl">
+        <Card className="mx-auto max-w-md w-full bg-white/10 backdrop-blur-md text-primary-foreground border-white/20 shadow-2xl">
             <CardHeader className="text-center space-y-4">
                 <Link href="/" className="inline-block">
                     <MapPin className="h-12 w-12 mx-auto text-white" />
@@ -241,7 +241,10 @@ export default function SignupPage() {
             </CardContent>
             <CardFooter className="justify-center">
               <div className="text-center text-sm text-white/80">
-                Already have an account? Please return to the homepage to log in.
+                Already have an account?{' '}
+                <Link href="/login" className="underline text-white hover:font-bold">
+                  Login
+                </Link>
               </div>
             </CardFooter>
         </Card>
