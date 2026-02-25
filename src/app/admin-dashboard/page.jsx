@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, LayoutGrid, ArrowLeft } from 'lucide-react';
+import { MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, LayoutGrid, ArrowLeft, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -9,7 +9,7 @@ import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@
 import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
 import { useEffect, useMemo } from 'react';
-import { doc, collection } from 'firebase/firestore';
+import { doc, collection, collectionGroup } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
@@ -21,6 +21,7 @@ function SidebarNav({ isMobile = false }) {
     { href: '/manage-users', label: 'Manage Users', icon: Users },
     { href: '/manage-homestays', label: 'Manage Homestays', icon: Home },
     { href: '/manage-guides', label: 'Manage Guides', icon: Compass },
+    { href: '/manage-bookings', label: 'Manage Bookings', icon: Briefcase },
     { href: '/reports', label: 'Reports', icon: BarChart2 },
   ];
 
@@ -81,22 +82,44 @@ export default function AdminDashboardPage() {
 
   const allHomestaysQuery = useMemoFirebase(() => firestore ? collection(firestore, 'homestays') : null, [firestore]);
   const { data: allHomestays, isLoading: isAllHomestaysLoading } = useCollection(allHomestaysQuery);
+
+  const homestayBookingsQuery = useMemoFirebase(() => firestore ? collectionGroup(firestore, 'homestayBookings') : null, [firestore]);
+  const { data: allHomestayBookings, isLoading: homestayBookingsLoading } = useCollection(homestayBookingsQuery);
+
+  const guideBookingsQuery = useMemoFirebase(() => firestore ? collectionGroup(firestore, 'guideBookings') : null, [firestore]);
+  const { data: allGuideBookings, isLoading: guideBookingsLoading } = useCollection(guideBookingsQuery);
   
   const stats = useMemo(() => {
-    if (!allUsers) {
+    if (!allUsers || !allHomestays) {
       return {
         tourists: 0,
         hosts: 0,
         guides: 0,
+        pendingHomestays: 0,
+        pendingGuides: 0,
       };
     }
 
     const tourists = allUsers.filter(u => u.role === 'Tourist').length;
     const hosts = allUsers.filter(u => u.role === 'home stay host').length;
     const guides = allUsers.filter(u => u.role === 'tour guide').length;
+    const pendingGuides = allUsers.filter(u => u.role === 'tour guide' && u.status === 'pending_verification').length;
+    const pendingHomestays = allHomestays.filter(h => h.status === 'pending_approval').length;
 
-    return { tourists, hosts, guides };
-  }, [allUsers]);
+    return { tourists, hosts, guides, pendingHomestays, pendingGuides };
+  }, [allUsers, allHomestays]);
+  
+  const { totalBookings, activeBookings, completedBookings } = useMemo(() => {
+    if(!allHomestayBookings || !allGuideBookings) return {totalBookings: 0, activeBookings: 0, completedBookings: 0};
+    
+    const allBookings = [...allHomestayBookings, ...allGuideBookings];
+    const total = allBookings.length;
+    const active = allBookings.filter(b => b.status === 'approved').length;
+    const completed = allBookings.filter(b => b.status === 'completed').length;
+    
+    return {totalBookings: total, activeBookings: active, completedBookings: completed};
+
+  }, [allHomestayBookings, allGuideBookings]);
   
 
   useEffect(() => {
@@ -135,7 +158,7 @@ export default function AdminDashboardPage() {
     });
   };
 
-  const dashboardIsLoading = isUserLoading || isProfileLoading || isAllUsersLoading || isAllHomestaysLoading;
+  const dashboardIsLoading = isUserLoading || isProfileLoading || isAllUsersLoading || isAllHomestaysLoading || homestayBookingsLoading || guideBookingsLoading;
 
   if (dashboardIsLoading || !userProfile || userProfile.role !== 'admin') {
     return <div className="h-screen w-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
@@ -144,10 +167,6 @@ export default function AdminDashboardPage() {
   const totalUsers = allUsers?.length || 0;
   const totalHomestays = allHomestays?.length || 0;
   const totalGuides = stats.guides;
-  // Placeholder for bookings as it requires complex aggregation
-  const totalBookings = "96";
-  const activeBookings = "12";
-  const completedBookings = "84";
 
 
   return (
@@ -221,14 +240,14 @@ export default function AdminDashboardPage() {
             <StatCard 
               title="Homestay Listings" 
               value={totalHomestays} 
-              description="5 Pending Approval" // Placeholder
+              description={`${stats.pendingHomestays} Pending Approval`}
               icon={Home}
               isLoading={dashboardIsLoading} 
             />
             <StatCard 
               title="Local Guides" 
               value={totalGuides} 
-              description="2 Pending Verification" // Placeholder
+              description={`${stats.pendingGuides} Pending Verification`}
               icon={Compass}
               isLoading={dashboardIsLoading} 
             />
@@ -237,7 +256,7 @@ export default function AdminDashboardPage() {
               value={totalBookings}
               description={`${activeBookings} Active, ${completedBookings} Completed`}
               icon={Briefcase}
-              isLoading={dashboardIsLoading} // Assuming this is also loading dependent
+              isLoading={dashboardIsLoading}
             />
           </div>
         </main>

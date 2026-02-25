@@ -2,12 +2,12 @@
 
 import Link from 'next/link';
 import {
-    MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, LayoutGrid, ArrowLeft, MoreHorizontal
+    MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, LayoutGrid, ArrowLeft, MoreHorizontal, Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase, updateDocumentNonBlocking, useToast } from '@/firebase';
 import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
 import { useEffect, useMemo } from 'react';
@@ -42,6 +42,7 @@ function SidebarNav({ isMobile = false }) {
     { href: '/manage-users', label: 'Manage Users', icon: Users },
     { href: '/manage-homestays', label: 'Manage Homestays', icon: Home },
     { href: '/manage-guides', label: 'Manage Guides', icon: Compass },
+    { href: '/manage-bookings', label: 'Manage Bookings', icon: Briefcase },
     { href: '/reports', label: 'Reports', icon: BarChart2 },
   ];
 
@@ -64,7 +65,7 @@ function SidebarNav({ isMobile = false }) {
   );
 }
 
-function GuidesTable({ guides, isLoading }) {
+function GuidesTable({ guides, isLoading, onUpdateStatus }) {
   if (isLoading) {
     return (
       <div className="space-y-4 p-4">
@@ -93,9 +94,9 @@ function GuidesTable({ guides, isLoading }) {
             <span className="sr-only">Avatar</span>
           </TableHead>
           <TableHead>Name</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead className="hidden md:table-cell">Email</TableHead>
+          <TableHead>Email</TableHead>
           <TableHead className="hidden md:table-cell">Phone</TableHead>
+          <TableHead className="hidden md:table-cell">Status</TableHead>
           <TableHead>
             <span className="sr-only">Actions</span>
           </TableHead>
@@ -111,11 +112,21 @@ function GuidesTable({ guides, isLoading }) {
                 </Avatar>
             </TableCell>
             <TableCell className="font-medium">{user.firstName} {user.lastName}</TableCell>
-            <TableCell>
-              <Badge variant="outline" className="capitalize">{user.role}</Badge>
-            </TableCell>
-            <TableCell className="hidden md:table-cell">{user.email}</TableCell>
+            <TableCell>{user.email}</TableCell>
             <TableCell className="hidden md:table-cell">{user.phoneNumber}</TableCell>
+            <TableCell className="hidden md:table-cell">
+              <Badge variant={
+                user.status === 'active' ? 'default' 
+                : user.status === 'pending_verification' ? 'secondary'
+                : 'destructive'
+              } className={cn('capitalize', {
+                'bg-green-500/20 text-green-700 border-green-500/30': user.status === 'active',
+                'bg-yellow-500/20 text-yellow-700 border-yellow-500/30': user.status === 'pending_verification',
+                'bg-red-500/20 text-red-700 border-red-500/30': user.status === 'suspended' || user.status === 'rejected',
+              })}>
+                {user.status?.replace('_', ' ')}
+              </Badge>
+            </TableCell>
             <TableCell>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -126,9 +137,9 @@ function GuidesTable({ guides, isLoading }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>View Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Suspend</DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                  {user.status === 'pending_verification' && <DropdownMenuItem onClick={() => onUpdateStatus(user.uid, 'active')}>Approve</DropdownMenuItem>}
+                  {user.status === 'active' && <DropdownMenuItem className="text-destructive" onClick={() => onUpdateStatus(user.uid, 'suspended')}>Suspend</DropdownMenuItem>}
+                  {user.status === 'suspended' && <DropdownMenuItem onClick={() => onUpdateStatus(user.uid, 'active')}>Re-activate</DropdownMenuItem>}
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
@@ -144,6 +155,7 @@ export default function ManageGuidesPage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
+  const { toast } = useToast();
 
   const userProfileRef = useMemoFirebase(() => {
     if (!user || !firestore) return null;
@@ -185,6 +197,16 @@ export default function ManageGuidesPage() {
       if (!allUsers) return [];
       return allUsers.filter(u => u.role === 'tour guide');
   }, [allUsers]);
+
+  const handleUpdateUserStatus = (uid, status) => {
+    if (!firestore) return;
+    const userRef = doc(firestore, 'users', uid);
+    updateDocumentNonBlocking(userRef, { status });
+    toast({
+        title: "Guide Status Updated",
+        description: `Guide status has been set to ${status}.`,
+    });
+  };
 
   const handleSignOut = () => {
     const auth = getAuth();
@@ -265,7 +287,7 @@ export default function ManageGuidesPage() {
                 <CardDescription>A list of all tour guides registered in the system.</CardDescription>
             </CardHeader>
             <CardContent>
-                <GuidesTable guides={allGuides} isLoading={isAllUsersLoading} />
+                <GuidesTable guides={allGuides} isLoading={isAllUsersLoading} onUpdateStatus={handleUpdateUserStatus} />
             </CardContent>
           </Card>
         </main>

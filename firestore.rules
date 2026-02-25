@@ -1,16 +1,16 @@
 /**
- * Core Philosophy: This ruleset provides a public, read-only interface for browsing cities and homestays, while also securing user-specific data. The primary goal is to allow any user to view public data, but restrict writes and user profile access to authenticated owners.
+ * Core Philosophy: This ruleset provides a public, read-only interface for browsing cities, while securing user and homestay data. The primary goal is to allow any user to view public data, but restrict writes and user profile access to authenticated owners or admins.
  *
  * Data Structure: The data is organized into three independent, top-level collections:
  *   - /cities/{cityId}: Publicly readable city information.
- *   - /homestays/{homestayId}: Publicly readable homestay listings.
- *   - /users/{userId}: Private user profile data, accessible only by the owner, with subcollections for bookings.
+ *   - /homestays/{homestayId}: Publicly readable, but only writable by owners or admins.
+ *   - /users/{userId}: Private user profile data, accessible only by the owner or admin, with subcollections for bookings.
  *
  * Key Security Decisions:
  * - Public Read Access: `/cities` and `/homestays` are public for read operations (`get`, `list`).
- * - User-Owned Profiles & Data: In the `/users` collection, users can only create, read, and update their own document, identified by their UID. This is enforced using the `isOwner` function. This ownership extends to subcollections like `homestayBookings`, `receivedHomestayBookings`, `guideBookings`, and `receivedGuideBookings`.
- * - Admin Access: Users with the 'admin' role are granted list access to the `/users` collection to manage platform users.
- * - All Other Writes Disabled: Public collections are read-only. Users cannot delete their profiles.
+ * - Owner/Admin Writes: `/homestays` and `/users` can be updated by the document owner or an admin.
+ * - Admin Collection Group Reads: Admins have read access to all booking-related collection groups for platform-wide monitoring.
+ * - All Other Writes Disabled: Public collections are read-only for non-owners/admins. Users cannot delete their profiles.
  */
 rules_version = '2';
 service cloud.firestore {
@@ -26,68 +26,60 @@ service cloud.firestore {
       return request.auth.uid == userId;
     }
 
+    // Helper function to check if the user has an 'admin' role.
+    function isAdmin() {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
     /**
      * @description Allows public, read-only access to city information.
      * @path        /cities/{cityId}
      */
     match /cities/{cityId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow write: if false;
     }
 
     /**
-     * @description Allows public, read-only access to homestay listings.
+     * @description Allows public read access. Creation is restricted to hosts. Updates by host or admin. Deletion by admin only.
      * @path        /homestays/{homestayId}
      */
     match /homestays/{homestayId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if isSignedIn() && request.resource.data.hostId == request.auth.uid;
+      allow update: if (isSignedIn() && resource.data.hostId == request.auth.uid) || isAdmin();
+      allow delete: if isAdmin();
     }
 
     /**
      * @description Secures user profile data and their subcollections.
      * @path        /users/{userId}
-     * @allow       create, get, update: If the user is signed in and is the owner of the document.
-     * @allow       list: For admin users to manage platform users.
-     * @deny        delete: For all users to protect privacy and prevent data loss.
      */
     match /users/{userId} {
-      allow create, get, update: if isSignedIn() && isOwner(userId);
-      allow list: if isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow create, get: if isSignedIn() && isOwner(userId);
+      allow update: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
       allow delete: if false;
 
-      /**
-       * @description Secures a user's (tourist's) own homestay bookings.
-       * @path        /users/{userId}/homestayBookings/{bookingId}
-       */
-      match /homestayBookings/{bookingId} {
-        allow read, write: if isSignedIn() && isOwner(userId);
-      }
+      // Subcollections remain user-owned for writes, but readable by admins via collection group queries.
+      match /homestayBookings/{bookingId} { allow read, write: if isSignedIn() && isOwner(userId); }
+      match /receivedHomestayBookings/{bookingId} { allow read, write: if isSignedIn() && isOwner(userId); }
+      match /guideBookings/{bookingId} { allow read, write: if isSignedIn() && isOwner(userId); }
+      match /receivedGuideBookings/{bookingId} { allow read, write: if isSignedIn() && isOwner(userId); }
+    }
 
-      /**
-       * @description Secures a host's received homestay bookings.
-       * @path        /users/{userId}/receivedHomestayBookings/{bookingId}
-       */
-      match /receivedHomestayBookings/{bookingId} {
-        allow read, write: if isSignedIn() && isOwner(userId);
-      }
-
-      /**
-       * @description Secures a user's guide bookings. The single-segment wildcard `{bookingId}` ensures
-       *              that the rule applies to any document within the `guideBookings` collection.
-       * @path        /users/{userId}/guideBookings/{bookingId}
-       */
-      match /guideBookings/{bookingId} {
-        allow read, write: if isSignedIn() && isOwner(userId);
-      }
-      
-      /**
-       * @description Secures a guide's received tour bookings.
-       * @path        /users/{userId}/receivedGuideBookings/{bookingId}
-       */
-      match /receivedGuideBookings/{bookingId} {
-        allow read, write: if isSignedIn() && isOwner(userId);
-      }
+    // --- COLLECTION GROUP RULES FOR ADMINS ---
+    match /{path=**}/homestayBookings/{bookingId} {
+      allow read: if isAdmin();
+    }
+    match /{path=**}/receivedHomestayBookings/{bookingId} {
+      allow read: if isAdmin();
+    }
+    match /{path=**}/guideBookings/{bookingId} {
+      allow read: if isAdmin();
+    }
+    match /{path=**}/receivedGuideBookings/{bookingId} {
+      allow read: if isAdmin();
     }
   }
 }

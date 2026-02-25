@@ -1,9 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-    MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, LayoutGrid, ArrowLeft, MoreHorizontal, DollarSign, LineChart, Briefcase
-} from 'lucide-react';
+import { MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, Briefcase, LayoutGrid, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -11,10 +9,13 @@ import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@
 import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
 import { useEffect, useMemo } from 'react';
-import { doc, collection } from 'firebase/firestore';
+import { doc, collection, collectionGroup, query, orderBy } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 function SidebarNav({ isMobile = false }) {
@@ -48,50 +49,60 @@ function SidebarNav({ isMobile = false }) {
   );
 }
 
-const chartData = [
-  { month: "Jan", bookings: 12, revenue: 24000 },
-  { month: "Feb", bookings: 19, revenue: 38000 },
-  { month: "Mar", bookings: 15, revenue: 30000 },
-  { month: "Apr", bookings: 22, revenue: 44000 },
-  { month: "May", bookings: 25, revenue: 50000 },
-  { month: "Jun", bookings: 18, revenue: 36000 },
-];
+function BookingsTable({ bookings, isLoading }) {
+  if (isLoading) {
+    return (
+      <div className="space-y-4 p-4">
+        {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+      </div>
+    );
+  }
 
-function BookingsChart() {
+  if (!bookings || bookings.length === 0) {
+      return <p className="p-4 text-center text-muted-foreground">No bookings found.</p>;
+  }
+
   return (
-    <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={chartData}>
-        <XAxis
-          dataKey="month"
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-        />
-        <YAxis
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-          tickFormatter={(value) => `₹${value / 1000}k`}
-        />
-        <Tooltip
-          cursor={{ fill: 'hsl(var(--muted))' }}
-          contentStyle={{ 
-            backgroundColor: 'hsl(var(--background))',
-            borderColor: 'hsl(var(--border))',
-          }}
-        />
-        <Legend />
-        <Bar dataKey="revenue" name="Revenue" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-        <Bar dataKey="bookings" name="Bookings" fill="hsl(var(--accent))" radius={[4, 4, 0, 0]} />
-      </BarChart>
-    </ResponsiveContainer>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Guest</TableHead>
+          <TableHead>Item</TableHead>
+          <TableHead>Dates / Tour Date</TableHead>
+          <TableHead>Price</TableHead>
+          <TableHead>Status</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {bookings?.map((booking) => (
+          <TableRow key={booking.id}>
+            <TableCell>{booking.guestName}</TableCell>
+            <TableCell className="font-medium">{booking.homestayName || booking.guideName}</TableCell>
+            <TableCell>{booking.checkInDate ? `${booking.checkInDate} - ${booking.checkOutDate}` : booking.tourDate}</TableCell>
+            <TableCell>₹{booking.totalPrice?.toLocaleString()}</TableCell>
+            <TableCell>
+              <Badge variant={
+                  booking.status === 'approved' ? 'default' 
+                  : booking.status === 'pending' ? 'secondary'
+                  : booking.status === 'completed' ? 'outline'
+                  : 'destructive'
+              } className={cn({
+                  'bg-green-500/20 text-green-700 border-green-500/30': booking.status === 'approved',
+                  'bg-yellow-500/20 text-yellow-700 border-yellow-500/30': booking.status === 'pending',
+                  'bg-blue-500/20 text-blue-700 border-blue-500/30': booking.status === 'completed',
+                  'bg-red-500/20 text-red-700 border-red-500/30': booking.status === 'declined',
+              })}>
+                {booking.status}
+              </Badge>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
 
-
-export default function ReportsPage() {
+export default function ManageBookingsPage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
@@ -107,28 +118,26 @@ export default function ReportsPage() {
     if (isLoading) return;
 
     if (!user) {
-      router.replace('/login?redirect=/reports');
+      router.replace('/login?redirect=/manage-bookings');
       return;
     }
 
     if (userProfile && userProfile.role !== 'admin') {
-      switch (userProfile.role) {
-        case 'home stay host':
-          router.replace('/host-dashboard');
-          break;
-        case 'tour guide':
-          router.replace('/tour-guide-dashboard');
-          break;
-        case 'Tourist':
-          router.replace('/profile');
-          break;
-        default:
-          router.replace('/');
-          break;
-      }
+      router.replace('/');
     }
   }, [user, isUserLoading, userProfile, isProfileLoading, router]);
 
+  const homestayBookingsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collectionGroup(firestore, 'homestayBookings'), orderBy('bookingDate', 'desc'));
+  }, [firestore]);
+  const { data: allHomestayBookings, isLoading: isHomestayBookingsLoading } = useCollection(homestayBookingsQuery);
+  
+  const guideBookingsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collectionGroup(firestore, 'guideBookings'), orderBy('bookingDate', 'desc'));
+  }, [firestore]);
+  const { data: allGuideBookings, isLoading: isGuideBookingsLoading } = useCollection(guideBookingsQuery);
 
   const handleSignOut = () => {
     const auth = getAuth();
@@ -162,11 +171,7 @@ export default function ReportsPage() {
         <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
           <Sheet>
             <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="shrink-0 md:hidden"
-              >
+              <Button variant="outline" size="icon" className="shrink-0 md:hidden">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
@@ -183,11 +188,7 @@ export default function ReportsPage() {
                 </div>
             </SheetContent>
           </Sheet>
-           <Button
-              variant="outline"
-              onClick={() => router.push('/')}
-              className="flex items-center gap-2"
-          >
+           <Button variant="outline" onClick={() => router.push('/')} className="flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back to Home
           </Button>
@@ -198,62 +199,29 @@ export default function ReportsPage() {
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
           <div className="mb-4">
-            <h1 className="text-3xl font-bold tracking-tight">Reports & Analytics</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Manage Bookings</h1>
             <p className="text-muted-foreground mt-1">
-              Visualize platform performance and growth.
+              View all homestay and tour guide bookings across the platform.
             </p>
           </div>
-          
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">₹4,52,318</div>
-                <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">New Users</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+235</div>
-                <p className="text-xs text-muted-foreground">+18.1% from last month</p>
-              </CardContent>
-            </Card>
-             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">New Bookings</CardTitle>
-                <LineChart className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+12,234</div>
-                <p className="text-xs text-muted-foreground">+19% from last month</p>
-              </CardContent>
-            </Card>
-             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">New Listings</CardTitle>
-                <Home className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+573</div>
-                <p className="text-xs text-muted-foreground">+5% from last month</p>
-              </CardContent>
-            </Card>
-          </div>
-
           <Card>
             <CardHeader>
-                <CardTitle>Bookings Overview</CardTitle>
-                <CardDescription>Monthly bookings and revenue analysis.</CardDescription>
+                <CardTitle>All Bookings</CardTitle>
+                <CardDescription>A list of all bookings made in the system.</CardDescription>
             </CardHeader>
             <CardContent>
-                <BookingsChart />
+              <Tabs defaultValue="homestays">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="homestays">Homestay Bookings</TabsTrigger>
+                  <TabsTrigger value="guides">Guide Bookings</TabsTrigger>
+                </TabsList>
+                <TabsContent value="homestays">
+                  <BookingsTable bookings={allHomestayBookings} isLoading={isHomestayBookingsLoading} />
+                </TabsContent>
+                <TabsContent value="guides">
+                  <BookingsTable bookings={allGuideBookings} isLoading={isGuideBookingsLoading} />
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </main>

@@ -46,9 +46,11 @@ export function RoleSelectionDialog({ open, onOpenChange, signupData }) {
     setIsLoading(true);
     const userDocRef = doc(firestore, 'users', user.uid);
     
-    const nameParts = signupData.fullName.split(' ').filter(Boolean);
+    const nameParts = signupData.fullName.trim().split(' ').filter(Boolean);
     const firstName = nameParts.shift() || '';
     const lastName = nameParts.join(' ') || '';
+
+    const initialStatus = ['home stay host', 'tour guide'].includes(selectedRole) ? 'pending_verification' : 'active';
 
     const profileData = {
       uid: user.uid,
@@ -57,6 +59,7 @@ export function RoleSelectionDialog({ open, onOpenChange, signupData }) {
       lastName: lastName,
       phoneNumber: `${signupData.countryCode}${signupData.phoneNumber}`,
       role: selectedRole,
+      status: initialStatus,
     };
 
     setDoc(userDocRef, profileData, { merge: true })

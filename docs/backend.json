@@ -107,6 +107,15 @@
         "isAvailable": {
           "type": "boolean",
           "description": "A flag indicating whether the homestay is currently available for listing or booking."
+        },
+        "status": {
+          "type": "string",
+          "description": "The moderation status of the homestay listing.",
+          "enum": [
+            "pending_approval",
+            "approved",
+            "rejected"
+          ]
         }
       },
       "required": [
@@ -117,7 +126,8 @@
         "description",
         "address",
         "pricePerNight",
-        "isAvailable"
+        "isAvailable",
+        "status"
       ]
     },
     "UserProfile": {
@@ -156,6 +166,16 @@
             "tour guide",
             "admin"
           ]
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the user account, used for moderation and verification.",
+          "enum": [
+            "active",
+            "pending_verification",
+            "suspended",
+            "rejected"
+          ]
         }
       },
       "required": [
@@ -164,7 +184,8 @@
         "role",
         "firstName",
         "lastName",
-        "phoneNumber"
+        "phoneNumber",
+        "status"
       ]
     },
     "HomestayBooking": {

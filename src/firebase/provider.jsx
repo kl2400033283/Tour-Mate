@@ -16,8 +16,8 @@ export const FirebaseProvider = ({
   auth,
 }) => {
   const [userAuthState, setUserAuthState] = useState({
-    user: null,
-    isUserLoading: true, // Start loading until first auth event
+    user: undefined, // Use undefined to indicate initial state
+    isUserLoading: true,
     userError: null,
   });
 
@@ -27,7 +27,11 @@ export const FirebaseProvider = ({
       return;
     }
 
-    setUserAuthState({ user: null, isUserLoading: true, userError: null });
+    // Don't reset to loading on re-renders unless auth service changes
+    // This prevents flickering on navigation
+    if (userAuthState.user === undefined) {
+      setUserAuthState(prev => ({ ...prev, isUserLoading: true }));
+    }
 
     const unsubscribe = onAuthStateChanged(
       auth,
@@ -111,7 +115,9 @@ export function useMemoFirebase(factory, deps) {
   const memoized = useMemo(factory, deps);
   
   if(typeof memoized !== 'object' || memoized === null) return memoized;
-  memoized.__memo = true;
+  if(memoized) {
+    memoized.__memo = true;
+  }
   
   return memoized;
 }

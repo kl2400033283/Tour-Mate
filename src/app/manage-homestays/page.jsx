@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-    MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, MoreHorizontal, ArrowLeft, LayoutGrid
+    MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, MoreHorizontal, ArrowLeft, LayoutGrid, Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase, updateDocumentNonBlocking, useToast } from '@/firebase';
 import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
 import { useEffect, useMemo } from 'react';
@@ -42,6 +42,7 @@ function SidebarNav({ isMobile = false }) {
     { href: '/manage-users', label: 'Manage Users', icon: Users },
     { href: '/manage-homestays', label: 'Manage Homestays', icon: Home },
     { href: '/manage-guides', label: 'Manage Guides', icon: Compass },
+    { href: '/manage-bookings', label: 'Manage Bookings', icon: Briefcase },
     { href: '/reports', label: 'Reports', icon: BarChart2 },
   ];
 
@@ -64,7 +65,7 @@ function SidebarNav({ isMobile = false }) {
   );
 }
 
-function HomestaysTable({ homestays, users, isLoading }) {
+function HomestaysTable({ homestays, users, isLoading, onUpdateStatus }) {
   if (isLoading) {
     return (
       <div className="space-y-4 p-4">
@@ -126,8 +127,16 @@ function HomestaysTable({ homestays, users, isLoading }) {
               <TableCell>{hostName}</TableCell>
               <TableCell className="hidden md:table-cell">₹{homestay.pricePerNight?.toLocaleString()}</TableCell>
               <TableCell>
-                <Badge variant={homestay.isAvailable ? 'outline' : 'secondary'}>
-                  {homestay.isAvailable ? 'Available' : 'Unavailable'}
+                <Badge variant={
+                  homestay.status === 'approved' ? 'default' 
+                  : homestay.status === 'pending_approval' ? 'secondary'
+                  : 'destructive'
+                } className={cn('capitalize', {
+                  'bg-green-500/20 text-green-700 border-green-500/30': homestay.status === 'approved',
+                  'bg-yellow-500/20 text-yellow-700 border-yellow-500/30': homestay.status === 'pending_approval',
+                  'bg-red-500/20 text-red-700 border-red-500/30': homestay.status === 'rejected',
+                })}>
+                  {homestay.status?.replace('_', ' ')}
                 </Badge>
               </TableCell>
               <TableCell>
@@ -140,9 +149,14 @@ function HomestaysTable({ homestays, users, isLoading }) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>View</DropdownMenuItem>
-                    <DropdownMenuItem>Suspend</DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                    {homestay.status === 'pending_approval' && (
+                      <>
+                        <DropdownMenuItem onClick={() => onUpdateStatus(homestay.id, 'approved')}>Approve</DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive" onClick={() => onUpdateStatus(homestay.id, 'rejected')}>Reject</DropdownMenuItem>
+                      </>
+                    )}
+                    {homestay.status === 'approved' && <DropdownMenuItem className="text-destructive" onClick={() => onUpdateStatus(homestay.id, 'rejected')}>Suspend Listing</DropdownMenuItem>}
+                    <DropdownMenuItem>View Details</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
@@ -159,6 +173,7 @@ export default function ManageHomestaysPage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
+  const { toast } = useToast();
 
   const userProfileRef = useMemoFirebase(() => {
     if (!user || !firestore) return null;
@@ -198,6 +213,16 @@ export default function ManageHomestaysPage() {
   
   const allUsersQuery = useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]);
   const { data: allUsers, isLoading: isAllUsersLoading } = useCollection(allUsersQuery);
+
+  const handleUpdateHomestayStatus = (homestayId, status) => {
+    if (!firestore) return;
+    const homestayRef = doc(firestore, 'homestays', homestayId);
+    updateDocumentNonBlocking(homestayRef, { status });
+    toast({
+      title: "Homestay Status Updated",
+      description: `Homestay has been ${status}.`
+    });
+  };
 
   const handleSignOut = () => {
     const auth = getAuth();
@@ -278,7 +303,7 @@ export default function ManageHomestaysPage() {
                 <CardDescription>A list of all homestays in the system.</CardDescription>
             </CardHeader>
             <CardContent>
-                <HomestaysTable homestays={allHomestays} users={allUsers} isLoading={isAllHomestaysLoading || isAllUsersLoading} />
+                <HomestaysTable homestays={allHomestays} users={allUsers} isLoading={isAllHomestaysLoading || isAllUsersLoading} onUpdateStatus={handleUpdateHomestayStatus} />
             </CardContent>
           </Card>
         </main>

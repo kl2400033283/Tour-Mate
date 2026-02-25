@@ -7,7 +7,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase, updateDocumentNonBlocking, useToast } from '@/firebase';
 import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
 import { useEffect, useMemo } from 'react';
@@ -42,6 +42,7 @@ function SidebarNav({ isMobile = false }) {
     { href: '/manage-users', label: 'Manage Users', icon: Users },
     { href: '/manage-homestays', label: 'Manage Homestays', icon: Home },
     { href: '/manage-guides', label: 'Manage Guides', icon: Compass },
+    { href: '/manage-bookings', label: 'Manage Bookings', icon: Briefcase },
     { href: '/reports', label: 'Reports', icon: BarChart2 },
   ];
 
@@ -64,7 +65,7 @@ function SidebarNav({ isMobile = false }) {
   );
 }
 
-function UsersTable({ users, isLoading }) {
+function UsersTable({ users, isLoading, onUpdateStatus }) {
   if (isLoading) {
     return (
       <div className="space-y-4 p-4">
@@ -91,7 +92,7 @@ function UsersTable({ users, isLoading }) {
           <TableHead>Name</TableHead>
           <TableHead>Role</TableHead>
           <TableHead className="hidden md:table-cell">Email</TableHead>
-          <TableHead className="hidden md:table-cell">Phone</TableHead>
+          <TableHead>Status</TableHead>
           <TableHead>
             <span className="sr-only">Actions</span>
           </TableHead>
@@ -111,7 +112,19 @@ function UsersTable({ users, isLoading }) {
               <Badge variant="outline" className="capitalize">{user.role}</Badge>
             </TableCell>
             <TableCell className="hidden md:table-cell">{user.email}</TableCell>
-            <TableCell className="hidden md:table-cell">{user.phoneNumber}</TableCell>
+            <TableCell>
+              <Badge variant={
+                user.status === 'active' ? 'default' 
+                : user.status === 'pending_verification' ? 'secondary'
+                : 'destructive'
+              } className={cn('capitalize', {
+                'bg-green-500/20 text-green-700 border-green-500/30': user.status === 'active',
+                'bg-yellow-500/20 text-yellow-700 border-yellow-500/30': user.status === 'pending_verification',
+                'bg-red-500/20 text-red-700 border-red-500/30': user.status === 'suspended' || user.status === 'rejected',
+              })}>
+                {user.status?.replace('_', ' ')}
+              </Badge>
+            </TableCell>
             <TableCell>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -122,8 +135,9 @@ function UsersTable({ users, isLoading }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                  {user.status === 'pending_verification' && <DropdownMenuItem onClick={() => onUpdateStatus(user.uid, 'active')}>Approve</DropdownMenuItem>}
+                  {user.status === 'active' && <DropdownMenuItem className="text-destructive" onClick={() => onUpdateStatus(user.uid, 'suspended')}>Suspend</DropdownMenuItem>}
+                  {user.status === 'suspended' && <DropdownMenuItem onClick={() => onUpdateStatus(user.uid, 'active')}>Re-activate</DropdownMenuItem>}
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
@@ -139,6 +153,7 @@ export default function ManageUsersPage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
+  const { toast } = useToast();
 
   const userProfileRef = useMemoFirebase(() => {
     if (!user || !firestore) return null;
@@ -175,6 +190,16 @@ export default function ManageUsersPage() {
 
   const allUsersQuery = useMemoFirebase(() => firestore ? collection(firestore, 'users') : null, [firestore]);
   const { data: allUsers, isLoading: isAllUsersLoading } = useCollection(allUsersQuery);
+
+  const handleUpdateUserStatus = (uid, status) => {
+    if (!firestore) return;
+    const userRef = doc(firestore, 'users', uid);
+    updateDocumentNonBlocking(userRef, { status });
+    toast({
+        title: "User Updated",
+        description: `User status has been set to ${status}.`,
+    });
+  };
 
   const handleSignOut = () => {
     const auth = getAuth();
@@ -255,7 +280,7 @@ export default function ManageUsersPage() {
                 <CardDescription>A list of all users in the system.</CardDescription>
             </CardHeader>
             <CardContent>
-                <UsersTable users={allUsers} isLoading={isAllUsersLoading} />
+                <UsersTable users={allUsers} isLoading={isAllUsersLoading} onUpdateStatus={handleUpdateUserStatus} />
             </CardContent>
           </Card>
         </main>
