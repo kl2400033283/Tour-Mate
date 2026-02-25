@@ -64,7 +64,7 @@ export default function Page() {
       />
       <div className="absolute inset-0 bg-black/50" />
       <div className="relative z-10 flex h-full flex-col">
-        <header className="p-4 border-b border-white/10">
+        <header className="p-4">
           <div className="container mx-auto flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3 group">
               <div className="relative h-10 w-10 overflow-hidden rounded-lg shadow-lg ring-2 ring-white/20 transition-all group-hover:ring-primary/50">

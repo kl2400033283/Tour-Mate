@@ -283,7 +283,7 @@ export default function HireLocalGuidePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-muted/20 text-gray-800">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-hidden">
+      <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-hidden">
         <div className="absolute inset-0 opacity-5 pointer-events-none">
           <Image 
             src="https://picsum.photos/seed/india-strip-2/1200/100" 
@@ -439,7 +439,7 @@ export default function HireLocalGuidePage() {
         )}
       </main>
 
-      <footer className="border-t mt-16 bg-background">
+      <footer className="mt-16 bg-background">
         <div className="container mx-auto text-center py-6 text-muted-foreground text-sm">
             <p>&copy; {new Date().getFullYear()} TourMate. All Rights Reserved.</p>
         </div>

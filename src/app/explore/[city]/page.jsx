@@ -105,7 +105,7 @@ export default function CityPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
         
-        <header className="absolute top-0 left-0 right-0 z-20 p-4 border-b border-white/10">
+        <header className="absolute top-0 left-0 right-0 z-20 p-4">
           <div className="container mx-auto flex items-center justify-between">
             <div className='flex items-center gap-4'>
               <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 hover:text-white" onClick={() => router.push('/explore')}>

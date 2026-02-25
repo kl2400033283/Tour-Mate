@@ -126,7 +126,7 @@ export default function ProfilePage() {
         <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
             <aside className="hidden border-r bg-card md:block">
                 <div className="flex h-full max-h-screen flex-col">
-                    <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+                    <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
                         <Link href="/" className="flex items-center gap-3 group">
                           <div className="relative h-8 w-8 overflow-hidden rounded shadow-sm ring-1 ring-primary/20">
                             <Image src="https://picsum.photos/seed/india-tourist/100/100" alt="India" fill className="object-cover" data-ai-hint="india landmark" />
@@ -148,7 +148,7 @@ export default function ProfilePage() {
                 </div>
             </aside>
             <div className="flex flex-col bg-background">
-                <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6 relative overflow-hidden">
+                <header className="flex h-14 items-center gap-4 bg-card px-4 lg:h-[60px] lg:px-6 relative overflow-hidden">
                     <div className="absolute inset-0 opacity-5 pointer-events-none">
                       <Image src="https://picsum.photos/seed/nav-strip-tourist/1200/100" alt="" fill className="object-cover" data-ai-hint="india landscape" />
                     </div>
@@ -164,7 +164,7 @@ export default function ProfilePage() {
                             </Button>
                         </SheetTrigger>
                         <SheetContent side="left" className="flex flex-col p-0">
-                             <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+                             <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
                                 <Link href="/" className="flex items-center gap-2 font-semibold">
                                      <MapPin className="h-6 w-6 text-primary" />
                                      <span className="text-xl font-bold"><span className="text-primary">Tour</span>Mate</span>
