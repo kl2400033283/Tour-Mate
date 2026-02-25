@@ -39,7 +39,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
 import { useUser, useFirestore, useCollection, useDoc, useMemoFirebase } from '@/firebase';
 import { cn } from '@/lib/utils';
@@ -51,6 +51,8 @@ import { format } from 'date-fns';
 
 function SidebarNav({ isMobile = false }) {
     const router = useRouter();
+    const pathname = usePathname();
+
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
@@ -62,14 +64,11 @@ function SidebarNav({ isMobile = false }) {
         { href: '/host-dashboard', icon: LayoutGrid, label: 'Dashboard' },
         { href: '/my-listings', icon: List, label: 'My Listings' },
         { href: '#', icon: PlusCircle, label: 'Add Homestay' },
-        { href: '#', icon: Bell, label: 'Booking Requests' },
+        { href: '/booking-requests', icon: Bell, label: 'Booking Requests' },
         { href: '#', icon: DollarSign, label: 'Earnings' },
         { href: '#', icon: User, label: 'Profile' },
     ];
     
-    // Using a static pathname for active link styling
-    const pathname = '/host-dashboard';
-
     return (
         <div className="flex flex-col h-full">
             <nav className={cn("grid items-start gap-1 px-2", isMobile ? "text-lg font-medium" : "text-sm font-medium")}>
@@ -303,7 +302,7 @@ export default function HostDashboardPage() {
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-bold tracking-tight">Welcome, {displayName} 👋</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Welcome, {displayName}</h1>
             <p className="text-muted-foreground">
               Manage your homestays and booking requests.
             </p>

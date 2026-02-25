@@ -1,11 +1,11 @@
 'use client';
 
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy, doc } from 'firebase/firestore';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
-import { Loader2, Home, List, LogOut, Menu, PlusCircle, User, LayoutGrid, DollarSign, Bell, ArrowLeft } from 'lucide-react';
+import { Loader2, Home, List, LogOut, Menu, PlusCircle, User, LayoutGrid, DollarSign, Bell, ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -21,7 +21,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
-import Image from 'next/image';
+import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { useToast } from '@/hooks/use-toast';
 
 function SidebarNav({ isMobile = false }) {
     const router = useRouter();
@@ -69,104 +70,123 @@ function SidebarNav({ isMobile = false }) {
     );
 }
 
-function ListingsTable({ listings, isLoading }) {
-    if (isLoading) {
-        return (
-            <div className="space-y-4">
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
-            </div>
-        );
-    }
-
-    if (!listings || listings.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg text-center p-4">
-                <p className="text-muted-foreground mb-4">You haven't created any listings yet.</p>
-                <Button asChild>
-                    <Link href="#">Add Homestay</Link>
-                </Button>
-            </div>
-        );
-    }
-
+function BookingsTable({ bookings, isLoading, onUpdateStatus }) {
+  if (isLoading) {
     return (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead className="hidden w-[100px] sm:table-cell">
-                        <span className="sr-only">Image</span>
-                    </TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="hidden md:table-cell">Price</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                        Guests
-                    </TableHead>
-                    <TableHead>
-                        <span className="sr-only">Actions</span>
-                    </TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {listings.map((listing) => (
-                    <TableRow key={listing.id}>
-                        <TableCell className="hidden sm:table-cell">
-                            <Image
-                                alt={listing.name}
-                                className="aspect-square rounded-md object-cover"
-                                height="64"
-                                src={`https://picsum.photos/seed/${listing.imageHint?.replace(/\s/g, '-') || listing.id}/64/64`}
-                                width="64"
-                                data-ai-hint={listing.imageHint}
-                            />
-                        </TableCell>
-                        <TableCell className="font-medium">{listing.name}</TableCell>
-                        <TableCell>
-                            <Badge variant={listing.isAvailable ? 'outline' : 'secondary'} className={cn(listing.isAvailable ? 'text-green-600 border-green-300' : '')}>
-                                {listing.isAvailable ? 'Available' : 'Unavailable'}
-                            </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">₹{listing.pricePerNight?.toLocaleString()}</TableCell>
-                        <TableCell className="hidden md:table-cell">
-                            {listing.maxGuests}
-                        </TableCell>
-                        <TableCell>
-                           <div className="flex justify-end gap-2">
-                             <Button variant="outline" size="sm">Edit</Button>
-                             <Button variant="destructive" size="sm">Delete</Button>
-                           </div>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+      <div className="space-y-4">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+      </div>
     );
+  }
+
+  if (!bookings || bookings.length === 0) {
+    return (
+       <div className="flex items-center justify-center h-full min-h-48 border-2 border-dashed rounded-lg">
+          <p className="text-muted-foreground">No booking requests found.</p>
+      </div>
+    );
+  }
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Guest</TableHead>
+          <TableHead>Homestay</TableHead>
+          <TableHead className="hidden md:table-cell">Dates</TableHead>
+          <TableHead className="hidden sm:table-cell">Status</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {bookings.map((booking) => (
+          <TableRow key={booking.id}>
+            <TableCell>{booking.guestName}</TableCell>
+            <TableCell>{booking.homestayName}</TableCell>
+            <TableCell className="hidden md:table-cell">
+              {booking.checkInDate} - {booking.checkOutDate}
+            </TableCell>
+            <TableCell className="hidden sm:table-cell">
+              <Badge 
+                variant={
+                  booking.status === 'pending' ? 'secondary' : 
+                  booking.status === 'approved' ? 'default' : 
+                  'destructive'
+                }
+                className={cn({
+                  'bg-yellow-500/20 text-yellow-700 border-yellow-500/30': booking.status === 'pending',
+                  'bg-green-500/20 text-green-700 border-green-500/30': booking.status === 'approved',
+                  'bg-red-500/20 text-red-700 border-red-500/30': booking.status === 'declined',
+                  'bg-blue-500/20 text-blue-700 border-blue-500/30': booking.status === 'completed',
+                })}
+              >
+                {booking.status}
+              </Badge>
+            </TableCell>
+            <TableCell className="text-right">
+              {booking.status === 'pending' && (
+                <div className="flex gap-2 justify-end">
+                  <Button variant="outline" size="sm" onClick={() => onUpdateStatus(booking, 'approved')}>
+                    <CheckCircle className="h-4 w-4 mr-1" /> Approve
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => onUpdateStatus(booking, 'declined')}>
+                    <XCircle className="h-4 w-4 mr-1" /> Decline
+                  </Button>
+                </div>
+              )}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  )
 }
 
-export default function MyListingsPage() {
+export default function BookingRequestsPage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
     const firestore = useFirestore();
+    const { toast } = useToast();
+
 
     useEffect(() => {
         if (!isUserLoading && !user) {
-            router.replace('/login?redirect=/my-listings');
+            router.replace('/login?redirect=/booking-requests');
         }
     }, [isUserLoading, user, router]);
 
-    const listingsQuery = useMemoFirebase(() => {
+    // Fetch bookings received by this host
+    const bookingsQuery = useMemoFirebase(() => {
         if (!user || !firestore) return null;
-        return query(collection(firestore, 'homestays'), where('hostId', '==', user.uid));
+        return query(collection(firestore, 'users', user.uid, 'receivedHomestayBookings'), orderBy('bookingDate', 'desc'));
     }, [user, firestore]);
-    const { data: listings, isLoading: listingsLoading } = useCollection(listingsQuery);
+    const { data: bookings, isLoading: bookingsLoading } = useCollection(bookingsQuery);
 
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
             window.location.href = '/';
         });
+    };
+
+    const handleUpdateBookingStatus = (booking, newStatus) => {
+      if (!firestore || !user) return;
+  
+      const hostBookingRef = doc(firestore, 'users', user.uid, 'receivedHomestayBookings', booking.id);
+      updateDocumentNonBlocking(hostBookingRef, { status: newStatus });
+  
+      // Also update the booking in the tourist's collection
+      const touristBookingRef = doc(firestore, 'users', booking.userId, 'homestayBookings', booking.id);
+      updateDocumentNonBlocking(touristBookingRef, { status: newStatus });
+  
+      toast({
+          title: `Booking ${newStatus}`,
+          description: `The booking for ${booking.homestayName} has been ${newStatus}.`,
+          variant: newStatus === 'approved' ? 'success' : 'destructive'
+      });
     };
 
     if (isUserLoading || !user) {
@@ -231,29 +251,21 @@ export default function MyListingsPage() {
                     </Button>
                 </header>
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center">
                         <div>
-                            <h1 className="text-lg font-semibold md:text-2xl">My Listings</h1>
+                            <h1 className="text-lg font-semibold md:text-2xl">Booking Requests</h1>
                              <p className="text-sm text-muted-foreground">
-                                Manage your properties and their availability.
+                                Manage incoming requests for your properties.
                             </p>
                         </div>
-                         <Button asChild size="sm" className="ml-auto gap-1">
-                            <Link href="#">
-                                <PlusCircle className="h-3.5 w-3.5" />
-                                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                Add Homestay
-                                </span>
-                            </Link>
-                        </Button>
                     </div>
                     <Card>
                         <CardHeader>
-                            <CardTitle>Your Homestays</CardTitle>
-                            <CardDescription>A list of all your registered homestay properties.</CardDescription>
+                            <CardTitle>All Booking Requests</CardTitle>
+                            <CardDescription>A complete list of all bookings for your homestays.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <ListingsTable listings={listings} isLoading={listingsLoading} />
+                            <BookingsTable bookings={bookings} isLoading={bookingsLoading} onUpdateStatus={handleUpdateBookingStatus} />
                         </CardContent>
                     </Card>
                 </main>
