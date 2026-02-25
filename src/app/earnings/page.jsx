@@ -1,11 +1,11 @@
 'use client';
 
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, doc } from 'firebase/firestore';
+import { collection, query, where, orderBy } from 'firebase/firestore';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
-import { Loader2, Home, List, LogOut, Menu, PlusCircle, User, LayoutGrid, DollarSign, Bell, ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, Home, List, LogOut, Menu, PlusCircle, User, LayoutGrid, DollarSign, Bell, ArrowLeft, Banknote } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -20,9 +20,9 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { useEffect } from 'react';
-import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { useToast } from '@/hooks/use-toast';
+import { useEffect, useMemo } from 'react';
+import { format } from 'date-fns';
+
 
 function SidebarNav({ isMobile = false }) {
     const router = useRouter();
@@ -70,7 +70,7 @@ function SidebarNav({ isMobile = false }) {
     );
 }
 
-function BookingsTable({ bookings, isLoading, onUpdateStatus }) {
+function EarningsTable({ bookings, isLoading }) {
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -85,7 +85,7 @@ function BookingsTable({ bookings, isLoading, onUpdateStatus }) {
   if (!bookings || bookings.length === 0) {
     return (
        <div className="flex items-center justify-center h-full min-h-48 border-2 border-dashed rounded-lg">
-          <p className="text-muted-foreground">No booking requests found.</p>
+          <p className="text-muted-foreground">No earnings recorded yet.</p>
       </div>
     );
   }
@@ -94,50 +94,33 @@ function BookingsTable({ bookings, isLoading, onUpdateStatus }) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Guest</TableHead>
           <TableHead>Homestay</TableHead>
-          <TableHead className="hidden md:table-cell">Dates</TableHead>
-          <TableHead className="hidden sm:table-cell">Status</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
+          <TableHead>Guest</TableHead>
+          <TableHead>Dates</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {bookings.map((booking) => (
           <TableRow key={booking.id}>
-            <TableCell>{booking.guestName}</TableCell>
             <TableCell>{booking.homestayName}</TableCell>
-            <TableCell className="hidden md:table-cell">
+            <TableCell>{booking.guestName}</TableCell>
+            <TableCell>
               {booking.checkInDate} - {booking.checkOutDate}
             </TableCell>
-            <TableCell className="hidden sm:table-cell">
+             <TableCell>
               <Badge 
-                variant={
-                  booking.status === 'pending' ? 'secondary' : 
-                  booking.status === 'approved' ? 'default' : 
-                  'destructive'
-                }
+                variant={booking.status === 'approved' ? 'default' : 'secondary'}
                 className={cn({
-                  'bg-yellow-500/20 text-yellow-700 border-yellow-500/30': booking.status === 'pending',
                   'bg-green-500/20 text-green-700 border-green-500/30': booking.status === 'approved',
-                  'bg-red-500/20 text-red-700 border-red-500/30': booking.status === 'declined',
                   'bg-blue-500/20 text-blue-700 border-blue-500/30': booking.status === 'completed',
                 })}
               >
                 {booking.status}
               </Badge>
             </TableCell>
-            <TableCell className="text-right">
-              {booking.status === 'pending' && (
-                <div className="flex gap-2 justify-end">
-                  <Button variant="outline" size="sm" onClick={() => onUpdateStatus(booking, 'approved')}>
-                    <CheckCircle className="h-4 w-4 mr-1" /> Approve
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => onUpdateStatus(booking, 'declined')}>
-                    <XCircle className="h-4 w-4 mr-1" /> Decline
-                  </Button>
-                </div>
-              )}
-            </TableCell>
+            <TableCell className="text-right">₹{booking.totalPrice.toLocaleString()}</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -145,16 +128,15 @@ function BookingsTable({ bookings, isLoading, onUpdateStatus }) {
   )
 }
 
-export default function BookingRequestsPage() {
+
+export default function EarningsPage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
     const firestore = useFirestore();
-    const { toast } = useToast();
-
 
     useEffect(() => {
         if (!isUserLoading && !user) {
-            router.replace('/login?redirect=/booking-requests');
+            router.replace('/login?redirect=/earnings');
         }
     }, [isUserLoading, user, router]);
 
@@ -164,29 +146,34 @@ export default function BookingRequestsPage() {
         return query(collection(firestore, 'users', user.uid, 'receivedHomestayBookings'), orderBy('bookingDate', 'desc'));
     }, [user, firestore]);
     const { data: bookings, isLoading: bookingsLoading } = useCollection(bookingsQuery);
+    
+    const { totalEarnings, monthlyEarnings, earningsBreakdown } = useMemo(() => {
+        if (!bookings) return { totalEarnings: 0, monthlyEarnings: 0, earningsBreakdown: [] };
+
+        const relevantBookings = bookings.filter(b => b.status === 'completed' || b.status === 'approved');
+        
+        const total = relevantBookings.reduce((acc, booking) => acc + (booking.totalPrice || 0), 0);
+        
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        
+        const monthly = relevantBookings
+            .filter(b => {
+                if (!b.bookingDate?.toDate) return false;
+                const bookingDate = b.bookingDate.toDate();
+                return bookingDate.getMonth() === currentMonth && bookingDate.getFullYear() === currentYear;
+            })
+            .reduce((acc, booking) => acc + (booking.totalPrice || 0), 0);
+
+        return { totalEarnings: total, monthlyEarnings: monthly, earningsBreakdown: relevantBookings };
+    }, [bookings]);
+
 
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
             window.location.href = '/';
         });
-    };
-
-    const handleUpdateBookingStatus = (booking, newStatus) => {
-      if (!firestore || !user) return;
-  
-      const hostBookingRef = doc(firestore, 'users', user.uid, 'receivedHomestayBookings', booking.id);
-      updateDocumentNonBlocking(hostBookingRef, { status: newStatus });
-  
-      // Also update the booking in the tourist's collection
-      const touristBookingRef = doc(firestore, 'users', booking.userId, 'homestayBookings', booking.id);
-      updateDocumentNonBlocking(touristBookingRef, { status: newStatus });
-  
-      toast({
-          title: `Booking ${newStatus}`,
-          description: `The booking for ${booking.homestayName} has been ${newStatus}.`,
-          variant: newStatus === 'approved' ? 'success' : 'destructive'
-      });
     };
 
     if (isUserLoading || !user) {
@@ -212,7 +199,7 @@ export default function BookingRequestsPage() {
                     </div>
                 </div>
             </aside>
-            <div className="flex flex-col bg-background">
+            <div className="flex flex-col bg-muted/20">
                 <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
                     <Sheet>
                         <SheetTrigger asChild>
@@ -253,19 +240,47 @@ export default function BookingRequestsPage() {
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                     <div className="flex items-center">
                         <div>
-                            <h1 className="text-lg font-semibold md:text-2xl">Booking Requests</h1>
+                            <h1 className="text-lg font-semibold md:text-2xl">Earnings</h1>
                              <p className="text-sm text-muted-foreground">
-                                Manage incoming requests for your properties.
+                                Track your income from your homestay listings.
                             </p>
                         </div>
                     </div>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <Card>
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                            <Banknote className="h-4 w-4 text-muted-foreground" />
+                          </CardHeader>
+                          <CardContent>
+                            {bookingsLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : <div className="text-2xl font-bold">₹{totalEarnings.toLocaleString()}</div>}
+                            <p className="text-xs text-muted-foreground">
+                              From all completed and approved bookings.
+                            </p>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">This Month's Earnings</CardTitle>
+                            <DollarSign className="h-4 w-4 text-muted-foreground" />
+                          </CardHeader>
+                          <CardContent>
+                             {bookingsLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : <div className="text-2xl font-bold">₹{monthlyEarnings.toLocaleString()}</div>}
+                            <p className="text-xs text-muted-foreground">
+                              Earnings from {format(new Date(), 'MMMM yyyy')}.
+                            </p>
+                          </CardContent>
+                        </Card>
+                    </div>
+
                     <Card>
                         <CardHeader>
-                            <CardTitle>All Booking Requests</CardTitle>
-                            <CardDescription>A complete list of all bookings for your homestays.</CardDescription>
+                            <CardTitle>Earnings Breakdown</CardTitle>
+                            <CardDescription>A list of all bookings contributing to your earnings.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <BookingsTable bookings={bookings} isLoading={bookingsLoading} onUpdateStatus={handleUpdateBookingStatus} />
+                            <EarningsTable bookings={earningsBreakdown} isLoading={bookingsLoading} />
                         </CardContent>
                     </Card>
                 </main>

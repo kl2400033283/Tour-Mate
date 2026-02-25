@@ -1,32 +1,23 @@
 'use client';
 
-import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, doc } from 'firebase/firestore';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getAuth, signOut } from 'firebase/auth';
-import { Loader2, Home, List, LogOut, Menu, PlusCircle, User, LayoutGrid, DollarSign, Bell, ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, Home, List, LogOut, Menu, PlusCircle, User, LayoutGrid, DollarSign, Bell, ArrowLeft, Mail, Phone, KeyRound } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
-import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { useToast } from '@/hooks/use-toast';
+
 
 function SidebarNav({ isMobile = false }) {
     const router = useRouter();
     const pathname = usePathname();
+
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
@@ -70,123 +61,70 @@ function SidebarNav({ isMobile = false }) {
     );
 }
 
-function BookingsTable({ bookings, isLoading, onUpdateStatus }) {
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
-      </div>
-    );
-  }
+function ProfileDetails({ userProfile, isLoading }) {
+    if (isLoading) {
+        return (
+            <div className="space-y-4">
+                <Skeleton className="h-8 w-3/4" />
+                <Skeleton className="h-6 w-1/2" />
+                <Skeleton className="h-6 w-1/2" />
+                <Skeleton className="h-6 w-1/2" />
+            </div>
+        );
+    }
+    
+    if (!userProfile) {
+        return <p>Could not load profile details.</p>;
+    }
 
-  if (!bookings || bookings.length === 0) {
-    return (
-       <div className="flex items-center justify-center h-full min-h-48 border-2 border-dashed rounded-lg">
-          <p className="text-muted-foreground">No booking requests found.</p>
-      </div>
-    );
-  }
+    const { firstName, lastName, email, phoneNumber, role } = userProfile;
 
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Guest</TableHead>
-          <TableHead>Homestay</TableHead>
-          <TableHead className="hidden md:table-cell">Dates</TableHead>
-          <TableHead className="hidden sm:table-cell">Status</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {bookings.map((booking) => (
-          <TableRow key={booking.id}>
-            <TableCell>{booking.guestName}</TableCell>
-            <TableCell>{booking.homestayName}</TableCell>
-            <TableCell className="hidden md:table-cell">
-              {booking.checkInDate} - {booking.checkOutDate}
-            </TableCell>
-            <TableCell className="hidden sm:table-cell">
-              <Badge 
-                variant={
-                  booking.status === 'pending' ? 'secondary' : 
-                  booking.status === 'approved' ? 'default' : 
-                  'destructive'
-                }
-                className={cn({
-                  'bg-yellow-500/20 text-yellow-700 border-yellow-500/30': booking.status === 'pending',
-                  'bg-green-500/20 text-green-700 border-green-500/30': booking.status === 'approved',
-                  'bg-red-500/20 text-red-700 border-red-500/30': booking.status === 'declined',
-                  'bg-blue-500/20 text-blue-700 border-blue-500/30': booking.status === 'completed',
-                })}
-              >
-                {booking.status}
-              </Badge>
-            </TableCell>
-            <TableCell className="text-right">
-              {booking.status === 'pending' && (
-                <div className="flex gap-2 justify-end">
-                  <Button variant="outline" size="sm" onClick={() => onUpdateStatus(booking, 'approved')}>
-                    <CheckCircle className="h-4 w-4 mr-1" /> Approve
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => onUpdateStatus(booking, 'declined')}>
-                    <XCircle className="h-4 w-4 mr-1" /> Decline
-                  </Button>
-                </div>
-              )}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  )
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center">
+                <User className="h-5 w-5 text-muted-foreground mr-3" />
+                <span className="font-medium">{firstName} {lastName}</span>
+            </div>
+            <div className="flex items-center">
+                <Mail className="h-5 w-5 text-muted-foreground mr-3" />
+                <span className="text-muted-foreground">{email}</span>
+            </div>
+             <div className="flex items-center">
+                <Phone className="h-5 w-5 text-muted-foreground mr-3" />
+                <span className="text-muted-foreground">{phoneNumber}</span>
+            </div>
+            <div className="flex items-center">
+                <KeyRound className="h-5 w-5 text-muted-foreground mr-3" />
+                <span className="text-muted-foreground capitalize">{role}</span>
+            </div>
+        </div>
+    );
 }
 
-export default function BookingRequestsPage() {
+
+export default function HostProfilePage() {
     const { user, isUserLoading } = useUser();
     const router = useRouter();
     const firestore = useFirestore();
-    const { toast } = useToast();
-
 
     useEffect(() => {
         if (!isUserLoading && !user) {
-            router.replace('/login?redirect=/booking-requests');
+            router.replace('/login?redirect=/host-profile');
         }
     }, [isUserLoading, user, router]);
-
-    // Fetch bookings received by this host
-    const bookingsQuery = useMemoFirebase(() => {
+    
+    const userProfileRef = useMemoFirebase(() => {
         if (!user || !firestore) return null;
-        return query(collection(firestore, 'users', user.uid, 'receivedHomestayBookings'), orderBy('bookingDate', 'desc'));
+        return doc(firestore, 'users', user.uid);
     }, [user, firestore]);
-    const { data: bookings, isLoading: bookingsLoading } = useCollection(bookingsQuery);
+
+    const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
 
     const handleSignOut = () => {
         const auth = getAuth();
         signOut(auth).then(() => {
             window.location.href = '/';
         });
-    };
-
-    const handleUpdateBookingStatus = (booking, newStatus) => {
-      if (!firestore || !user) return;
-  
-      const hostBookingRef = doc(firestore, 'users', user.uid, 'receivedHomestayBookings', booking.id);
-      updateDocumentNonBlocking(hostBookingRef, { status: newStatus });
-  
-      // Also update the booking in the tourist's collection
-      const touristBookingRef = doc(firestore, 'users', booking.userId, 'homestayBookings', booking.id);
-      updateDocumentNonBlocking(touristBookingRef, { status: newStatus });
-  
-      toast({
-          title: `Booking ${newStatus}`,
-          description: `The booking for ${booking.homestayName} has been ${newStatus}.`,
-          variant: newStatus === 'approved' ? 'success' : 'destructive'
-      });
     };
 
     if (isUserLoading || !user) {
@@ -237,7 +175,7 @@ export default function BookingRequestsPage() {
                             </div>
                         </SheetContent>
                     </Sheet>
-                     <Button
+                    <Button
                         variant="outline"
                         onClick={() => router.push('/host-dashboard')}
                         className="flex items-center gap-2"
@@ -252,20 +190,15 @@ export default function BookingRequestsPage() {
                 </header>
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                     <div className="flex items-center">
-                        <div>
-                            <h1 className="text-lg font-semibold md:text-2xl">Booking Requests</h1>
-                             <p className="text-sm text-muted-foreground">
-                                Manage incoming requests for your properties.
-                            </p>
-                        </div>
+                        <h1 className="text-lg font-semibold md:text-2xl">My Profile</h1>
                     </div>
                     <Card>
                         <CardHeader>
-                            <CardTitle>All Booking Requests</CardTitle>
-                            <CardDescription>A complete list of all bookings for your homestays.</CardDescription>
+                            <CardTitle>Your Host Account Details</CardTitle>
+                            <CardDescription>This is the information associated with your account.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <BookingsTable bookings={bookings} isLoading={bookingsLoading} onUpdateStatus={handleUpdateBookingStatus} />
+                            <ProfileDetails userProfile={userProfile} isLoading={isProfileLoading} />
                         </CardContent>
                     </Card>
                 </main>

@@ -65,8 +65,8 @@ function SidebarNav({ isMobile = false }) {
         { href: '/my-listings', icon: List, label: 'My Listings' },
         { href: '#', icon: PlusCircle, label: 'Add Homestay' },
         { href: '/booking-requests', icon: Bell, label: 'Booking Requests' },
-        { href: '#', icon: DollarSign, label: 'Earnings' },
-        { href: '#', icon: User, label: 'Profile' },
+        { href: '/earnings', icon: DollarSign, label: 'Earnings' },
+        { href: '/host-profile', icon: User, label: 'Profile' },
     ];
     
     return (
