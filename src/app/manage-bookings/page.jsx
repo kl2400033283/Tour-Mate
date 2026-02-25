@@ -9,7 +9,7 @@ import { useUser, useFirestore, useDoc, useCollection, useMemoFirebase } from '@
 import { useRouter, usePathname } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
 import { useEffect, useMemo } from 'react';
-import { doc, collection, collectionGroup, query, orderBy } from 'firebase/firestore';
+import { doc, collection, collectionGroup } from 'firebase/firestore';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -129,15 +129,33 @@ export default function ManageBookingsPage() {
 
   const homestayBookingsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collectionGroup(firestore, 'homestayBookings'), orderBy('bookingDate', 'desc'));
+    return collectionGroup(firestore, 'homestayBookings');
   }, [firestore]);
   const { data: allHomestayBookings, isLoading: isHomestayBookingsLoading } = useCollection(homestayBookingsQuery);
   
   const guideBookingsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collectionGroup(firestore, 'guideBookings'), orderBy('bookingDate', 'desc'));
+    return collectionGroup(firestore, 'guideBookings');
   }, [firestore]);
   const { data: allGuideBookings, isLoading: isGuideBookingsLoading } = useCollection(guideBookingsQuery);
+
+  const sortedHomestayBookings = useMemo(() => {
+    if (!allHomestayBookings) return [];
+    return [...allHomestayBookings].sort((a, b) => {
+      const dateA = a.bookingDate?.toDate ? a.bookingDate.toDate() : new Date(0);
+      const dateB = b.bookingDate?.toDate ? b.bookingDate.toDate() : new Date(0);
+      return dateB - dateA;
+    });
+  }, [allHomestayBookings]);
+
+  const sortedGuideBookings = useMemo(() => {
+    if (!allGuideBookings) return [];
+    return [...allGuideBookings].sort((a, b) => {
+      const dateA = a.bookingDate?.toDate ? a.bookingDate.toDate() : new Date(0);
+      const dateB = b.bookingDate?.toDate ? b.bookingDate.toDate() : new Date(0);
+      return dateB - dateA;
+    });
+  }, [allGuideBookings]);
 
   const handleSignOut = () => {
     const auth = getAuth();
@@ -216,10 +234,10 @@ export default function ManageBookingsPage() {
                   <TabsTrigger value="guides">Guide Bookings</TabsTrigger>
                 </TabsList>
                 <TabsContent value="homestays">
-                  <BookingsTable bookings={allHomestayBookings} isLoading={isHomestayBookingsLoading} />
+                  <BookingsTable bookings={sortedHomestayBookings} isLoading={isHomestayBookingsLoading} />
                 </TabsContent>
                 <TabsContent value="guides">
-                  <BookingsTable bookings={allGuideBookings} isLoading={isGuideBookingsLoading} />
+                  <BookingsTable bookings={sortedGuideBookings} isLoading={isGuideBookingsLoading} />
                 </TabsContent>
               </Tabs>
             </CardContent>
