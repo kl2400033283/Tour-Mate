@@ -55,35 +55,34 @@ service cloud.firestore {
 
       /**
        * @description Secures a user's (tourist's) own homestay bookings.
-       * @path        /users/{userId}/homestayBookings/{path=**}
+       * @path        /users/{userId}/homestayBookings/{bookingId}
        */
-      match /homestayBookings/{path=**} {
+      match /homestayBookings/{bookingId} {
         allow read, write: if isSignedIn() && isOwner(userId);
       }
 
       /**
        * @description Secures a host's received homestay bookings.
-       * @path        /users/{userId}/receivedHomestayBookings/{path=**}
+       * @path        /users/{userId}/receivedHomestayBookings/{bookingId}
        */
-      match /receivedHomestayBookings/{path=**} {
+      match /receivedHomestayBookings/{bookingId} {
         allow read, write: if isSignedIn() && isOwner(userId);
       }
 
       /**
-       * @description Secures a user's guide bookings. The recursive wildcard `{path=**}` ensures
-       *              that the rule applies to both collection-level operations (like `list`) and
-       *              document-level operations (`get`, `create`, `update`, `delete`).
-       * @path        /users/{userId}/guideBookings/{path=**}
+       * @description Secures a user's guide bookings. The single-segment wildcard `{bookingId}` ensures
+       *              that the rule applies to any document within the `guideBookings` collection.
+       * @path        /users/{userId}/guideBookings/{bookingId}
        */
-      match /guideBookings/{path=**} {
+      match /guideBookings/{bookingId} {
         allow read, write: if isSignedIn() && isOwner(userId);
       }
       
       /**
        * @description Secures a guide's received tour bookings.
-       * @path        /users/{userId}/receivedGuideBookings/{path=**}
+       * @path        /users/{userId}/receivedGuideBookings/{bookingId}
        */
-      match /receivedGuideBookings/{path=**} {
+      match /receivedGuideBookings/{bookingId} {
         allow read, write: if isSignedIn() && isOwner(userId);
       }
     }
