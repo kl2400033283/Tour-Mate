@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, ReactNode, useCallback } from 'react';
-import { BuilderContext } from '@/hooks/use-builder.jsx';
+import { BuilderContext } from '@/hooks/use-builder';
 
 export function BuilderProvider({ children }) {
   const [elements, setElements] = useState([]);

@@ -1,5 +1,5 @@
 'use client';
-import { useBuilder } from '@/hooks/use-builder.jsx';
+import { useBuilder } from '@/hooks/use-builder';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { citiesByState } from '@/lib/tourist-cities.js';
+import { citiesByState } from '@/lib/tourist-cities';
 import { notFound, useRouter, useParams } from 'next/navigation';
 import { MapPin, ArrowLeft, Menu } from 'lucide-react';
 import { useUser } from '@/firebase';

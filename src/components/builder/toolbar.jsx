@@ -1,5 +1,5 @@
 'use client';
-import { useBuilder } from '@/hooks/use-builder.jsx';
+import { useBuilder } from '@/hooks/use-builder';
 import { Button } from '@/components/ui/button';
 import { Monitor, Tablet, Smartphone, Trash2 } from 'lucide-react';
 

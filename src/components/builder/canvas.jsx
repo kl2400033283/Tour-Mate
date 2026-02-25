@@ -1,5 +1,5 @@
 'use client';
-import { useBuilder } from '@/hooks/use-builder.jsx';
+import { useBuilder } from '@/hooks/use-builder';
 import { ElementRenderer } from './element-renderer';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';

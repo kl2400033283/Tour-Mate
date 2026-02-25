@@ -19,7 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { citiesByState } from '@/lib/tourist-cities.js';
+import { citiesByState } from '@/lib/tourist-cities';
 import { useUser } from '@/firebase';
 
 export default function ExplorePage() {

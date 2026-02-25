@@ -14,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { PlaceHolderImages } from '@/lib/placeholder-images.js';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 

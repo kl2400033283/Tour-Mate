@@ -9,7 +9,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { PlaceHolderImages } from '@/lib/placeholder-images.js';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useUser } from '@/firebase';
 
 
