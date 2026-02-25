@@ -41,7 +41,7 @@ import {
 } from '@/components/ui/sheet';
 import { useRouter } from 'next/navigation';
 import { getAuth, signOut } from 'firebase/auth';
-import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useCollection, useDoc, useMemoFirebase } from '@/firebase';
 import { cn } from '@/lib/utils';
 import { collection, query, where, doc, updateDoc, orderBy } from 'firebase/firestore';
 import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
@@ -180,6 +180,12 @@ export default function HostDashboardPage() {
     const firestore = useFirestore();
     const { toast } = useToast();
 
+    const userProfileRef = useMemoFirebase(() => {
+        if (!user || !firestore) return null;
+        return doc(firestore, 'users', user.uid);
+    }, [user, firestore]);
+    const { data: userProfile, isLoading: isProfileLoading } = useDoc(userProfileRef);
+
     // Fetch this host's homestay listings
     const listingsQuery = useMemoFirebase(() => {
         if (!user || !firestore) return null;
@@ -230,7 +236,7 @@ export default function HostDashboardPage() {
         .filter(b => b.status === 'completed' || b.status === 'approved')
         .reduce((acc, booking) => acc + (booking.totalPrice || 0), 0) : 0;
 
-    if (isUserLoading) {
+    if (isUserLoading || isProfileLoading) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -246,6 +252,8 @@ export default function HostDashboardPage() {
             </div>
         );
     }
+
+    const displayName = userProfile ? `${userProfile.firstName} ${userProfile.lastName}`.trim() : (user?.email?.split('@')[0] || 'Host');
 
 
   return (
@@ -295,7 +303,7 @@ export default function HostDashboardPage() {
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-bold tracking-tight">Welcome, Host 👋</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Welcome, {displayName} 👋</h1>
             <p className="text-muted-foreground">
               Manage your homestays and booking requests.
             </p>
