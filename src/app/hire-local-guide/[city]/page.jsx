@@ -6,16 +6,16 @@ import { useRouter, usePathname, useParams, useSearchParams } from 'next/navigat
 import { Loader2, MapPin, Search, Star, Menu, Calendar as CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { citiesByState } from '@/lib/tourist-cities';
+import { Button } from '@/components/ui/button.jsx';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card.jsx';
+import { Input } from '@/components/ui/input.jsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx';
+import { citiesByState } from '@/lib/tourist-cities.js';
 import { notFound } from 'next/navigation';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useToast } from '@/hooks/use-toast';
-import { generateListingsAction } from '@/lib/actions';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet.jsx';
+import { useToast } from '@/hooks/use-toast.jsx';
+import { generateListingsAction } from '@/lib/actions.js';
+import { Skeleton } from '@/components/ui/skeleton.jsx';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,9 +24,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogFooter,
-} from '@/components/ui/alert-dialog';
-import { saveGuideBooking } from '@/lib/bookings';
-import { cn } from '@/lib/utils';
+} from '@/components/ui/alert-dialog.jsx';
+import { saveGuideBooking } from '@/lib/bookings.js';
+import { cn } from '@/lib/utils.js';
 
 const getCityData = (slug) => {
   if (!slug) return null;
@@ -55,6 +55,9 @@ function GuideCard({ guide, user, city, date }) {
       guideName: guide.name,
       city: city.name,
       tourDate: date.from,
+      guestName: user.displayName || user.email,
+      totalPrice: guide.rate,
+      status: 'pending',
     };
     saveGuideBooking(firestore, user.uid, bookingDetails);
   };

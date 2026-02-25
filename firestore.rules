@@ -8,7 +8,7 @@
  *
  * Key Security Decisions:
  * - Public Read Access: `/cities` and `/homestays` are public for read operations (`get`, `list`).
- * - User-Owned Profiles & Data: In the `/users` collection, users can only create, read, and update their own document, identified by their UID. This is enforced using the `isOwner` function. This ownership extends to subcollections like `homestayBookings`, `receivedHomestayBookings`, and `guideBookings`.
+ * - User-Owned Profiles & Data: In the `/users` collection, users can only create, read, and update their own document, identified by their UID. This is enforced using the `isOwner` function. This ownership extends to subcollections like `homestayBookings`, `receivedHomestayBookings`, `guideBookings`, and `receivedGuideBookings`.
  * - All Other Writes Disabled: Public collections are read-only. Users cannot delete their profiles or list other users.
  */
 rules_version = '2';
@@ -76,6 +76,14 @@ service cloud.firestore {
        * @path        /users/{userId}/guideBookings/{path=**}
        */
       match /guideBookings/{path=**} {
+        allow read, write: if isSignedIn() && isOwner(userId);
+      }
+      
+      /**
+       * @description Secures a guide's received tour bookings.
+       * @path        /users/{userId}/receivedGuideBookings/{path=**}
+       */
+      match /receivedGuideBookings/{path=**} {
         allow read, write: if isSignedIn() && isOwner(userId);
       }
     }

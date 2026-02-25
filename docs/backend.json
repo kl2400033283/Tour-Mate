@@ -241,13 +241,17 @@
       "properties": {
         "userId": {
           "type": "string",
-          "description": "The UID of the user who made the booking."
+          "description": "The UID of the user (tourist) who made the booking."
         },
         "guideId": {
           "type": "string"
         },
         "guideName": {
           "type": "string"
+        },
+        "guestName": {
+          "type": "string",
+          "description": "The name of the guest making the booking."
         },
         "city": {
           "type": "string"
@@ -259,15 +263,32 @@
         "bookingDate": {
           "type": "string",
           "format": "date-time"
+        },
+        "totalPrice": {
+          "type": "number",
+          "description": "The total price for the tour."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the booking.",
+          "enum": [
+            "pending",
+            "approved",
+            "completed",
+            "declined"
+          ]
         }
       },
       "required": [
         "userId",
         "guideId",
         "guideName",
+        "guestName",
         "city",
         "tourDate",
-        "bookingDate"
+        "bookingDate",
+        "totalPrice",
+        "status"
       ]
     }
   },
@@ -344,8 +365,18 @@
           },
           "description": "Stores a user's tour guide bookings. Only accessible by the user themselves."
         }
+      },
+      {
+        "path": "/users/{userId}/receivedGuideBookings/{bookingId}",
+        "definition": {
+          "entityName": "GuideBooking",
+          "schema": {
+            "$ref": "#/backend/entities/GuideBooking"
+          },
+          "description": "Stores tour bookings received by a guide. Only accessible by the guide themselves."
+        }
       }
     ],
-    "reasoning": "The Firestore structure uses top-level collections for `/cities` and `/homestays` for public access, and a `/users` collection for private user data. The `/users/{userId}` document contains subcollections for data specific to that user, such as `homestayBookings` (bookings they've made) and `receivedHomestayBookings` (bookings other users have made for their properties). This denormalized approach facilitates efficient and secure querying. A host can simply query their own `/users/{hostId}/receivedHomestayBookings` collection to get all relevant bookings without needing to scan other parts of the database. This aligns with Firestore's security model where rules are based on paths, and ensures data is only accessible by the correct user (tourist or host)."
+    "reasoning": "The Firestore structure uses top-level collections for `/cities` and `/homestays` for public access, and a `/users` collection for private user data. The `/users/{userId}` document contains subcollections for data specific to that user, such as `homestayBookings` (bookings they've made), `receivedHomestayBookings` (bookings other users have made for their properties), `guideBookings`, and `receivedGuideBookings`. This denormalized approach facilitates efficient and secure querying. A host or guide can simply query their own respective 'received' collection to get all relevant bookings without needing to scan other parts of the database. This aligns with Firestore's security model where rules are based on paths, and ensures data is only accessible by the correct user (tourist, host, or guide)."
   }
 }
