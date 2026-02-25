@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, Briefcase, LayoutGrid } from 'lucide-react';
+import { MapPin, LogOut, Menu, Users, Home, Compass, BarChart2, Briefcase, LayoutGrid, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -204,6 +204,14 @@ export default function AdminDashboardPage() {
                 </div>
             </SheetContent>
           </Sheet>
+           <Button
+              variant="outline"
+              onClick={() => router.push('/')}
+              className="flex items-center gap-2"
+          >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+          </Button>
            <div className="w-full flex-1" />
            <Button onClick={handleSignOut} variant="secondary">
               Logout
